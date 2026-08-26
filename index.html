@@ -1,40 +1,79 @@
 <html>
-    <head> 
-        <title>WOW</title>
-    </head>
-    <body>
-        <canvas id="canv" width="500" height="500">
-        </canvas>
-        <script>
-            let canvas = document.querySelector("#canv")
-            let ctx = canvas.getContext("2d")
 
+<head>
+    <title>GameLoop</title>
+    <style>
+        * {
+            margin:0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canv">
+    </canvas>
+    <script src="Vector2.js"></script>
+    <script>
+        let canvas = document.querySelector("#canv")
+        let ctx = canvas.getContext("2d")
+
+
+        // set the position of the object
+        let position = new Vector2(250, 250)
+
+        // yarg this be the game loop
+        function gameLoop() {
+            update()
+            draw()
+            requestAnimationFrame(gameLoop)
+        }
+
+        function update() {
+            position.x += 0.1
+        }
+
+        function draw() {
+            // expand canvas
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
             // signal to context i am going to draw something
             ctx.save()
 
+
+
             // set Center of object
-            ctx.translate(250, 250)
-            
-            // draw a triangle at the center of the 50, 50
+            ctx.translate(position.x, position.y)
+
+            // draw a shape at the center
             ctx.lineTo(0, -100)
 
-            ctx.lineTo(0, 100)
-            
-            ctx.lineTo(-100, 100)
-            
-            ctx.lineTo(50, 140)
+            ctx.lineTo(-80, 50)
 
-            ctx.lineTo(87, 1)
+            ctx.lineTo(-40, 100)
 
-            ctx.lineTo(40, 97)
+            ctx.lineTo(40, 100)
+
+            ctx.lineTo(80, 50)
 
             ctx.fillStyle = "turquoise"
             ctx.fill()
-            
-            
+
+
 
             // signal that i am done drawing 
             ctx.restore()
-        </script>
-    </body>
+        }
+        // bad for loop
+        /*
+        for (let i = 0; i < 10; i++) {
+            update()
+            draw()
+        }
+        */
+    requestAnimationFrame(gameLoop)
+
+    </script>
+</body>
+
 </html>
