@@ -7,6 +7,4 @@ class Vector2 {
         this.x = x
         this.y = y
     }
-
-    
 }
