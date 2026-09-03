@@ -6,7 +6,7 @@
         * {
             margin: 0;
             overflow: hidden;
-        }
+}
     </style>
 </head>
 
@@ -20,4 +20,14 @@
     <script src="../../engine/GameObject.js"></script>
     <script src="../../engine/Component.js"></script>
 
-    
+    <script src="MainScene.js"></script>
+    <script src="PlayerDrawComponent.js"></script>
+    <script src="PlayerGameObject.js"></script>
+    <script src="PlayerUpdateComponent.js"></script>
+
+    <script>
+        Engine.currentScene = new MainScene()
+        Engine.start()
+    </script>
+</body>
+</html>

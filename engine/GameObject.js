@@ -1,5 +1,5 @@
 class GameObject { 
-    components = [];
+    components = []
 
     addComponent(component) {
         this.components.push(component)

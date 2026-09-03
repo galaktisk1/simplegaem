@@ -1,8 +1,8 @@
 class Polygon extends Component {
     points = []
-    fillstyle
-    strokestyle
-    linewidth
+    fillstyle = "black"
+    strokestyle = "transparent"
+    linewidth = 5
 
     draw(ctx) {
         ctx.save()

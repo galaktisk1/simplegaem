@@ -1,6 +1,6 @@
 class MainScene extends Scene {
     constructor() {
         super()
-        this.instantiate(new _)
+        this.instantiate(new PlayerGameObject())
     }
 }
