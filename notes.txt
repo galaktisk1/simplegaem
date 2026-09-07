@@ -1,0 +1,24 @@
+I will be building a game that will be heavily inspired by TES Arena, the first The Elder Scrolls games.
+What that means for my game really is I'll be making a dungeon crawler in the engine, not going to try to be
+all ambitious of everything Arena has i gotta have it too.
+
+Currently what im waiting for and notes to myself:
+waiting for capability of collision, which will happen in class
+waiting for capability of cursor tracking, also in class
+my own work on lighting centered on the player and figuring out what that means through tutorials and the like
+lighting:
+https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
+https://www.redblobgames.com/articles/visibility/ 
+
+
+figuring out the rest as it comes :)
+
+
+currently in my game:
+a circle guy with a little yellow lantern on him, just visual for now but its how im presenting why the area
+around him will be lit up later
+a black background and four walls making a little test room, mostly figuring out how big i want the walls
+and room to feel compared to the player
+i can place the walls in different positions and rotate them, sticking to horizontal and vertical for now
+the walls are just drawn right now
+
