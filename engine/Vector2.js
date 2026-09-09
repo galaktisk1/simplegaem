@@ -7,4 +7,9 @@ class Vector2 {
         this.x = x
         this.y = y
     }
+
+    clone(){
+        return new Vector2(this.x, this.y)
+    }
+
 }

@@ -12,12 +12,13 @@
 
 
 class PlayerUpdateComponent extends Component {
-    position
     speed
     
     start() {
-        this.position = new Vector2(250, 250)
+        this.gameObject.transform.position = new Vector2(250, 250)
+        this.position = this.gameObject.transform.position
         this.speed = 1
+        instantiate(new LightingGameObject(this.gameObject))
     }
 
     update() {
@@ -34,4 +35,5 @@ class PlayerUpdateComponent extends Component {
             this.position.x += this.speed
         }
     }
+    
 }

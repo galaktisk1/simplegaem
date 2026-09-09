@@ -2,7 +2,7 @@ class PlayerDrawComponent extends Component {
 
     
     draw(ctx) {
-        let position = this.gameObject.components[0].position
+        let position = this.gameObject.transform.position
 
         ctx.save()
         ctx.translate(position.x, position.y)
