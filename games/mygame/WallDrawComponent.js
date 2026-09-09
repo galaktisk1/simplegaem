@@ -8,10 +8,11 @@ class WallDrawComponent extends Component {
         ctx.rotate(this.gameObject.rotation)
         ctx.beginPath()
         // rectangle
+        let scale = this.gameObject.scale
         ctx.lineTo(0, 0)
-        ctx.lineTo(250, 0)
-        ctx.lineTo(250, 80)
-        ctx.lineTo(0, 80)
+        ctx.lineTo(250 * scale.x, 0)
+        ctx.lineTo(250 * scale.x, 80 * scale.y)
+        ctx.lineTo(0, 80 * scale.y)
         ctx.fill()
 
         ctx.restore()

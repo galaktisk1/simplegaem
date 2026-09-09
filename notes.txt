@@ -21,4 +21,5 @@ a black background and four walls making a little test room, mostly figuring out
 and room to feel compared to the player
 i can place the walls in different positions and rotate them, sticking to horizontal and vertical for now
 the walls are just drawn right now
+lighting is... there, but its strange and i gotta tweak it quite a bit
 

@@ -3,6 +3,7 @@ class Scene {
 
     instantiate(gameObject) {
         this.gameObjects.push(gameObject)
+        return gameObject
     }
 
     start() {
