@@ -12,19 +12,5 @@
  
     **/
 class Seed {
-    seed 
-
-    // set the seed
-    // >>> is for 32 bit unsigned integer conversion
-    setSeed(x){
-        this.seed = x >>> 0;
-        return this.seed >>> 0;
-    }
-
-    // get the next random number
-    next(){
-        // JS * is unsafe for 32-bit integers, so I use Math Integer multiplication
-        this.seed = Math.imul(this.seed, 7143469);
-        return (this.seed >>> 16) & 0xFFFF;
-    }
+    seed
 }

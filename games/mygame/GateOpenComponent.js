@@ -1,24 +1,14 @@
 class GateOpenComponent extends Component {
 
-    removeGameObject(gameobject) {
-        Engine.currentScene.gameObjects = Engine.currentScene.gameObjects.filter(g => g !== gameobject)
-    }
+    // gate will move or delete in someway later
 
-    checkForKey(gameObject) {
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
-        return gameObject.getInventory().some(item => item instanceof KeyGameObject)
-    }
-    
     update() {
         for (const gameObject of Engine.currentScene.gameObjects) {
             if (gameObject instanceof PlayerGameObject) {
-                const key = gameObject.getInventory().find(item => item instanceof KeyGameObject)
-                const distanceToGate = (gate) => this.transform.position.distanceTo(gate.transform.position)
-                if (distanceToGate(gameObject) < 25 && this.checkForKey(gameObject)) {
-                    console.log("opening gate with item:", gameObject.getInventory())
-                    gameObject.useItem(key)
-                    console.log(`Gate deleted, and key ${key} consumed`)
-                    this.removeGameObject(this.gameObject)
+                const distanceToGate = this.transform.position.distanceTo(gameObject.transform.position)
+                if (distanceToGate < 25) {
+                    console.log("gate opened")
+                    // Figure out one inventory search to find a key, then consume it and open the gate.
                 }
             }
         }
