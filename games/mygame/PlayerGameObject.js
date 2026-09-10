@@ -1,6 +1,7 @@
 class PlayerGameObject extends GameObject {
     constructor() {
         super()
+        this.inventory = []
         this.addComponent(new PlayerUpdateComponent())
         // player circle
         this.addComponent(new Circle(), {
@@ -16,5 +17,20 @@ class PlayerGameObject extends GameObject {
                 new Vector2(-48, 10),
             ]
         })
+    }
+
+    addToInventory(item) {
+        this.inventory.push(item)
+    }
+
+    getInventory() {
+        return this.inventory
+    }
+
+    useItem(item) {
+        const index = this.inventory.indexOf(item)
+        if (index !== -1) {
+            this.inventory.splice(index, 1)
+        }
     }
 }

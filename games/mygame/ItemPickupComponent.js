@@ -16,8 +16,9 @@ class ItemPickupComponent extends Component {
                 const distanceToItem = this.transform.position.distanceTo(gameObject.transform.position)
                 if (distanceToItem < 25) {
                     // filter the object from the scene's game objects list
+                    console.log("Picked up item:", this.gameObject)
+                    gameObject.addToInventory(this.gameObject)
                     this.removeGameObject(this.gameObject)
-                    // this is where it will go into the inventory of the player
                 }
             }
         }

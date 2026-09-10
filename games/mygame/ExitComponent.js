@@ -10,6 +10,7 @@ class ExitComponent extends Component {
             if (gameObject instanceof PlayerGameObject) {
                 const distanceToExit = this.transform.position.distanceTo(gameObject.transform.position)
                 if (distanceToExit < 60) {
+                    console.log("Player reached the exit:", gameObject)
                     this.removeGameObject(gameObject)
                 }
             }
