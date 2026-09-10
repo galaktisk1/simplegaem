@@ -1,6 +1,7 @@
 class ItemPickupComponent extends Component {
     
     removeGameObject(gameobject) {
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
         Engine.currentScene.gameObjects = Engine.currentScene.gameObjects.filter(g => g !== gameobject)
     }
 
