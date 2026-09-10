@@ -1,8 +1,10 @@
 class LightingGameObject extends GameObject {
-    constructor(player) {
+    constructor() {
         super()
-        this.playerLight = {}
-        this.player = player
-        this.addComponent(new LightingDrawComponent())
+        this.addComponent(new Circle(), {
+            radius: 300,
+            fillstyle: ['rgba(255, 255, 255, 0.0)', 'rgba(255, 255, 255, 0.1)'],
+            useGradient: true,
+        })
     }
 }

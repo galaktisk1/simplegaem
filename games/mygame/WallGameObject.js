@@ -1,9 +1,13 @@
 class WallGameObject extends GameObject {
-    constructor(pos, rotator, scale = new Vector2(1, 1)) {
+    constructor() {
         super()
-        this.position = pos
-        this.rotation = rotator
-        this.scale = scale
-        this.addComponent(new WallDrawComponent())
+        this.addComponent(new Polygon(), {
+            fillstyle: "#4d4d4d", points: [
+                new Vector2(0, 0),
+                new Vector2(250, 0),
+                new Vector2(250, 80),
+                new Vector2(0, 80)
+            ]
+        })
     }
 }

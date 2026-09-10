@@ -15,24 +15,23 @@ class PlayerUpdateComponent extends Component {
     speed
     
     start() {
-        this.gameObject.transform.position = new Vector2(250, 250)
-        this.position = this.gameObject.transform.position
-        this.speed = 1
-        instantiate(new LightingGameObject(this.gameObject))
+        this.transform.position = new Vector2(250, 250)
+        this.speed = 4
+        instantiate(new LightingGameObject(), this.transform.position)
     }
 
     update() {
         if (Input.keysDown.includes("ArrowUp") || Input.keysDown.includes("KeyW")) {
-            this.position.y -= this.speed
+            this.transform.position.y -= this.speed
         }
         if (Input.keysDown.includes("ArrowDown") || Input.keysDown.includes("KeyS")) {
-            this.position.y += this.speed
+            this.transform.position.y += this.speed
         }
         if (Input.keysDown.includes("ArrowLeft") || Input.keysDown.includes("KeyA")) {
-            this.position.x -= this.speed
+            this.transform.position.x -= this.speed
         }
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
-            this.position.x += this.speed
+            this.transform.position.x += this.speed
         }
     }
     
