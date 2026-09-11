@@ -14,7 +14,6 @@ class Polygon extends Component {
         for (const point of this.points) {
             ctx.lineTo(point.x, point.y)
         }
-        // possible gradient support here, not necessary
         ctx.fillStyle = this.fillstyle
         ctx.closePath()
         ctx.fill()
