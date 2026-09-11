@@ -4,8 +4,7 @@ class LightingGameObject extends GameObject {
         // light
         this.addComponent(new Circle(), {
             radius: 300,
-            fillstyle: ['rgba(255, 255, 255, 0.0)', 'rgba(255, 255, 255, 0.1)'],
-            useGradient: true,
+            fillstyle: 'rgba(255, 255, 255, 0.1)',
         })
     }
 }
