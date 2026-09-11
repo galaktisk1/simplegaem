@@ -32,5 +32,8 @@ class PlayerGameObject extends GameObject {
         if (index !== -1) {
             this.inventory.splice(index, 1)
         }
+        else{
+            console.log("whoopsie ", item, " not in inventory")
+        }
     }
 }

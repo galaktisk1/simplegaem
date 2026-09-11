@@ -1,20 +1,19 @@
 class ItemPickupComponent extends Component {
-    
+    isCollected = false
 
     update() {
-        // check for nearby items and pick them up automatically
-        for (const gameObject of Engine.currentScene.gameObjects) {
-            // check for an instance of the player game object
-            // and ignore other game objects
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof
-            if (gameObject instanceof PlayerGameObject) {
-                // mark the distance to the player
-                const distanceToItem = this.transform.position.distanceTo(gameObject.transform.position)
-                if (distanceToItem < 25) {
-                    console.log("Picked up item:", this.gameObject)
-                    gameObject.addToInventory(this.gameObject)
-                    // where the item will be removed later
-                }
+        if(!this.isCollected){
+            const player = this.player
+            const item = this.gameObject
+            const itempos = this.transform.position
+            const playerpos = player.transform.position
+            const distanceToItem = itempos.distanceTo(playerpos)
+                
+            if (distanceToItem < 25) {
+                console.log("Picked up item:", item)
+                player.addToInventory(item)
+                this.isCollected = true
+                // where the item will be removed later
             }
         }
     }
