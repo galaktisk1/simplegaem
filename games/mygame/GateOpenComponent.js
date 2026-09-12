@@ -22,6 +22,7 @@ class GateOpenComponent extends Component {
                 console.log("gate opened")
                 this.isOpen = true
                 player.useItem(key)
+                Engine.currentScene.message.showMessage("You opened the gate")
                 // now something just needs to happen to the gate
             }
         }
