@@ -13,6 +13,7 @@ class Vector2 {
     }
 
     // comparing 2 vectors by calculating the distance between them
+    // https://stackoverflow.com/questions/42755576/javascript-function-distance-between-two-points
     distanceTo(other) {
         const dx = this.x - other.x
         const dy = this.y - other.y

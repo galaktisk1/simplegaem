@@ -7,7 +7,8 @@ class ItemPickupComponent extends Component {
     }
 
     update() {
-        if(!this.isCollected){
+        if (!this.isCollected) {
+            // this needs to talk to the new engine level inventory, not a specific player one
             const player = this.player
             const item = this.gameObject
             const itemObj = this.whatIsThisItem(item)

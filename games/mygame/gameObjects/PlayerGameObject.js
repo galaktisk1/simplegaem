@@ -4,9 +4,13 @@ class PlayerGameObject extends GameObject {
         this.inventory = []
         this.addComponent(new PlayerUpdateComponent())
         // player circle
-        this.addComponent(new Circle(), {
-            radius: 50,
-            fillstyle: "grey",
+        this.addComponent(new Polygon, {
+            fillstyle: "grey", points: [
+                new Vector2(-30*2, -30*2),
+                new Vector2(30*2, -30*2),
+                new Vector2(30*2, 30*2),
+                new Vector2(-30*2, 30*2)
+            ]
         })
         // lantern
         this.addComponent(new Polygon(), {
@@ -17,7 +21,11 @@ class PlayerGameObject extends GameObject {
                 new Vector2(-48, 10),
             ]
         })
+        // trying to figure out this, use player specific for now
+        // this.inventory = this.addComponent(new Inventory())
     }
+
+
 
     addToInventory(item) {
         this.inventory.push(item)
@@ -32,7 +40,7 @@ class PlayerGameObject extends GameObject {
         if (index !== -1) {
             this.inventory.splice(index, 1)
         }
-        else{
+        else {
             console.log("whoopsie ", item, " not in inventory")
         }
     }
