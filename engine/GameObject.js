@@ -1,6 +1,6 @@
 class GameObject { 
     components = []
-    markforDestroy = false
+    markForDestroy = false
 
     get transform() {
         return this.components[0]
@@ -14,6 +14,7 @@ class GameObject {
         Object.assign(component, parameters)
         this.components.push(component)
         component.gameObject = this
+        return component
     }
 
     start() {
@@ -35,6 +36,6 @@ class GameObject {
     }
 
     destroy() { 
-        this.markforDestroy = true
+        this.markForDestroy = true
     }
 }

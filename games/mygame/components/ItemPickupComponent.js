@@ -3,27 +3,25 @@ class ItemPickupComponent extends Component {
 
 
     whatIsThisItem(item) {
-        return item.constructor
+        return item.itemDef
     }
 
     update() {
         if (!this.isCollected) {
-            // this needs to talk to the new engine level inventory, not a specific player one
             const player = this.player
+            const playerinv = player.inventory
             const item = this.gameObject
-            const itemObj = this.whatIsThisItem(item)
             const itempos = this.transform.position
             const playerpos = player.transform.position
             const distanceToItem = itempos.distanceTo(playerpos)
-            const keymsg = "You picked up a key"
                 
             if (distanceToItem < 25) {
                 console.log("Picked up item:", item)
-                player.addToInventory(item)
+                playerinv.addItem(item)
                 this.isCollected = true
-                if (itemObj === KeyGameObject){
-                    Engine.currentScene.message.showMessage(keymsg)
-                }
+                // it looks like by the long line you have to write here that this should be an engine component
+                Engine.currentScene.message.showMessage(`You picked up a ${item.itemDef.name}`)
+                item.destroy() // or later in-inventory useage
                 // where the item will be removed later
             }
         }

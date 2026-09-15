@@ -4,29 +4,7 @@ class Inventory extends Component {
         super()
         this.inventory = []
     }
-
-
-    // void ItemInventory::insert(ItemDefinitionID defID, int stackAmount)
-    // {
-    //     const ItemDefinition & itemDef = ItemLibrary:: getInstance().getDefinition(defID);
-    // 	int insertIndex = -1;
-    // 	int totalStackAmount = stackAmount;
-    //     if (itemDef.isStackable) {
-    //         if (this -> findFirstSlot(defID, & insertIndex)) {
-    //             ItemInstance & existingItemInst = this -> getSlot(insertIndex);
-    //             totalStackAmount += existingItemInst.stackAmount;
-    //         }
-    //     }
-    //     if (insertIndex < 0) {
-    //         if (!this -> findFirstEmptySlot(& insertIndex)) {
-    //             insertIndex = static_cast < int > (this -> items.size());
-    //             this -> items.emplace_back(ItemInstance());
-    //         }
-    //     }
-    //     ItemInstance & itemInst = this -> getSlot(insertIndex);
-    //     itemInst.init(defID);
-    //     itemInst.stackAmount = totalStackAmount;
-    // }
+    
     addItem(item) {
         this.inventory.push(item)
     }
@@ -44,9 +22,17 @@ class Inventory extends Component {
         }
     }
 
-    findItem(item) {
-        // declare type? idk
-        return // something, use .find array operator
+    findItem(itemDef) {
+        if (!itemDef) return undefined
+        return this.inventory.find(item => item.itemDefinition === itemDef)
+    }
+
+    findItemByType(itemDef) {
+        return this.findItem(itemDef)
+    }
+
+    whatIsThisItem(item) {
+        return item.itemDefinition
     }
 
     clearInv() { 

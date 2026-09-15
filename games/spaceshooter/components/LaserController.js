@@ -1,7 +1,14 @@
 class LaserController extends Component {
 
     update() { 
-        
-        this.transform.position.y -= 1
+        const laserpos = this.transform.position
+        const laser = this.gameObject
+        const shippos = this.player.transform.position
+        const distanceToShip = laserpos.distanceTo(shippos)
+        laserpos.y -= 1
+
+        if (distanceToShip > 250) {
+            laser.destroy()
+        }
     }
 }

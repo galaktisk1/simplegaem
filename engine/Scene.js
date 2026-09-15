@@ -21,12 +21,12 @@ class Scene {
         }
 
         const temp = []
-        this.gameObjects = temp
         for (const gameObject of this.gameObjects) {
             if (!gameObject.markForDestroy) {
                 temp.push(gameObject)
             }
         }
+        this.gameObjects = temp
     }
 
     draw(ctx) {
