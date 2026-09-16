@@ -2,7 +2,7 @@ class UpdateComponent extends Component {
 
 
     position
-
+    speed = 60
     start() { 
         this.timeSinceLaser = 0
         this.position = this.transform.position
@@ -13,16 +13,16 @@ class UpdateComponent extends Component {
         this.timeSinceLaser += 1
         // issue for later, if you move diagonally, it adds both x and y, so the speed is faster than moving in one direction.
         if (Input.keysDown.includes("ArrowUp") || Input.keysDown.includes("KeyW")) {
-            this.position.y -= 1
+            this.position.y -= 1 + Time.deltaTime * this.speed
         }
         if (Input.keysDown.includes("ArrowDown") || Input.keysDown.includes("KeyS")) {
-            this.position.y += 1
+            this.position.y += 1 + Time.deltaTime * this.speed
         }
         if (Input.keysDown.includes("ArrowLeft") || Input.keysDown.includes("KeyA")) {
-            this.position.x -= 1
+            this.position.x -= 1 + Time.deltaTime * this.speed
         }
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
-            this.position.x += 1
+            this.position.x += 1 + Time.deltaTime * this.speed
         }
         
         if(this.timeSinceLaser > 10){

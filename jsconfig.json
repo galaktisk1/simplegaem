@@ -10,6 +10,6 @@
         "target": "esnext",
     },
     "exclude": [
-        "before"
+        "games/mygame", "games/spaceshooter"
     ]
 }

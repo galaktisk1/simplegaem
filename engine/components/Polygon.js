@@ -4,11 +4,14 @@ class Polygon extends Component {
     fillstyle = "magenta"
 
     draw(ctx) {
+        const transform = this.transform
         ctx.save()
-        const position = this.transform.position
+        const position = transform.position
+
         ctx.translate(position.x, position.y)
-        ctx.rotate(this.transform.rotation)
-        ctx.scale(this.transform.scale.x, this.transform.scale.y)
+        ctx.scale(transform.scale.x, transform.scale.y)
+        ctx.rotate(transform.rotation)
+
         ctx.beginPath()
 
         for (const point of this.points) {

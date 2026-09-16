@@ -12,12 +12,22 @@ class Vector2 {
         return new Vector2(this.x, this.y)
     }
 
+    plus(other) {
+        return new Vector2(this.x + other.x, this.y + other.y)
+    }
+
+    minus(other) {
+        return new Vector2(this.x - other.x, this.y - other.y)
+    }
+
+    get magnitude() {
+        return Math.hypot(this.x, this.y)
+    }
+
     // comparing 2 vectors by calculating the distance between them
     // https://stackoverflow.com/questions/42755576/javascript-function-distance-between-two-points
     distanceTo(other) {
-        const dx = this.x - other.x
-        const dy = this.y - other.y
-        return Math.hypot(dx, dy)
+        return this.minus(other).magnitude
     }
 
 }
