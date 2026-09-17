@@ -2,6 +2,7 @@ class MainGameObject extends GameObject {
     constructor() {
         super("Player")
         this.addComponent(new UpdateComponent())
+        this.addComponent(new MovementComponent())
         this.addComponent(new Polygon(), {
             fillstyle: "black", points: [
                 new Vector2(0, -32),

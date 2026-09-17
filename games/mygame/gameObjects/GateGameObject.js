@@ -1,13 +1,9 @@
 class GateGameObject extends GameObject {
     constructor() {
-        super()
+        super("Gate")
         this.addComponent(new Polygon(), {
-            fillstyle: "brown", points: [
-                new Vector2(-50, -10),
-                new Vector2(50, -10),
-                new Vector2(50, 10),
-                new Vector2(-50, 10),
-            ]
+            fillstyle: "brown", 
+            points: Assets.square
         })
         this.addComponent(new GateOpenComponent())
     }

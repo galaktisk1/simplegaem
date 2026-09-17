@@ -16,22 +16,26 @@ class PlayerUpdateComponent extends Component {
     
     start() {
         this.transform.position = new Vector2(250, 250)
-        this.speed = 4
+        this.speed = 4 * 60
         instantiate(new LightingGameObject(), this.transform.position)
     }
 
     update() {
+        const velocity = this.gameObject.getComponent(MovementComponent).velocity
+        velocity.x = 0
+        velocity.y = 0
+        
         if (Input.keysDown.includes("ArrowUp") || Input.keysDown.includes("KeyW")) {
-            this.transform.position.y -= this.speed
+            velocity.y -= this.speed
         }
         if (Input.keysDown.includes("ArrowDown") || Input.keysDown.includes("KeyS")) {
-            this.transform.position.y += this.speed
+            velocity.y += this.speed
         }
         if (Input.keysDown.includes("ArrowLeft") || Input.keysDown.includes("KeyA")) {
-            this.transform.position.x -= this.speed
+            velocity.x -= this.speed
         }
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
-            this.transform.position.x += this.speed
+            velocity.x += this.speed
         }
     }
     

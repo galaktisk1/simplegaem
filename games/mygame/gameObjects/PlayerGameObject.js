@@ -1,9 +1,10 @@
 class PlayerGameObject extends GameObject {
     constructor() {
-        super()
+        super("Player")
         this.addComponent(new PlayerUpdateComponent())
+        this.movement = this.addComponent(new MovementComponent())
         // player circle
-        this.addComponent(new Polygon, {
+        this.addComponent(new Polygon(), {
             fillstyle: "grey", points: [
                 new Vector2(-30*2, -30*2),
                 new Vector2(30*2, -30*2),

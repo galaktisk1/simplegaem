@@ -3,12 +3,12 @@ class GateOpenComponent extends Component {
 
     update() {
         if (!this.isOpen){
-            const player = this.player
-            const playerinv = player.inventory
+            const player = GameObject.find("Player")
+            const playerinv = player.getComponent(Inventory)
             const key = playerinv.findItemByType(itemLibrary.getDefinition("key"))
             const gate = this.gameObject
             const playerpos = player.transform.position
-            const gatepos = this.transform.position
+            const gatepos = gate.transform.position
 
             const distanceToGate = gatepos.distanceTo(playerpos)
             
@@ -17,7 +17,7 @@ class GateOpenComponent extends Component {
                 console.log("gate opened")
                 this.isOpen = true
                 playerinv.removeItem(key)
-                Engine.currentScene.message.showMessage("You opened the gate")
+                GameObject.find("Message").showMessage("You opened the gate")
                 // now something just needs to happen to the gate
                 gate.destroy()
             }

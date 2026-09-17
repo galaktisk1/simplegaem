@@ -1,15 +1,10 @@
 class ItemPickupComponent extends Component {
     isCollected = false
 
-
-    whatIsThisItem(item) {
-        return item.itemDef
-    }
-
     update() {
         if (!this.isCollected) {
-            const player = this.player
-            const playerinv = player.inventory
+            const player = GameObject.find("Player")
+            const playerinv = player.getComponent(Inventory)
             const item = this.gameObject
             const itempos = this.transform.position
             const playerpos = player.transform.position
@@ -20,7 +15,7 @@ class ItemPickupComponent extends Component {
                 playerinv.addItem(item)
                 this.isCollected = true
                 // it looks like by the long line you have to write here that this should be an engine component
-                Engine.currentScene.message.showMessage(`You picked up a ${item.itemDef.name}`)
+                GameObject.find("Message").showMessage(`You picked up a ${item.itemDef.name}`)
                 item.destroy() // or later in-inventory useage
                 // where the item will be removed later
             }

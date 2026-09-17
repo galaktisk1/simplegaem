@@ -24,7 +24,7 @@ class Inventory extends Component {
 
     findItem(itemDef) {
         if (!itemDef) return undefined
-        return this.inventory.find(item => item.itemDefinition === itemDef)
+        return this.inventory.find(item => this.whatIsThisItem(item) === itemDef)
     }
 
     findItemByType(itemDef) {
@@ -32,7 +32,7 @@ class Inventory extends Component {
     }
 
     whatIsThisItem(item) {
-        return item.itemDefinition
+        return item.itemDef
     }
 
     clearInv() { 

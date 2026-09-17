@@ -1,13 +1,11 @@
 class MessageGameObject extends GameObject {
     constructor() {
-        super()
+        super("Message")
         this.addComponent(new MessageComponent())
-        this.message = "message"
+        this.message = []
     }
     
-    showMessage(msg){
-        clearTimeout(this.msgTimeout)
-        this.message = msg
-        this.msgTimeout = setTimeout(h => {this.message = ""}, 3000)
+    showMessage(msg, lifetime = 3){
+        this.message.push({text: msg, lifetime: lifetime})
     }
 }

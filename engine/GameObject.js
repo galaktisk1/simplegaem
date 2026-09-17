@@ -17,7 +17,11 @@ class GameObject {
         Object.assign(component, parameters)
         this.components.push(component)
         component.gameObject = this
-        return component
+    }
+
+    getComponent(component) {
+        // return this.components.find(function(c){return c instanceof component})
+        return this.components.find(c => c instanceof component)
     }
 
     start() {
@@ -43,7 +47,8 @@ class GameObject {
     }
 
     static find(name) {
+        const searchName = name?.trim().toLowerCase()
         // return Engine.currentScene.gameObjects.find(function(go){return go.name === name})
-        return Engine.currentScene.gameObjects.find(go => go.name === name)
+        return Engine.currentScene.gameObjects.find(go => go.name?.trim().toLowerCase() === searchName)
     }
 }
