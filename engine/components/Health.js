@@ -8,10 +8,11 @@ class Health extends Component {
     }
 
     takeDamage(amount) {
+        const go = this.gameObject
         this.currentHealth -= amount
         if (this.currentHealth <= 0) {
             this.currentHealth = 0
-            this.gameObject.markForDestroy = true
+            go.markForDestroy = true
         }
     }
 
