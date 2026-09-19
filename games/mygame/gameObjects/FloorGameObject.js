@@ -1,6 +1,6 @@
 class FloorGameObject extends GameObject {
     constructor() {
-        super("floor")
+        super("Floor")
         this.addComponent(new Polygon(), {
             fillstyle: "#303030", 
             points: Assets.square

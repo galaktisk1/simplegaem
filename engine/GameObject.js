@@ -47,8 +47,11 @@ class GameObject {
     }
 
     static find(name) {
-        const searchName = name?.trim().toLowerCase()
         // return Engine.currentScene.gameObjects.find(function(go){return go.name === name})
-        return Engine.currentScene.gameObjects.find(go => go.name?.trim().toLowerCase() === searchName)
+        return Engine.currentScene.gameObjects.find(go => go.name === name)
+    }
+
+    static findAll(name) {
+        return Engine.currentScene.gameObjects.filter(go => go.name === name)
     }
 }

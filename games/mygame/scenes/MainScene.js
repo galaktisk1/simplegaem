@@ -2,6 +2,7 @@ class MainScene extends Scene {
     constructor() {
         super()
         const room = { width: 900, height: 850, wall: 80 }
+        
         const layout = RoomGeneration.generate(room)
         const floor = layout.floor
         this.instantiate(new FloorGameObject(), floor.position, floor.rotation, floor.scale)
@@ -14,6 +15,8 @@ class MainScene extends Scene {
         this.instantiate(new PlayerGameObject(), new Vector2(250, 250))
         this.instantiate(new MessageGameObject(), new Vector2(400, 80))
     }
+
+    static room2 = { width: 600, height: 600, wall: 80}
 
     createWalls(layout) {
         for (const wall of layout) {
