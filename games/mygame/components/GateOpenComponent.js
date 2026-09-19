@@ -1,25 +1,42 @@
 class GateOpenComponent extends Component {
     isOpen = false
+    isOpening = false
+    speed = 1
+    targetRotation
 
     update() {
-        if (!this.isOpen){
+        if (this.isOpen) return
+
+        if (!this.isOpening) {
             const player = GameObject.find("Player")
             const playerinv = player.getComponent(Inventory)
             const key = playerinv.findItemByType(itemLibrary.getDefinition("key"))
             const gate = this.gameObject
-            const playerpos = player.transform.position
             const gatepos = gate.transform.position
-
+            const playerpos = player.transform.position
             const distanceToGate = gatepos.distanceTo(playerpos)
-            
 
             if (distanceToGate < 25 && key) {
-                console.log("gate opened")
-                this.isOpen = true
                 playerinv.removeItem(key)
+                this.isOpening = true
                 GameObject.find("Message").showMessage("You opened the gate")
-                // now something just needs to happen to the gate
-                gate.destroy()
+                this.targetRotation = this.transform.rotation - Math.PI / 2
+            }
+        }
+
+        if (this.isOpening) {
+            const currentRotation = this.transform.rotation
+            const targetRotation = this.targetRotation
+            const rotationdiff = currentRotation - targetRotation
+            const newRotation = Math.max(
+                currentRotation - this.speed * Time.deltaTime,
+                currentRotation - rotationdiff
+            )
+            this.transform.rotation = newRotation
+
+            if (currentRotation === targetRotation) {
+                this.isOpening = false
+                this.isOpen = true
             }
         }
     }

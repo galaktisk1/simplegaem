@@ -12,7 +12,7 @@ class Health extends Component {
         this.currentHealth -= amount
         if (this.currentHealth <= 0) {
             this.currentHealth = 0
-            go.markForDestroy = true
+            go.destroy()
         }
     }
 
