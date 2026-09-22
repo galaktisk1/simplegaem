@@ -10,6 +10,7 @@ class GateOpenComponent extends Component {
         if (!this.isOpening) {
             const player = GameObject.find("Player")
             const playerinv = player.getComponent(Inventory)
+            // opentesarena inspired item library find and get
             const key = playerinv.findItemByType(itemLibrary.getDefinition("key"))
             const gate = this.gameObject
             const gatepos = gate.transform.position

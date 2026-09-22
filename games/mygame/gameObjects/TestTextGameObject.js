@@ -1,6 +1,6 @@
 class TestTextGameObject extends GameObject { 
-    constructor() { 
+    constructor(msg) { 
         super("debugtxt")
-        this.addComponent(new TextLabel())
+        this.addComponent(new TextLabel(), { text: msg })
     }
 }

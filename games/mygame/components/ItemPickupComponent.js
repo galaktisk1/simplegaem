@@ -14,10 +14,8 @@ class ItemPickupComponent extends Component {
                 console.log("Picked up item:", item)
                 playerinv.addItem(item)
                 this.isCollected = true
-                // it looks like by the long line you have to write here that this should be an engine component
                 GameObject.find("Message").showMessage(`You picked up a ${item.itemDef.name}`)
-                item.destroy() // or later in-inventory useage
-                // where the item will be removed later
+                item.destroy() // destroy for in scene objects, some later method to consume items in inventory
             }
         }
     }

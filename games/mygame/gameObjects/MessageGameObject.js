@@ -6,6 +6,9 @@ class MessageGameObject extends GameObject {
     }
     
     showMessage(msg, lifetime = 3){
-        this.message.push({text: msg, lifetime: lifetime})
+        const currentScene = Engine.currentScene
+        const currentmsg = currentScene.instantiate(new TestTextGameObject(msg))
+        
+        this.message.push({gameObject: currentmsg, lifetime: lifetime})
     }
 }
