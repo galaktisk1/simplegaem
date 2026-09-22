@@ -5,12 +5,12 @@ class PlayerGameObject extends GameObject {
         this.addComponent(new MovementComponent())
         // player circle
         this.addComponent(new Circle(), {
-            fillstyle: "grey", 
+            fillStyle: "grey", 
             radius: 50
         })
         // lantern
         this.addComponent(new Polygon(), {
-            fillstyle: "yellow", points: [
+            fillStyle: "yellow", points: [
                 new Vector2(-48, -10),
                 new Vector2(-28, -10),
                 new Vector2(-28, 10),

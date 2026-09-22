@@ -3,7 +3,7 @@ class KeyGameObject extends GameObject {
         super("Key")
         this.itemDef = itemLibrary.getDefinition("key")
         this.addComponent(new Polygon(), {
-            fillstyle: 'gold',
+            fillStyle: 'gold',
             points: [
                 new Vector2(0, 0),
                 new Vector2(40, 0),

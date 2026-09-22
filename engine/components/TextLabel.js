@@ -1,8 +1,8 @@
-class Polygon extends Component {
+class TextLabel extends Component {
+    fillStyle = "black"
+    text = "[BLANK]"
 
-    points = []
-    fillStyle = "magenta"
-
+    
     draw(ctx) {
         const transform = this.transform
         ctx.save()
@@ -12,18 +12,12 @@ class Polygon extends Component {
         ctx.scale(transform.scale.x, transform.scale.y)
         ctx.rotate(transform.rotation)
 
-        ctx.beginPath()
-
-        for (const point of this.points) {
-            ctx.lineTo(point.x, point.y)
-        }
         ctx.fillStyle = this.fillStyle
-        ctx.closePath()
-        ctx.fill()
+        ctx.fillText(this.text, 0, 0)
+
         ctx.restore()
 
     }
 
+
 }
-
-

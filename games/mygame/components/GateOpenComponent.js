@@ -34,7 +34,7 @@ class GateOpenComponent extends Component {
             )
             this.transform.rotation = newRotation
 
-            if (currentRotation === targetRotation) {
+            if (currentRotation == targetRotation) {
                 this.isOpening = false
                 this.isOpen = true
             }

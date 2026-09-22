@@ -14,6 +14,7 @@ class MainScene extends Scene {
 
         this.instantiate(new PlayerGameObject(), new Vector2(250, 250))
         this.instantiate(new MessageGameObject(), new Vector2(400, 80))
+        this.instantiate(new TestTextGameObject, new Vector2(10,10))
     }
 
     static room2 = { width: 600, height: 600, wall: 80}

@@ -19,9 +19,9 @@ class GameObject {
         component.gameObject = this
     }
 
-    getComponent(component) {
-        // return this.components.find(function(c){return c instanceof component})
-        return this.components.find(c => c instanceof component)
+    getComponent(type) {
+        // return this.components.find(function(c){return c instanceof type})
+        return this.components.find(c => c instanceof type)
     }
 
     start() {

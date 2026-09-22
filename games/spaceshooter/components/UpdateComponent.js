@@ -30,7 +30,7 @@ class UpdateComponent extends Component {
             velocity.x += this.speed
         }
         
-        if(this.timeSinceLaser > 10){
+        if(this.timeSinceLaser > 17){
             instantiate(new LaserGameObject(), this.transform.position.clone())
             this.timeSinceLaser = 0
         }

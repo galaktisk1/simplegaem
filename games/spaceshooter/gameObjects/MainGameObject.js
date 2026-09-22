@@ -4,7 +4,7 @@ class MainGameObject extends GameObject {
         this.addComponent(new UpdateComponent())
         this.addComponent(new MovementComponent())
         this.addComponent(new Polygon(), {
-            fillstyle: "black", points: [
+            fillStyle: "black", points: [
                 new Vector2(0, -32),
                 new Vector2(10, -6),
                 new Vector2(28, 20),
@@ -15,7 +15,7 @@ class MainGameObject extends GameObject {
             ]
         })
         this.addComponent(new Polygon(), {
-            fillstyle: "blue", points: [
+            fillStyle: "blue", points: [
                 new Vector2(0, -18),
                 new Vector2(6, 3),
                 new Vector2(0, 9),

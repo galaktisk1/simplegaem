@@ -1,14 +1,16 @@
 class LaserController extends Component {
     speed = 120
 
-    update() { 
+    update() {
+        const velocity = this.gameObject.getComponent(MovementComponent).velocity
+        const speed = this.speed
         const laserpos = this.transform.position
         const laser = this.gameObject
-        const laserposy = laserpos.y -= Time.deltaTime * this.speed
         const shippos = GameObject.find("Player").transform.position
         const enemy = GameObject.find("Enemy")
         const distanceToShip = laserpos.distanceTo(shippos)
-        laserpos.y = laserposy
+
+        velocity.y = -speed
 
         if (distanceToShip > 250) {
             laser.destroy()
@@ -20,7 +22,9 @@ class LaserController extends Component {
             const distanceToEnemy = laserpos.distanceTo(enemypos)
             if (distanceToEnemy < 20) {
                 laser.destroy()
-                enemy.destroy()
+                // enemy.destroy()
+                let health = enemy.getComponent(Health)
+                health.currentHealth -= 1
             }
         }
     }
