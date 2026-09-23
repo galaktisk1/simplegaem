@@ -8,13 +8,17 @@ class ItemPickupComponent extends Component {
             const item = this.gameObject
             const itempos = this.transform.position
             const playerpos = player.transform.position
+
+            const message = GameObject.find("Message")
+            const messageComp = message.getComponent(MessageComponent)
+
             const distanceToItem = itempos.distanceTo(playerpos)
                 
             if (distanceToItem < 25) {
                 console.log("Picked up item:", item)
                 playerinv.addItem(item)
                 this.isCollected = true
-                GameObject.find("Message").showMessage(`You picked up a ${item.itemDef.name}`)
+                messageComp.showMessage(`You picked up a ${item.itemDef.name}`)
                 item.destroy() // destroy for in scene objects, some later method to consume items in inventory
             }
         }

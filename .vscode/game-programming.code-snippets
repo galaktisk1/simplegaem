@@ -1,0 +1,32 @@
+{
+	"Game Object Polygon": {
+		"scope": "javascript",
+		"prefix": "game-object-polygon",
+		"body": [
+			"class $0GameObject extends GameObject{",
+			"    constructor(){",
+			"        super(\"$0GameObject\")",
+			"        this.addComponent(new Polygon(), {fillStyle: \"red\", points:Assets.triangle})",
+			"        this.addComponent(new $0Controller())",
+			"        this.transform.scale = new Vector2(1, 1)",
+			"    }",
+			"}",
+		],
+		"description": "Insert a new game object"
+	},
+	"Controller": {
+		"scope": "javascript",
+		"prefix": "controller-component",
+		"body": [
+			"class $0Controller extends Component{",
+			"    start(){",
+			"            ",
+			"    }",
+			"    update(){",
+			"            ",
+			"    }",
+			"}",
+		],
+		"description": "Insert a new game controller component"
+	},
+}

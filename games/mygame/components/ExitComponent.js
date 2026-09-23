@@ -1,19 +1,25 @@
 class ExitComponent extends Component {
     beenDoneExited = false
     update() {
-        if(!this.beenDoneExited){
+        if (!this.beenDoneExited) {
             const player = GameObject.find("Player")
             const message = GameObject.find("Message")
-            const currentScene = Engine.currentScene
+            const messageComp = message.getComponent(MessageComponent)
+
+            const currentScene = SceneManager.currentScene
+
             const exitpos = this.transform.position
             const playerpos = player.transform.position
             const distanceToExit = exitpos.distanceTo(playerpos)
+
             if (distanceToExit < 60) {
                 console.log("exited")
                 this.beenDoneExited = true
-                message.showMessage("You exit the room")
+                messageComp.showMessage("You exit the room")
                 // we've got the issue of the player being drawn under the new walls and floor
-                // this is only temporary for something to happen on exit
+                // this is only temporary for something to happen on exit anyways,
+                // this will be scrapped later cause it wouldnt make sense to draw new rooms,
+                // but rather move the camera once we have one
                 GameObject.find("Floor").destroy()
                 for (const wall of GameObject.findAll("Wall")) {
                     wall.destroy()

@@ -37,5 +37,5 @@ class Scene {
 }
 
 function instantiate(gameObject, position = gameObject.transform.position, rotation = gameObject.transform.rotation, scale = gameObject.transform.scale) {
-    return Engine.currentScene.instantiate(gameObject, position, rotation, scale)
+    return SceneManager.currentScene.instantiate(gameObject, position, rotation, scale)
 }

@@ -1,12 +1,11 @@
 class MainScene extends Scene {
     constructor() {
         super()
-        const room = { width: 900, height: 850, wall: 80 }
-        
-        const layout = RoomGeneration.generate(room)
-        const floor = layout.floor
-        this.instantiate(new FloorGameObject(), floor.position, floor.rotation, floor.scale)
-        this.createWalls(layout.walls)
+        this.instantiate(new RoomBuilderGameObject())
+
+        const roomBldr = GameObject.find("RoomBuilder")
+        const roomBldrComp = roomBldr.getComponent(RoomBuilderComponent)
+        roomBldrComp.buildRoom(this)
         
         this.instantiate(new KeyGameObject(), new Vector2(300,400))
         this.instantiate(new ExitGameObject(), new Vector2(650, 160), 0, new Vector2(70, 70))
@@ -21,9 +20,4 @@ class MainScene extends Scene {
 
     static room2 = { width: 600, height: 600, wall: 80}
 
-    createWalls(layout) {
-        for (const wall of layout) {
-            this.instantiate(new WallGameObject(), wall.position, wall.rotation, wall.scale)
-        }
-    }
 }

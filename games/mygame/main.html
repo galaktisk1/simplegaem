@@ -22,6 +22,7 @@
     <script src="../../engine/Component.js"></script>
     <script src="../../engine/ItemLibrary.js"></script>
     <script src="../../engine/Time.js"></script>
+
     <script src="../../engine/components/Polygon.js"></script>
     <script src="../../engine/components/Circle.js"></script>
     <script src="../../engine/components/Transform.js"></script>
@@ -31,28 +32,36 @@
     <script src="../../engine/components/MovementComponent.js"></script>
 
     <script src="items/ItemDefinitions.js"></script>
+    <script src="Assets.js"></script>
     <script src="RoomGeneration.js"></script>
+
     <script src="scenes/MainScene.js"></script>
-    <script src="gameObjects/PlayerGameObject.js"></script>
-    <script src="components/PlayerUpdateComponent.js"></script>
-    <script src="gameObjects/WallGameObject.js"></script>
-    <script src="gameObjects/FloorGameObject.js"></script>
-    <script src="gameObjects/LightingGameObject.js"></script>
-    <script src="gameObjects/KeyGameObject.js"></script>
-    <script src="gameObjects/GateGameObject.js"></script>
-    <script src="gameObjects/TestTextGameObject.js"></script>
-    <script src="components/GateOpenComponent.js"></script>
-    <script src="gameObjects/ExitGameObject.js"></script>
+
     <script src="components/ExitComponent.js"></script>
+    <script src="components/GateOpenComponent.js"></script>
     <script src="components/ItemPickupComponent.js"></script>
     <script src="components/MessageComponent.js"></script>
+    <script src="components/PlayerUpdateComponent.js"></script>
+    <script src="components/RoomBuilderComponent.js"></script>
+    
+    <script src="gameObjects/ExitGameObject.js"></script>
+    <script src="gameObjects/FloorGameObject.js"></script>
+    <script src="gameObjects/GateGameObject.js"></script>
+    <script src="gameObjects/KeyGameObject.js"></script>
+    <script src="gameObjects/LightingGameObject.js"></script>
     <script src="gameObjects/MessageGameObject.js"></script>
-    <script src="Assets.js"></script>
+    <script src="gameObjects/PlayerGameObject.js"></script>
+    <script src="gameObjects/RoomBuilderGameObject.js"></script>
+    <script src="gameObjects/TestTextGameObject.js"></script>
+    <script src="gameObjects/WallGameObject.js"></script>
     
 
+
+
     <script>
-        Engine.currentScene = new MainScene()
+        SceneManager.currentScene = new MainScene()
         Engine.start()
     </script>
 </body>
+
 </html>

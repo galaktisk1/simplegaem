@@ -1,5 +1,5 @@
 class LaserController extends Component {
-    speed = 120
+    speed = 3 * 60
 
     update() {
         const velocity = this.gameObject.getComponent(MovementComponent).velocity
@@ -7,7 +7,7 @@ class LaserController extends Component {
         const laserpos = this.transform.position
         const laser = this.gameObject
         const shippos = GameObject.find("Player").transform.position
-        const enemy = GameObject.find("Enemy")
+        const enemy = GameObject.findGameObjectsWithTag("Enemy")
         const distanceToShip = laserpos.distanceTo(shippos)
 
         velocity.y = -speed
@@ -17,14 +17,17 @@ class LaserController extends Component {
         }
 
         // "collision", really a trigger, check
-        if (enemy) {
-            const enemypos = enemy.transform.position
-            const distanceToEnemy = laserpos.distanceTo(enemypos)
-            if (distanceToEnemy < 20) {
-                laser.destroy()
-                // enemy.destroy()
-                let health = enemy.getComponent(Health)
-                health.currentHealth -= 1
+        if (enemy.length > 0) {
+            for(const e of enemy) {
+                const enemypos = e.transform.position
+                const distanceToEnemy = laserpos.distanceTo(enemypos)
+                if (distanceToEnemy < 20) {
+                    laser.destroy()
+                    // e.destroy()
+                    let health = e.getComponent(Health)
+                    health.currentHealth--
+                    Globals.points++
+                }
             }
         }
     }

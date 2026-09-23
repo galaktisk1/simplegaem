@@ -2,9 +2,8 @@ class Health extends Component {
     maxHealth = 100
     currentHealth = 100
 
-    constructor(maxHealth) {
+    constructor() {
         super()
-        this.maxHealth = maxHealth
         this.currentHealth = this.maxHealth
     }
 

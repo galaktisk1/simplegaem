@@ -10,7 +10,8 @@ class UpdateComponent extends Component {
     }
 
     update() {
-        const velocity = this.gameObject.getComponent(MovementComponent).velocity
+        const player = this.gameObject
+        const velocity = player.getComponent(MovementComponent).velocity
         velocity.x = 0
         velocity.y = 0
         
