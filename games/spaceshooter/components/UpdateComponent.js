@@ -3,6 +3,7 @@ class UpdateComponent extends Component {
 
     position
     speed
+    timeSinceLaser
     start() { 
         this.timeSinceLaser = 0
         this.speed = 1 * 60

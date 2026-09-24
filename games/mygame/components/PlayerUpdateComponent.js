@@ -18,7 +18,7 @@ class PlayerUpdateComponent extends Component {
         // health and inv global set up
         this.gameObject.getComponent(Health).currentHealth = Globals.playerHealth
         this.gameObject.getComponent(Inventory).inventory = Globals.playerInventory
-        instantiate(new LightingGameObject(), this.transform.position)
+        SceneManager.currentScene.instantiate(new LightingGameObject(), this.transform.position)
     }
 
     update() {
@@ -37,6 +37,13 @@ class PlayerUpdateComponent extends Component {
         }
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
             velocity.x += this.speed
+        }
+        const player = this.gameObject
+        const healthComp = player.getComponent(Health)
+        if (healthComp.currentHealth <= 0) {
+            const message = GameObject.find("Message")
+            const messageComp = message.getComponent(MessageComponent)
+            messageComp.showMessage(`You have died!`, 6, "red", new Vector2(5, 5))
         }
     }
     

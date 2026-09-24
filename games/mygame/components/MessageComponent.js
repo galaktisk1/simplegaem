@@ -9,11 +9,15 @@ class MessageComponent extends Component {
         }
     }
 
-    showMessage(msg, lifetime = 3) {
+    showMessage(msg, lifetime = 3, fillStyle, scale) {
         const currentScene = SceneManager.currentScene
         const currentmsg = currentScene.instantiate(new TestTextGameObject())
         const txtlabel = currentmsg.getComponent(TextLabel)
         txtlabel.text = msg
+        // when provided, set the fillStyle and scale
+        // for special messages
+        if (fillStyle) txtlabel.fillStyle = fillStyle
+        if (scale) currentmsg.transform.scale = scale
 
         Globals.messages.push({ gameObject: currentmsg, lifetime: lifetime })
     }
@@ -30,14 +34,21 @@ class MessageComponent extends Component {
 
         Globals.messages = Globals.messages.filter(message => message.lifetime > 0)
 
+        const objpos = messageObj.transform.position
+        const spacing = 12
+        let y = objpos.y
+
         for (let i = 0; i < Globals.messages.length; i++) {
             const message = Globals.messages[i].gameObject
             const msgpos = message.transform.position
-            const objpos = messageObj.transform.position
-            const spacing = 24
+
+            // move messages for when message scale affects spacing
+            // no more squishing
+            y += spacing * (message.transform.scale.y - 1)
 
             msgpos.x = objpos.x
-            msgpos.y = objpos.y + i * spacing
+            msgpos.y = y
+            y += spacing
         }
     }
 }

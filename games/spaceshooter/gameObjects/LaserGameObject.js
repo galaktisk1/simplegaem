@@ -5,8 +5,7 @@ class LaserGameObject extends GameObject {
         this.addComponent(new MovementComponent)
         this.addComponent(new Polygon(), {
             fillStyle: "red", points: Assets.triangle
-        },
+        })
         this.transform.scale = new Vector2(3,8)
-        )
     }
 }
