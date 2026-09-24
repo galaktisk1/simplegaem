@@ -12,11 +12,12 @@
 
 
 class PlayerUpdateComponent extends Component {
-    speed
+    speed= 4 * 60
     
     start() {
-        this.transform.position = new Vector2(250, 250)
-        this.speed = 4 * 60
+        // health and inv global set up
+        this.gameObject.getComponent(Health).currentHealth = Globals.playerHealth
+        this.gameObject.getComponent(Inventory).inventory = Globals.playerInventory
         instantiate(new LightingGameObject(), this.transform.position)
     }
 

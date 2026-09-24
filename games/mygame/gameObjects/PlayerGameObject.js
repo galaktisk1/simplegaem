@@ -17,7 +17,9 @@ class PlayerGameObject extends GameObject {
                 new Vector2(-48, 10),
             ]
         })
+        // health probably doesnt either
         this.addComponent(new Health())
+        // inventory currently doesnt persist between scenes
         this.addComponent(new Inventory())
     }
 }

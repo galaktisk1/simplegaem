@@ -1,5 +1,13 @@
 class MessageComponent extends Component {
-    message = []
+    start() {
+        // handler for persisting the messages in the scene
+        const scene = SceneManager.currentScene
+        for (const message of Globals.messages) {
+            if (!scene.gameObjects.includes(message.gameObject)) {
+                scene.instantiate(message.gameObject)
+            }
+        }
+    }
 
     showMessage(msg, lifetime = 3) {
         const currentScene = SceneManager.currentScene
@@ -7,12 +15,12 @@ class MessageComponent extends Component {
         const txtlabel = currentmsg.getComponent(TextLabel)
         txtlabel.text = msg
 
-        this.message.push({ gameObject: currentmsg, lifetime: lifetime })
+        Globals.messages.push({ gameObject: currentmsg, lifetime: lifetime })
     }
 
     update() {
         const messageObj = this.gameObject
-        for (const message of this.message) {
+        for (const message of Globals.messages) {
             message.lifetime -= Time.deltaTime
 
             if (message.lifetime <= 0) {
@@ -20,13 +28,13 @@ class MessageComponent extends Component {
             }
         }
 
-        this.message = this.message.filter(message => message.lifetime > 0)
+        Globals.messages = Globals.messages.filter(message => message.lifetime > 0)
 
-        for (let i = 0; i < this.message.length; i++) {
-            const message = this.message[i].gameObject
+        for (let i = 0; i < Globals.messages.length; i++) {
+            const message = Globals.messages[i].gameObject
             const msgpos = message.transform.position
             const objpos = messageObj.transform.position
-            const spacing = 16
+            const spacing = 24
 
             msgpos.x = objpos.x
             msgpos.y = objpos.y + i * spacing

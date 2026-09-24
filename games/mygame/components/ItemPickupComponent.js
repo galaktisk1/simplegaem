@@ -17,9 +17,10 @@ class ItemPickupComponent extends Component {
             if (distanceToItem < 25) {
                 console.log("Picked up item:", item)
                 playerinv.addItem(item)
+                console.log(playerinv.inventory)
                 this.isCollected = true
                 messageComp.showMessage(`You picked up a ${item.itemDef.name}`)
-                item.destroy() // destroy for in scene objects, some later method to consume items in inventory
+                item.destroy()
             }
         }
     }
