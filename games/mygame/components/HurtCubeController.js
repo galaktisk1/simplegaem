@@ -9,15 +9,15 @@ class HurtCubeController extends Component{
         const playerHealth = player.getComponent(Health)
         const cubepos = this.transform.position
         const playerpos = player.transform.position
-
-        const message = GameObject.find("Message")
-        const messageComp = message.getComponent(MessageComponent)
+        const msgmanager = GameObject.find("MessageManager")
+            .getComponent(MessageManager)
 
         const distanceToCube = cubepos.distanceTo(playerpos)
         
         if (distanceToCube < 25 && this.timeSinceHurt > 60) {
             playerHealth.takeDamage(10)
-            messageComp.showMessage(`You were hurt by the cube!`)
+            msgmanager.showMessage(`You were hurt by the cube!`, 3)
+            SceneManager.currentScene.instantiate(new DamagePopUpGameObject()).getComponent(PopUpController).showPopup("10", playerpos)
             this.timeSinceHurt = 0
         }
 

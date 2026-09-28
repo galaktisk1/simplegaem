@@ -1,5 +1,5 @@
 class Globals {
+// for genuine globals
     static messages = []
-    static playerInventory = []
-    static playerHealth = 100
+    static popups = []
 }

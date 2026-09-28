@@ -2,7 +2,7 @@ class GateOpenComponent extends Component {
     isOpen = false
     isOpening = false
     speed = 1
-    targetRotation
+    targetRotation = 0
 
     update() {
         if (!this.isOpen) {
@@ -16,13 +16,12 @@ class GateOpenComponent extends Component {
                 const playerpos = player.transform.position
                 const distanceToGate = gatepos.distanceTo(playerpos)
 
-                const message = GameObject.find("Message")
-                const messageComp = message.getComponent(MessageComponent)
-
                 if (distanceToGate < 25 && key) {
                     playerinv.removeItem(key)
                     this.isOpening = true
-                    messageComp.showMessage("You opened the gate")
+                    const msgmanager = GameObject.find("MessageManager")
+                        .getComponent(MessageManager)
+                    msgmanager.showMessage("You opened the gate", 3)
                     this.targetRotation = this.transform.rotation - Math.PI / 2
                 }
             }

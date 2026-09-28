@@ -3,6 +3,5 @@ class TestTextGameObject extends GameObject {
         super("txt", ["text"])
         this.addComponent(new TextLabel(), {fillStyle: "white"})
         this.transform.scale = new Vector2(2, 2)
-
     }
 }

@@ -8,10 +8,6 @@ class ItemPickupComponent extends Component {
             const item = this.gameObject
             const itempos = this.transform.position
             const playerpos = player.transform.position
-
-            const message = GameObject.find("Message")
-            const messageComp = message.getComponent(MessageComponent)
-
             const distanceToItem = itempos.distanceTo(playerpos)
                 
             if (distanceToItem < 25) {
@@ -19,7 +15,9 @@ class ItemPickupComponent extends Component {
                 playerinv.addItem(item)
                 console.log(playerinv.inventory)
                 this.isCollected = true
-                messageComp.showMessage(`You picked up a ${item.itemDef.name}`)
+                const msgmanager = GameObject.find("MessageManager")
+                    .getComponent(MessageManager)
+                msgmanager.showMessage(`You picked up a ${item.itemDef.name}`, 3)
                 item.destroy()
             }
         }

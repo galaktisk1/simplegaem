@@ -4,7 +4,7 @@ class UpdateComponent extends Component {
     position
     speed
     timeSinceLaser
-    start() { 
+    start() {
         this.timeSinceLaser = 0
         this.speed = 1 * 60
         this.position = this.transform.position
@@ -15,7 +15,7 @@ class UpdateComponent extends Component {
         const velocity = player.getComponent(MovementComponent).velocity
         velocity.x = 0
         velocity.y = 0
-        
+
         // console.log(Input.keysDown)
         this.timeSinceLaser += 1
         // issue for later, if you move diagonally, it adds both x and y, so the speed is faster than moving in one direction.
@@ -31,10 +31,13 @@ class UpdateComponent extends Component {
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
             velocity.x += this.speed
         }
-        
-        if(this.timeSinceLaser > 17){
-            instantiate(new LaserGameObject(), this.transform.position.clone())
+
+        if (this.timeSinceLaser > 17) {
+            let laser = instantiate(new LaserGameObject(), this.transform.position.clone())
             this.timeSinceLaser = 0
+            if (Math.random() < 0.5) {
+                laser.getComponent(Polygon).fillStyle = "green"
+            }
         }
     }
 }
