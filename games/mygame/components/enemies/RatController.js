@@ -16,11 +16,21 @@ class RatController extends Component{
         velocity.y = 0
         const speed = 2 * 60
 
+        const player = GameObject.find("Player")
+        const playerpos = player.transform.position
+        const directionToPlayer = playerpos.x - enemypos.x
 
+        // this will later be replaced with more complex behavior
         if (enemypos.x > 25) {
             this.direction = -1
         }
         if (enemypos.x < -25) {
+            this.direction = 1
+        }
+
+        if (directionToPlayer < 0) {
+            this.direction = -1
+        } else {
             this.direction = 1
         }
         velocity.x = speed * this.direction

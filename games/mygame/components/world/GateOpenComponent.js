@@ -17,7 +17,7 @@ class GateOpenComponent extends Component {
                 const distanceToGate = gatepos.distanceTo(playerpos)
 
                 if (distanceToGate < 25 && key) {
-                    playerinv.removeItem(key)
+                    playerinv.removeItem(key, 1)
                     this.isOpening = true
                     const msgmanager = GameObject.find("MessageManager")
                         .getComponent(MessageManager)

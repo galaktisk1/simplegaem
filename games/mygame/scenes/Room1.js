@@ -12,5 +12,7 @@ class Room1 extends Scene {
         this.instantiate(new ExitGameObject(), new Vector2(650, 160), 0, new Vector2(70, 70))
         this.instantiate(new HurtCubeGameObject(), new Vector2(700, 300))
         this.instantiate(new GateGameObject(), new Vector2(500, 80), Math.PI / 2)
+        this.instantiate(new ItemBagGameObject(), new Vector2(160, 600))
+        this.instantiate(new RatGameObject(), new Vector2(200, 800))
     }
 }

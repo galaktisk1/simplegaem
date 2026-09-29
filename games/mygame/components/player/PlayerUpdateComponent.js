@@ -15,16 +15,20 @@ class PlayerUpdateComponent extends Component {
     speed= 4 * 60
     
     start() {
+        const player = this.gameObject
         // health and inv global set up
-        this.gameObject.getComponent(Health).currentHealth = GameSession.playerhealth
-        this.gameObject.getComponent(Inventory).inventory = GameSession.playerinventory
-        SceneManager.currentScene.instantiate(new LightingGameObject(), this.transform.position)
+        player.getComponent(Health).currentHealth = GameSession.playerhealth
+        player.getComponent(Inventory).inventory = GameSession.playerinventory
+        SceneManager.currentScene.instantiate(new LightingGameObject(), player.transform.position)
     }
 
     update() {
         const velocity = this.gameObject.getComponent(MovementComponent).velocity
         velocity.x = 0
         velocity.y = 0
+
+        const msgmanager = GameObject.find("MessageManager")
+                .getComponent(MessageManager)
         
         if (Input.keysDown.includes("ArrowUp") || Input.keysDown.includes("KeyW")) {
             velocity.y -= this.speed
@@ -38,14 +42,25 @@ class PlayerUpdateComponent extends Component {
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
             velocity.x += this.speed
         }
+        
+        if (Input.keysDown.includes("Space")) {
+            // interact button pressed
+        }
+        if (Input.keysDown.includes("KeyI")) {
+            const inventory = GameObject.find("Player").getComponent(Inventory).inventory
+            for (const item of inventory) {
+                msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
+            }
+        }
+        
         const player = this.gameObject
         const healthComp = player.getComponent(Health)
+        
         if (healthComp.currentHealth <= 0) {
-            const message = SceneManager.currentScene.instantiate(new MessageGameObject())
-                .getComponent(MessageComponent)
-            message.gameObject.getComponent(TextLabel).fillStyle = "red"
-            message.gameObject.transform.scale = new Vector2(5, 5)
-            message.showMessage(`You have died!`, 6)
+            const textLabel = msgmanager.gameObject.getComponent(TextLabel)
+            textLabel.fillStyle = "red"
+            textLabel.gameObject.transform.scale = new Vector2(5, 5)
+            msgmanager.showMessage(`You have died!`, 6)
         }
     }
     

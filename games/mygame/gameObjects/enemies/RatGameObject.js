@@ -6,6 +6,6 @@ class RatGameObject extends GameObject{
         this.addComponent(new Health())
         this.addComponent(new MovementComponent())
         this.addComponent(new RatController())
-        this.transform.scale = new Vector2(70, 70)
+        this.transform.scale = new Vector2(15, 15)
     }
 }

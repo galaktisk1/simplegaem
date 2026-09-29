@@ -12,7 +12,13 @@ class ItemPickupComponent extends Component {
                 
             if (distanceToItem < 25) {
                 console.log("Picked up item:", item)
-                playerinv.addItem(item)
+                // Check if the item is gold and handle accordingly
+                if (item.itemDef.id === "gold") {
+                    GameSession.gold += item.amount
+                }
+                else {
+                    playerinv.addItem(item)
+                }
                 console.log(playerinv.inventory)
                 this.isCollected = true
                 const msgmanager = GameObject.find("MessageManager")

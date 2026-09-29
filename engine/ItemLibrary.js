@@ -10,5 +10,7 @@ class ItemLibrary {
         return this.defs[id]
     }
 
-    
+    getGoldDefinition() {
+        return this.getDefinition("gold")
+    }
 }
