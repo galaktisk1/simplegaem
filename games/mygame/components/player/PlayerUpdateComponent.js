@@ -19,7 +19,7 @@ class PlayerUpdateComponent extends Component {
         // health and inv global set up
         player.getComponent(Health).currentHealth = GameSession.playerhealth
         player.getComponent(Inventory).inventory = GameSession.playerinventory
-        SceneManager.currentScene.instantiate(new LightingGameObject(), player.transform.position)
+        instantiate(new LightingGameObject(), player.transform.position)
     }
 
     update() {
@@ -62,6 +62,7 @@ class PlayerUpdateComponent extends Component {
             textLabel.gameObject.transform.scale = new Vector2(5, 5)
             msgmanager.showMessage(`You have died!`, 6)
         }
+        Camera.main.gameObject.transform.position = player.transform.position.clone()
     }
     
 }

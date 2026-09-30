@@ -26,7 +26,11 @@ class LaserController extends Component {
                     // e.destroy()
                     let health = e.getComponent(Health)
                     health.currentHealth--
-                    Globals.points++
+                    //Globals.points++
+                    let gameObjects = GameObject.findGameObjectsByType(Transform)
+                    for (const go of gameObjects) {
+                        go.broadcastMessage("updatePoints", [1])
+                    }
                 }
             }
         }

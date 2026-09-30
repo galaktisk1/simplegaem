@@ -1,7 +1,7 @@
-class DamagePopUpGameObject extends GameObject {
+class PopUpGameObject extends GameObject {
     constructor() {
-        super("damagePopUp", ["PopUp"])
-        this.addComponent(new TextLabel(), { fillStyle: "red" })
+        super("PopUp", ["PopUp"])
+        this.addComponent(new TextLabel(), { fillStyle: "white" })
         this.addComponent(new MovementComponent())
         this.addComponent(new PopUpController())
         this.transform.scale = new Vector2(1, 1)

@@ -1,8 +1,9 @@
 class Engine {
     static canvas
     static ctx
+    static layers = ["default", "ui"]
 
-    static start(nextScene) {
+    static start(nextScene, settings) {
         Engine.canvas = document.querySelector("#canv")
         Engine.ctx = Engine.canvas.getContext("2d")
 
@@ -10,6 +11,10 @@ class Engine {
         addEventListener("keyup", Input.keyup)
 
         SceneManager.nextScene = nextScene
+
+        if (settings) {
+            Engine.layers = settings.layers
+        }
 
         requestAnimationFrame(Engine.gameLoop)
     }

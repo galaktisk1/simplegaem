@@ -3,6 +3,7 @@ class PopUpController extends Component {
 
     showPopup(msg, position, lifetime = 1) {
         const currentPopUp = this.gameObject
+        
 
         currentPopUp.transform.position.x = position.x
         currentPopUp.transform.position.y = position.y - 50
@@ -11,7 +12,6 @@ class PopUpController extends Component {
         txtlabel.text = msg
         currentPopUp.lifetime = lifetime
     }
-
 
     update() {
         const movement = this.gameObject.getComponent(MovementComponent) 
