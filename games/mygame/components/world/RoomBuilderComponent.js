@@ -1,16 +1,23 @@
 class RoomBuilderComponent extends Component {
-    // gotta figure this out with the scene manager and stuff
-    
-    // buildRoom(scene, room) {
-    //     const layout = RoomGeneration.generate(room)
-    //     const floor = layout.floor
-    //     scene.instantiate(new FloorGameObject(), floor.position, floor.rotation, floor.scale)
-    //     this.createWalls(layout.walls, scene)
-    // }
+    buildRoom(room, roomWorldPos) {
+        const floor = room.floor
+        const worldFloorPos = roomWorldPos.plus(floor.position)
+        const floorObject = SceneManager.currentScene.instantiate(new FloorGameObject(), worldFloorPos, floor.rotation ?? 0, floor.scale.clone())
+        floorObject.getComponent(Polygon).points = floor.points.map(point => point.clone())
 
-    // createWalls(layout, scene) {
-    //     for (const wall of layout) {
-    //         scene.instantiate(new WallGameObject(), wall.position, wall.rotation, wall.scale)
-    //     }
-    // }
+        for (const wall of room.walls) {
+            this.createWall(wall, roomWorldPos)
+        }
+
+        for (const doorway of room.doorways) {
+            if (!doorway.active) {
+                this.createWall(doorway.blocker, roomWorldPos)
+            }
+        }
+    }
+
+    createWall(wall, roomWorldPos) {
+        const position = roomWorldPos.plus(wall.position)
+        SceneManager.currentScene.instantiate(new WallGameObject(), position, wall.rotation ?? 0, wall.scale.clone())
+    }
 }

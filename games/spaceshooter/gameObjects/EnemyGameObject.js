@@ -1,6 +1,6 @@
 class EnemyGameObject extends GameObject {
     constructor() {
-        super("Enemy", ["Enemy"])
+        super("Enemy", ["Enemy"], "ships")
         this.addComponent(new MovementComponent())
         this.addComponent(new Polygon(), {
             fillStyle: "green", points: Assets.triangle, 

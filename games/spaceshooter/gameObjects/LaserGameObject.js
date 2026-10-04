@@ -1,6 +1,6 @@
 class LaserGameObject extends GameObject {
     constructor() {
-        super("Laser")
+        super("Laser", [], "lasers")
         this.addComponent(new LaserController)
         this.addComponent(new MovementComponent)
         this.addComponent(new Polygon(), {

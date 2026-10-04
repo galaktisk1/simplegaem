@@ -7,6 +7,7 @@ class ItemBagController extends Component{
     }
     update(){
         const player = GameObject.find("Player")
+        if (!player) return
         const playerinv = player.getComponent(Inventory)
         const playerpos = player.transform.position
         
@@ -20,6 +21,8 @@ class ItemBagController extends Component{
             for(const item of baginv.getInventory()){
                 playerinv.addItem(item)
             }
+            const popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
+            popupmanager.placePopup("Items Get", player)
             baginv.clearInventory()
         }
         

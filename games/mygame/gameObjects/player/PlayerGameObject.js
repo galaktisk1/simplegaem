@@ -1,6 +1,6 @@
 class PlayerGameObject extends GameObject {
     constructor() {
-        super("Player")
+        super("Player", [], "characters")
         this.addComponent(new PlayerUpdateComponent())
         this.addComponent(new MovementComponent())
         // player circle

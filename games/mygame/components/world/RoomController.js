@@ -1,5 +1,10 @@
 class RoomController extends Component {
     start() {
+        Camera.main.backgroundColor = "black"
+        if (SceneManager.currentScene instanceof Room1) {
+            this.gameObject.getComponent(RoomBuilderComponent)
+                .buildRoom(new SquareRoom(), new Vector2(0, 0))
+        }
         SceneManager.loadScene(GenericRoom, true)
     }
 

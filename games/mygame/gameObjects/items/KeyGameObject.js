@@ -1,6 +1,6 @@
 class KeyGameObject extends GameObject {
     constructor() {
-        super("Key", ["item"])
+        super("Key", ["item"], "items")
         this.itemDef = itemLibrary.getDefinition("key")
         this.addComponent(new Polygon(), {
             fillStyle: 'gold',

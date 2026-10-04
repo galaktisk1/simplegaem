@@ -46,21 +46,28 @@ class PlayerUpdateComponent extends Component {
         if (Input.keysDown.includes("Space")) {
             // interact button pressed
         }
-        if (Input.keysDown.includes("KeyI")) {
+        
+        // make it so that the inventory key toggles the inventory display 
+        // instead of spamming the message manager with inventory items
+        const inventorykey = Input.keysDown.includes("KeyI")
+        if (inventorykey && !this.InventoryKeyUsed) {
+            this.InventoryKeyUsed = true
             const inventory = GameObject.find("Player").getComponent(Inventory).inventory
             for (const item of inventory) {
                 msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
             }
         }
+        this.InventoryKeyUsed = inventorykey
+        
         
         const player = this.gameObject
         const healthComp = player.getComponent(Health)
         
         if (healthComp.currentHealth <= 0) {
-            const textLabel = msgmanager.gameObject.getComponent(TextLabel)
+            const message = msgmanager.showMessage(`You have died!`, 6)
+            const textLabel = message.gameObject.getComponent(TextLabel)
             textLabel.fillStyle = "red"
-            textLabel.gameObject.transform.scale = new Vector2(5, 5)
-            msgmanager.showMessage(`You have died!`, 6)
+            message.gameObject.transform.scale = new Vector2(5, 5)
         }
         Camera.main.gameObject.transform.position = player.transform.position.clone()
     }

@@ -9,8 +9,8 @@ class Polygon extends Component {
         const position = transform.position
 
         ctx.translate(position.x, position.y)
-        ctx.scale(transform.scale.x, transform.scale.y)
         ctx.rotate(transform.rotation)
+        ctx.scale(transform.scale.x, transform.scale.y)
 
         ctx.beginPath()
 

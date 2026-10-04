@@ -42,10 +42,10 @@ class Scene {
         // start camera code
         ctx.save()
         ctx.translate(Engine.canvas.width / 2, Engine.canvas.height / 2)
-        ctx.translate(-Camera.main.gameObject.transform.position.x, -Camera.main.gameObject.transform.position.y)
+        ctx.translate(-Camera.main.transform.position.x, -Camera.main.transform.position.y)
 
-        for (const layer of Engine.layers.filter(l => l !== "ui")) {
-            for (const gameObject of this.gameObjects.filter(go => go.layer == layer)) {
+        for (const layer of Engine.layers.filter(layer => layer !== "UI")) {
+            for (const gameObject of this.gameObjects.filter(go => go.layer === layer)) {
                 gameObject.draw(ctx)
             }
         }
@@ -53,7 +53,7 @@ class Scene {
         // stop camera code
 
         // ui layer
-        for (const gameObject of this.gameObjects.filter(go => go.layer == "ui")) {
+        for (const gameObject of this.gameObjects.filter(go => go.layer == "UI")) {
             gameObject.draw(ctx)
         }
     }

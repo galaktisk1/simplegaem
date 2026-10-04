@@ -35,7 +35,9 @@
 
     <script src="items/ItemDefinitions.js"></script>
     <script src="Assets.js"></script>
+    <script src="rooms/SquareRoom.js"></script>
     <script src="Globals.js"></script>
+    <script src="Settings.js"></script>
     <script src="GameSession.js"></script>
 
     <script src="scenes/GenericRoom.js"></script>
@@ -49,6 +51,7 @@
     <script src="components/ui/MessageComponent.js"></script>
     <script src="components/player/PlayerUpdateComponent.js"></script>
     <script src="components/world/RoomController.js"></script>
+    <script src="components/world/RoomBuilderComponent.js"></script>
     <script src="components/world/HurtCubeController.js"></script>
     <script src="components/enemies/RatController.js"></script>
     <script src="components/ui/PopUpController.js"></script>
@@ -75,7 +78,7 @@
 
 
     <script>
-        Engine.start(Room1)
+        Engine.start(Room1, Settings)
     </script>
 </body>
 

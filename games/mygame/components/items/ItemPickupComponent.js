@@ -4,6 +4,7 @@ class ItemPickupComponent extends Component {
     update() {
         if (!this.isCollected) {
             const player = GameObject.find("Player")
+            if (!player) return
             const playerinv = player.getComponent(Inventory)
             const item = this.gameObject
             const itempos = this.transform.position
@@ -17,6 +18,10 @@ class ItemPickupComponent extends Component {
                     GameSession.gold += item.amount
                 }
                 else {
+                    const popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
+                    if (item.itemDef.id === "key") {
+                        popupmanager.placePopup("Key Get", player, "yellow")
+                    }
                     playerinv.addItem(item)
                 }
                 console.log(playerinv.inventory)

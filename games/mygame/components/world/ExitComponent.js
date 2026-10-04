@@ -5,6 +5,7 @@ class ExitComponent extends Component {
         if (!this.beenDoneExited) {
 
         const player = GameObject.find("Player")
+        if (!player) return
         const exitpos = this.transform.position
         const playerpos = player.transform.position
 

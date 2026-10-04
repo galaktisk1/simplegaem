@@ -1,3 +1,3 @@
 class Settings {
-    static layers = ["background", "default", "ui", "spaceship", "laser"]
+    static layers = ["background", "default", "lasers", "ships", "UI"]
 }

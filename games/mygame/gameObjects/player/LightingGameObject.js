@@ -1,6 +1,6 @@
 class LightingGameObject extends GameObject {
     constructor() {
-        super("Light")
+        super("Light", [], "lighting")
         // light
         this.addComponent(new Circle(), {
             radius: 300,

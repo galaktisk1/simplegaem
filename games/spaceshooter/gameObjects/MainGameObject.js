@@ -1,6 +1,6 @@
 class MainGameObject extends GameObject {
     constructor() {
-        super("Player")
+        super("Player", [], "ships")
         this.addComponent(new UpdateComponent())
         this.addComponent(new MovementComponent())
         this.addComponent(new Polygon(), {

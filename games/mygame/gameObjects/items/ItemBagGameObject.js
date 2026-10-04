@@ -1,7 +1,6 @@
 class ItemBagGameObject extends GameObject{
     constructor(){
-        super("ItemBagGameObject")
-        // TODO: Replace the triangle with a bag shape when ready.
+        super("ItemBagGameObject", [], "items")
         this.addComponent(new Polygon(), {fillStyle: "brown", points:Assets.triangle})
         this.addComponent(new Inventory())
         this.addComponent(new ItemBagController())

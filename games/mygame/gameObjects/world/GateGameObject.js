@@ -1,6 +1,6 @@
 class GateGameObject extends GameObject {
     constructor() {
-        super("Gate")
+        super("Gate", [], "world")
         this.addComponent(new Polygon(), {
             fillStyle: "brown", 
             points: [

@@ -30,7 +30,8 @@ class MessageManager extends Component {
 
             y += spacing * (message.transform.scale.y - 1)
 
-            msgpos.x = objpos.x
+            // center the message horizontally
+            msgpos.x = Engine.canvas.width / 2
             msgpos.y = y
             y += spacing
         }
