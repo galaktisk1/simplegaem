@@ -3,7 +3,9 @@ class FloorGameObject extends GameObject {
         super("Floor", [], "background")
         this.addComponent(new Polygon(), {
             fillStyle: "#303030", 
-            points: Assets.square
+            points: Assets.floor.points
         })
+        this.transform.scale = Assets.floor.scale
+        this.transform.rotation = Assets.floor.rotation
     }
 }

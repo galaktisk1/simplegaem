@@ -13,6 +13,7 @@
 <body>
     <canvas id="canv">
     </canvas>
+    <!-- engine scripts -->
     <script src="../../engine/Vector2.js"></script>
     <script src="../../engine/Input.js"></script>
     <script src="../../engine/Seed.js"></script>
@@ -33,9 +34,10 @@
     <script src="../../engine/components/MovementComponent.js"></script>
     <script src="../../engine/components/Camera.js"></script>
 
+    <!-- game scripts -->
     <script src="items/ItemDefinitions.js"></script>
     <script src="Assets.js"></script>
-    <script src="rooms/SquareRoom.js"></script>
+
     <script src="Globals.js"></script>
     <script src="Settings.js"></script>
     <script src="GameSession.js"></script>
@@ -43,37 +45,66 @@
     <script src="scenes/GenericRoom.js"></script>
     <script src="scenes/Room1.js"></script>
     <script src="scenes/Room2.js"></script>
+    <script src="scenes/TestRoom.js"></script>
 
+    <script src="rooms/SquareRoom.js"></script>
+    <script src="rooms/LRoom.js"></script>
+
+    <!-- components -->
+    
+    <!-- world -->
     <script src="components/world/ExitComponent.js"></script>
     <script src="components/world/GateOpenComponent.js"></script>
-    <script src="components/items/ItemPickupComponent.js"></script>
-    <script src="components/items/ItemBagController.js"></script>
-    <script src="components/ui/MessageComponent.js"></script>
-    <script src="components/player/PlayerUpdateComponent.js"></script>
     <script src="components/world/RoomController.js"></script>
     <script src="components/world/RoomBuilderComponent.js"></script>
     <script src="components/world/HurtCubeController.js"></script>
-    <script src="components/enemies/RatController.js"></script>
+    <script src="components/world/DungeonBuilderComponent.js"></script>
+
+    <!-- items -->
+    <script src="components/items/ItemPickupComponent.js"></script>
+    <script src="components/items/ItemBagController.js"></script>
+
+    <!-- ui -->
+    <script src="components/ui/MessageComponent.js"></script>
     <script src="components/ui/PopUpController.js"></script>
     <script src="components/ui/PopUpManager.js"></script>
     <script src="components/ui/MessageManager.js"></script>
+
+    <!-- player -->
+    <script src="components/player/PlayerUpdateComponent.js"></script>
+
+    <!-- enemies -->
+    <script src="components/enemies/RatController.js"></script>
+
+
+    <!-- game objects -->
     
+    <!-- world -->
     <script src="gameObjects/world/ExitGameObject.js"></script>
     <script src="gameObjects/world/FloorGameObject.js"></script>
     <script src="gameObjects/world/GateGameObject.js"></script>
-    <script src="gameObjects/items/KeyGameObject.js"></script>
-    <script src="gameObjects/items/ItemBagGameObject.js"></script>
-    <script src="gameObjects/player/LightingGameObject.js"></script>
-    <script src="gameObjects/ui/MessageGameObject.js"></script>
-    <script src="gameObjects/player/PlayerGameObject.js"></script>
     <script src="gameObjects/world/RoomControllerGameObject.js"></script>
-    <script src="gameObjects/ui/TestTextGameObject.js"></script>
+    <script src="gameObjects/world/DungeonBuilderGameObject.js"></script>
     <script src="gameObjects/world/WallGameObject.js"></script>
     <script src="gameObjects/world/HurtCubeGameObject.js"></script>
-    <script src="gameObjects/enemies/RatGameObject.js"></script>
+
+    <!-- items -->
+    <script src="gameObjects/items/KeyGameObject.js"></script>
+    <script src="gameObjects/items/ItemBagGameObject.js"></script>
+
+    <!-- player -->
+    <script src="gameObjects/player/LightingGameObject.js"></script>
+    <script src="gameObjects/player/PlayerGameObject.js"></script>
+
+    <!-- ui -->
+    <script src="gameObjects/ui/MessageGameObject.js"></script>
+    <script src="gameObjects/ui/TestTextGameObject.js"></script>
     <script src="gameObjects/ui/PopUpGameObject.js"></script>
     <script src="gameObjects/ui/PopUpManagerGameObject.js"></script>
     <script src="gameObjects/ui/MessageManagerGameObject.js"></script>
+
+    <!-- enemies -->
+    <script src="gameObjects/enemies/RatGameObject.js"></script>
 
 
 
