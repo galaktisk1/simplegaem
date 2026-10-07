@@ -1,9 +1,8 @@
-class LRoom {
+class LRoom extends Room {
     layout = [
-        "###  ",
-        "D.#  ",
-        "# ###",
-        "#. .D",
-        "#####"
+        "### ",
+        "D.# ",
+        "#..D",
+        "####"
     ]
 }

@@ -2,16 +2,24 @@ class DungeonBuilderComponent extends Component {
 
     buildDungeon(startPos) {
         const roomBuilder = this.gameObject.getComponent(RoomBuilderComponent)
-        const openDoors = roomBuilder.buildRoom(new LRoom(), startPos)
-        // Build L - room → find an open left - facing doorway
-        //      → subtract the square’s local doorway position(600, 300)
-        //      → build a new SquareRoom at that origin
-        const leftDoor = openDoors.find(door => door.direction === "left")
-        if (leftDoor) {
-            const newOrigin = leftDoor.position.minus(new Vector2(600, 300))
-            roomBuilder.buildRoom(new SquareRoom(), newOrigin, { x: 2, y: 1 })
+        const openDoors = roomBuilder.buildRoom(new SquareRoom(), startPos)
+        if (openDoors.length > 0) {
+            const existingDoor = openDoors[GameSession.randomD.nextInt(openDoors.length)]
+            const nextRoom = new LRoom()
+            const opposite = { left: "right", right: "left", up: "down", down: "up" }
+            const incomingDoor = nextRoom.getDoorways()
+                .find(door => door.direction === opposite[existingDoor.direction])
+
+            if (existingDoor && incomingDoor) {
+                const newOrigin = existingDoor.position.minus(incomingDoor.localPosition)
+                const nextOpenDoors = roomBuilder.buildRoom(
+                    nextRoom,
+                    newOrigin,
+                    incomingDoor.gridPosition)
+            }
         }
         
+
         
 
     }

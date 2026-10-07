@@ -11,9 +11,9 @@ class TextLabel extends Component {
         ctx.save()
         const position = transform.position
 
-        ctx.translate(position.x, position.y)
-        ctx.scale(transform.scale.x, transform.scale.y)
-        ctx.rotate(transform.rotation)
+        // ctx.translate(position.x, position.y)
+        // ctx.scale(transform.scale.x, transform.scale.y)
+        // ctx.rotate(transform.rotation)
 
         ctx.fillStyle = this.fillStyle
         ctx.font = this.font

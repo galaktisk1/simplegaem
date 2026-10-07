@@ -1,10 +1,14 @@
 class Scene {
     gameObjects = [];
 
-    constructor() {
+    constructor(backgroundColor) {
         let camera = new GameObject("MainCamera", ["MainCamera"])
         camera.addComponent(new Camera())
+        let cameraComp = camera.getComponent(Camera)
         this.instantiate(camera)
+        if (backgroundColor) {
+            cameraComp.backgroundColor = backgroundColor
+        }
     }
 
     instantiate(gameObject, position = gameObject.transform.position, rotation = gameObject.transform.rotation, scale = gameObject.transform.scale) {

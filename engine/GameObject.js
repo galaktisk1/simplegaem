@@ -50,9 +50,12 @@ class GameObject {
     }
 
     draw(ctx) {
+        ctx.save()
+        ctx.setTransform(ctx.getTransform().multiply(this.transform.getWorldMatrix()))
         for (const component of this.components) {
             component.draw?.(ctx)
         }
+        ctx.restore()
     }
 
     destroy() {
