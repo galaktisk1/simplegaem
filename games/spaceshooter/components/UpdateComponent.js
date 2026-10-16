@@ -3,7 +3,7 @@ class UpdateComponent extends Component {
 
     position
     speed
-    timeSinceLaser
+    timeSinceLaser = 0
     start() {
         this.speed = 2 * 60
         this.position = this.transform.position
@@ -31,7 +31,8 @@ class UpdateComponent extends Component {
             velocity.x += this.speed
         }
 
-        if (Input.keysDownThisFrame.includes("Space")) {
+        if (this.timeSinceLaser > 20 && Input.keysDown.includes("Space")) {
+            this.timeSinceLaser = 0
             instantiate(new LaserGameObject(), this.transform.position.clone())
         }
 

@@ -22,16 +22,21 @@ class Input {
         Input.mouseButtonsUpThisFrame.push(event.button)
     }
 
-    // hacky mouse position tracking
-    static mousePosition = new Vector2(0, 0)
+    static mousePosition
+    static mousePositionLastFrame
+    static mouseDelta
 
     static mousemove(event) {
-        Input.mousePosition.x = event.clientX
-        Input.mousePosition.y = event.clientY
+        if (Input.mousePosition) {
+            Input.mousePositionLastFrame = Input.mousePosition
+        }
+        Input.mousePosition = new Vector2(event.clientX, event.clientY)
+        if (Input.mousePositionLastFrame) {
+            Input.mouseDelta = Input.mousePosition.minus(Input.mousePositionLastFrame)
+        }
     }
 
     static keydown(event) {
-        console.log(event)
         if (!Input.keysDown.includes(event.code)) {
             Input.keysDown.push(event.code)
             Input.keysDownThisFrame.push(event.code)
@@ -49,7 +54,5 @@ class Input {
         Input.keysUpThisFrame = []
         Input.mouseButtonsDownThisFrame = []
         Input.mouseButtonsUpThisFrame = []
-        Input.mousePosition = new Vector2(0, 0)
     }
-
 }

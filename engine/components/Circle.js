@@ -4,9 +4,7 @@ class Circle extends Component {
 
     draw(ctx) {
         ctx.save()
-        const position = this.gameObject.transform.position
         const fullcircle = 2 * Math.PI
-        ctx.translate(position.x, position.y)   
         ctx.beginPath()
         ctx.arc(0, 0, this.radius, 0, fullcircle)
         ctx.fillStyle = this.fillStyle
