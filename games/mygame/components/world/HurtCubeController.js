@@ -16,7 +16,7 @@ class HurtCubeController extends Component{
             playerHealth.takeDamage(10)
             GameObject.find("PopUpManager")
                 .getComponent(PopUpManager)
-                .placePopup("10", player, "red")
+                .showPopup("10", player, "red")
             this.timeSinceHurt = 0
         }
 

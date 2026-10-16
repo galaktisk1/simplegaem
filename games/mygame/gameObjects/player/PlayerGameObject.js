@@ -8,15 +8,6 @@ class PlayerGameObject extends GameObject {
             fillStyle: "grey", 
             radius: 75
         })
-        // lantern
-        this.addComponent(new Polygon(), {
-            fillStyle: "yellow", points: [
-                new Vector2(-48, -10),
-                new Vector2(-28, -10),
-                new Vector2(-28, 10),
-                new Vector2(-48, 10),
-            ]
-        })
         // health probably doesnt either
         this.addComponent(new Health())
         // inventory currently doesnt persist between scenes

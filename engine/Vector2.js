@@ -21,13 +21,31 @@ class Vector2 {
     }
 
     get magnitude() {
+        // which is the same as Math.sqrt(this.x**2 + this.y**2)
         return Math.hypot(this.x, this.y)
     }
 
-    // comparing 2 vectors by calculating the distance between them
-    // https://stackoverflow.com/questions/42755576/javascript-function-distance-between-two-points
     distanceTo(other) {
         return this.minus(other).magnitude
     }
 
+    // Unity signedAngle equivalent
+    // signed angle between two vectors in radians
+    static signedAngle(from, to) {
+        const dot = from.dot(to)
+        const cross = from.cross(to)
+        return Math.atan2(cross, dot)
+    }
+
+    dot(other) {
+        return this.x * other.x + this.y * other.y
+    }
+
+    cross(other) {
+        return this.x * other.y - this.y * other.x
+    }
+
+    orthogonal() {
+        return new Vector2(-this.y, this.x)
+    }
 }

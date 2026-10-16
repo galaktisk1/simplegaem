@@ -10,6 +10,9 @@ class Assets {
         new Vector2(1, 1),
         new Vector2(1, -1)
     ]
+    static circle = {
+        radius: 1
+    }
 
     static floor = {
         points: Assets.square,

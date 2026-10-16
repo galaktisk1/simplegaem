@@ -13,6 +13,7 @@ class TestRoom extends Scene {
         this.instantiate(new HurtCubeGameObject(), new Vector2(700, 300))
         this.instantiate(new GateGameObject(), new Vector2(500, 80), Math.PI / 2)
         this.instantiate(new ItemBagGameObject(), new Vector2(160, 600))
-        this.instantiate(new RatGameObject(), new Vector2(200, 800))
+        this.instantiate(new EnemyGameObject(EnemyDefinitions.rat), new Vector2(200, 800))
+        this.instantiate(new EnemyGameObject(EnemyDefinitions.goblin), new Vector2(400, 800))
     }
 }

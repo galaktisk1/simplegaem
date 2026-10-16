@@ -20,7 +20,7 @@ class ItemPickupComponent extends Component {
                 else {
                     const popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
                     if (item.itemDef.id === "key") {
-                        popupmanager.placePopup("Key Get", player, "yellow")
+                        popupmanager.showPopup("Key Get", player, "yellow")
                     }
                     playerinv.addItem(item)
                 }

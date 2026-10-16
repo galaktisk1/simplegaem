@@ -19,7 +19,14 @@ class PlayerUpdateComponent extends Component {
         // health and inv global set up
         player.getComponent(Health).currentHealth = GameSession.playerhealth
         player.getComponent(Inventory).inventory = GameSession.playerinventory
-        instantiate(new LightingGameObject(), player.transform.position)
+        const lantern = instantiate(new LanternGameObject(), new Vector2(-62, 0))
+        lantern.transform.setParent(player.transform)
+
+        const light = instantiate(new LightingGameObject(), new Vector2(0, 0))
+        light.transform.setParent(player.transform)
+        
+        const facingIndicator = instantiate(new FacingIndicatorGameObject(), new Vector2(0, -90))
+        facingIndicator.transform.setParent(player.transform)
     }
 
     update() {
@@ -43,21 +50,56 @@ class PlayerUpdateComponent extends Component {
             velocity.x += this.speed
         }
         
-        if (Input.keysDown.includes("Space")) {
+        if (Input.keysDownThisFrame.includes("Space")) {
             // interact button pressed
         }
         
-        // make it so that the inventory key toggles the inventory display 
-        // instead of spamming the message manager with inventory items
-        const inventorykey = Input.keysDown.includes("KeyI")
-        if (inventorykey && !this.InventoryKeyUsed) {
-            this.InventoryKeyUsed = true
+        // Show inventory once per key press.
+        if (Input.keysDownThisFrame.includes("KeyI")) {
             const inventory = GameObject.find("Player").getComponent(Inventory).inventory
             for (const item of inventory) {
                 msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
             }
         }
-        this.InventoryKeyUsed = inventorykey
+        
+        // testing mouse stuff
+        const canvasRect = Engine.canvas.getBoundingClientRect()
+        const mousePos = Input.mousePosition
+        
+        
+        // rotate player to face mouse
+        if (mousePos) {
+            const centeredX = mousePos.x - canvasRect.left - canvasRect.width / 2
+            const centeredY = mousePos.y - canvasRect.top - canvasRect.height / 2
+            const cameraPos = Camera.main.gameObject.transform.position
+            const mouseWorldPos = new Vector2(centeredX + cameraPos.x, centeredY + cameraPos.y)
+            
+            this.transform.lookAt(mouseWorldPos)
+            
+            
+            
+            
+            // left click actions
+            if (Input.mouseButtonsDownThisFrame.includes(0)) {
+            console.log(`Mouse clicked at world position: x=${mouseWorldPos.x}, y=${mouseWorldPos.y}`)
+            
+            // now check if the mouse is close to the enemy world position
+            const enemies = GameObject.findGameObjectsWithTag("Enemy")
+            for (const enemy of enemies) {
+                const enemyPos = enemy.transform.position
+                const distanceToMouse = mouseWorldPos.distanceTo(enemyPos)
+                if (distanceToMouse < 50) { // arbitrary proximity threshold
+                    console.log(`Mouse is close to enemy at x=${enemyPos.x}, y=${enemyPos.y}`)
+                    msgmanager.showMessage(`You see a ${enemy.definition.name}`, 3)
+                    }
+            }
+
+            const fireball = instantiate(new FireballGameObject(), this.transform.position.clone())
+            fireball.launch(this.transform.up)
+        }
+        }
+
+        
         
         
         const player = this.gameObject

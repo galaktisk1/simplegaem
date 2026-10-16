@@ -22,7 +22,7 @@ class ItemBagController extends Component{
                 playerinv.addItem(item)
             }
             const popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
-            popupmanager.placePopup("Items Get", player)
+            popupmanager.showPopup("Items Get", player)
             baginv.clearInventory()
         }
         
