@@ -87,7 +87,7 @@ class PlayerUpdateComponent extends Component {
             const enemies = GameObject.findGameObjectsWithTag("Enemy")
             for (const enemy of enemies) {
                 const enemyPos = enemy.transform.position
-                const distanceToMouse = mouseWorldPos.distanceTo(enemyPos)
+                const distanceToMouse = Vector2.distance(mouseWorldPos, enemyPos)
                 if (distanceToMouse < 50) { // arbitrary proximity threshold
                     console.log(`Mouse is close to enemy at x=${enemyPos.x}, y=${enemyPos.y}`)
                     msgmanager.showMessage(`You see a ${enemy.definition.name}`, 3)

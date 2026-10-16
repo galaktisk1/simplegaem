@@ -25,8 +25,8 @@ class Vector2 {
         return Math.hypot(this.x, this.y)
     }
 
-    distanceTo(other) {
-        return this.minus(other).magnitude
+    static distance(a, b) {
+        return a.minus(b).magnitude
     }
 
     // Unity signedAngle equivalent

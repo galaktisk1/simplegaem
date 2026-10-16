@@ -13,7 +13,7 @@ class ItemBagController extends Component{
         
         const bag = this.gameObject
         const bagpos = bag.transform.position
-        const distanceToBag = bagpos.distanceTo(playerpos)
+        const distanceToBag = Vector2.distance(bagpos, playerpos)
         
         const baginv = bag.getComponent(Inventory)
 

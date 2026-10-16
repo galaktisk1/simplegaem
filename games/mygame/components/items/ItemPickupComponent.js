@@ -9,7 +9,7 @@ class ItemPickupComponent extends Component {
             const item = this.gameObject
             const itempos = this.transform.position
             const playerpos = player.transform.position
-            const distanceToItem = itempos.distanceTo(playerpos)
+            const distanceToItem = Vector2.distance(itempos, playerpos)
                 
             if (distanceToItem < 25) {
                 console.log("Picked up item:", item)

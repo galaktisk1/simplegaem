@@ -16,7 +16,7 @@ class FireballController extends Component{
         if (enemy.length > 0) {
             for (const e of enemy) {
                 const enemypos = e.transform.position
-                const distanceToEnemy = spellPos.distanceTo(enemypos)
+                const distanceToEnemy = Vector2.distance(spellPos, enemypos)
                 if (distanceToEnemy <= 20) {
                     let health = e.getComponent(Health)
                     let damage = 1

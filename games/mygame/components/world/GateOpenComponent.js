@@ -15,7 +15,7 @@ class GateOpenComponent extends Component {
                 const gate = this.gameObject
                 const gatepos = gate.transform.position
                 const playerpos = player.transform.position
-                const distanceToGate = gatepos.distanceTo(playerpos)
+                const distanceToGate = Vector2.distance(gatepos, playerpos)
 
                 if (distanceToGate < 25 && key) {
                     playerinv.removeItem(key, 1)

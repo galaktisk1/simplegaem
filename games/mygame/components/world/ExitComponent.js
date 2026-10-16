@@ -9,7 +9,7 @@ class ExitComponent extends Component {
         const exitpos = this.transform.position
         const playerpos = player.transform.position
 
-        const distanceToExit = exitpos.distanceTo(playerpos)
+        const distanceToExit = Vector2.distance(exitpos, playerpos)
         if (distanceToExit < 60) {
             this.beenDoneExited = true
             const msgmanager = GameObject.find("MessageManager")

@@ -10,7 +10,7 @@ class HurtCubeController extends Component{
         const playerHealth = player.getComponent(Health)
         const cubepos = this.transform.position
         const playerpos = player.transform.position
-        const distanceToCube = cubepos.distanceTo(playerpos)
+        const distanceToCube = Vector2.distance(cubepos, playerpos)
         
         if (distanceToCube < 25 && this.timeSinceHurt > 60) {
             playerHealth.takeDamage(10)
