@@ -4,7 +4,7 @@
     <title>GameLoop</title>
     <style>
         * {
-            margin:0;
+            margin: 0;
             overflow: hidden;
         }
     </style>
@@ -22,7 +22,7 @@
     <script src="../../engine/Component.js"></script>
     <script src="../../engine/Time.js"></script>
     <script src="../../engine/Collisions.js"></script>
-    
+
     <script src="../../engine/components/Polygon.js"></script>
     <script src="../../engine/components/MovementComponent.js"></script>
     <script src="../../engine/components/Transform.js"></script>
@@ -31,23 +31,24 @@
     <script src="../../engine/components/Health.js"></script>
     <script src="../../engine/components/Inventory.js"></script>
     <script src="../../engine/components/Camera.js"></script>
-    
+    <script src="../../engine/components/Collider.js"></script>
+
     <script src="scenes/MainScene.js"></script>
     <script src="scenes/Level01.js"></script>
     <script src="scenes/Level02.js"></script>
     <script src="scenes/GenericLevel.js"></script>
-    
+
     <script src="Assets.js"></script>
     <script src="Globals.js"></script>
     <script src="Settings.js"></script>
-    
-    <script src="gameObjects/MainGameObject.js"></script>
+
+    <script src="gameObjects/PlayerGameObject.js"></script>
     <script src="gameObjects/LevelControllerGameObject.js"></script>
     <script src="gameObjects/EnemyGameObject.js"></script>
     <script src="gameObjects/LaserGameObject.js"></script>
     <script src="gameObjects/PointsGameObject.js"></script>
     <script src="gameObjects/HelperGameObject.js"></script>
-    
+
     <script src="components/LaserController.js"></script>
     <script src="components/LevelController.js"></script>
     <script src="components/PointsController.js"></script>
@@ -56,16 +57,18 @@
     <script src="components/SceneTimerController.js"></script>
 
     <script>
-    Engine.start(Level01, Settings)
+        Engine.start(Level01, Settings)
 
-    // tests
-    let gameObject = new GameObject()
-    gameObject.addComponent(new Polygon(), {points: [
-        new Vector2(0, -1), 
-        new Vector2(-1, 1), 
-        new Vector2(1, 1),
-    ]})
-    console.assert(Collisions.isCollisionPointPolygon(new Vector2(0, 0), gameObject))
+        // tests
+        let gameObject = new GameObject()
+        gameObject.addComponent(new Polygon(), {
+            points: [
+                new Vector2(0, -1),
+                new Vector2(-1, 1),
+                new Vector2(1, 1),
+            ]
+        })
+        console.assert(Collisions.isCollisionPointPolygon(new Vector2(0, 0), gameObject))
     </script>
 </body>
 

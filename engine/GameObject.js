@@ -30,7 +30,7 @@ class GameObject {
         return this.components.find(c => c instanceof type)
     }
 
-    broadcastMessage(message, args = []) { 
+    broadcastMessage(message, ...args) { 
         for (const component of this.components) {
             component[message]?.(...args)
         }
@@ -59,7 +59,20 @@ class GameObject {
     }
 
     destroy() {
+        if (this.markForDestroy) return
         this.markForDestroy = true
+        const children = SceneManager.currentScene.gameObjects.filter(go => go.transform.parent === this.transform)
+        for (const child of children) {
+            child.destroy()
+        }
+    }
+
+    removeDestroyedComponents() {
+        for (const component of this.components) {
+            if (component.markForDestroy) component.onDestroy?.()
+        }
+        this.components = this.components.filter(c => !c.markForDestroy)
+        
     }
 
     static find(name) {

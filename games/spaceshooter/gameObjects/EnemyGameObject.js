@@ -2,6 +2,7 @@ class EnemyGameObject extends GameObject {
     constructor() {
         super("Enemy", ["Enemy"], "ships")
         this.addComponent(new MovementComponent())
+        this.addComponent(new Collider())
         this.addComponent(new Polygon(), {
             fillStyle: "green", points: Assets.triangle, 
         })

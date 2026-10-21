@@ -1,7 +1,8 @@
-class MainGameObject extends GameObject {
+class PlayerGameObject extends GameObject {
     constructor() {
         super("Player", [], "ships")
         this.addComponent(new UpdateComponent())
+        this.addComponent(new Collider())
         this.addComponent(new MovementComponent())
         this.addComponent(new Polygon(), {
             fillStyle: "black", points: Assets.triangle

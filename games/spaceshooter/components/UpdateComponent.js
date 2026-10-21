@@ -31,11 +31,16 @@ class UpdateComponent extends Component {
             velocity.x += this.speed
         }
 
-        if (this.timeSinceLaser > 20 && Input.keysDown.includes("Space")) {
-            this.timeSinceLaser = 0
-            instantiate(new LaserGameObject(), this.transform.position.clone())
-        }
+        // if (this.timeSinceLaser > 20 && Input.keysDown.includes("Space")) {
+        //     this.timeSinceLaser = 0
+        //     instantiate(new LaserGameObject(), this.transform.position.clone())
+        // }
 
         Camera.main.gameObject.transform.position = this.transform.position.clone()
+        Camera.main.transform.scale = new Vector2(2, 2)
+
+    }
+    onCollisionStay(other) {
+        console.log("Collision with", other)
     }
 }

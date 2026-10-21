@@ -3,7 +3,6 @@ class EnemyGameObject extends GameObject{
     constructor(definition){
         super(definition.name, ["Enemy"], "characters")
         this.definition = definition
-        this.visualChildren = []
         this.visualChildrenCreated = false
         this.addComponent(new Polygon(), { fillStyle: definition.fillStyle, points: definition.points })
         
@@ -16,7 +15,6 @@ class EnemyGameObject extends GameObject{
             speed: definition.movementSpeed,
         })
         this.transform.scale = definition.scale.clone()
-        this.transform.rotation = definition.rotation ?? 0
     }
 
     start() {
@@ -30,17 +28,9 @@ class EnemyGameObject extends GameObject{
                 child.transform.setParent(this.transform)
                 child.transform.rotation = childDefinition.rotation ?? 0
                 instantiate(child, childDefinition.position.clone())
-                this.visualChildren.push(child)
             }
             this.visualChildrenCreated = true
         }
         super.start()
-    }
-
-    destroy() {
-        for (const child of this.visualChildren) {
-            child.destroy()
-        }
-        super.destroy()
     }
 }

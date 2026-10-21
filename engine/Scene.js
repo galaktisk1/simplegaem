@@ -11,7 +11,12 @@ class Scene {
         }
     }
 
-    instantiate(gameObject, position = gameObject.transform.position, rotation = gameObject.transform.rotation, scale = gameObject.transform.scale) {
+    instantiate(
+        gameObject,
+        position = gameObject.transform.position, 
+        rotation = gameObject.transform.rotation, 
+        scale = gameObject.transform.scale)
+    {
         this.gameObjects.push(gameObject)
         gameObject.transform.position = position
         gameObject.transform.rotation = rotation
@@ -26,8 +31,44 @@ class Scene {
     }
 
     update() {
+
+        //Collisions
+        const collidable = GameObject.findGameObjectsByType(Collider)
+
+        if(Input.mousePosition){
+            let matrix = new DOMMatrix()
+            matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
+            matrix.multiplySelf(Camera.main.transform.getWorldMatrix().inverse())
+
+            let worldPositionDOMPoint = matrix.inverse().transformPoint(Input.mousePosition)
+            let worldPosition = new Vector2(worldPositionDOMPoint.x, worldPositionDOMPoint.y)
+            for(const go of collidable){
+                if(Collisions.isCollisionPointPolygon(worldPosition, go)) {
+                    go.broadcastMessage("onMouseOver", [])
+                }
+            }
+        }
+
+        for (let i = 0, len = collidable.length; i < len; i++) {
+            for (let j = i + 1; j < len; j++) {
+                if(Collisions.isCollisionsPolygonPolygon(collidable[i], collidable[j])) {
+                    collidable[i].broadcastMessage("onCollisionStay", collidable[j])
+                    collidable[j].broadcastMessage("onCollisionStay", collidable[i])
+                }
+            }
+        }
+
         for (const gameObject of this.gameObjects) {
             gameObject.update()
+        }
+
+        for (const gameObject of this.gameObjects) {
+            if (gameObject.markForDestroy) {
+                for (const component of gameObject.components) {
+                    component.markForDestroy = true
+                }
+            }
+            gameObject.removeDestroyedComponents()
         }
 
         const temp = []
@@ -46,7 +87,8 @@ class Scene {
         // start camera code
         ctx.save()
         ctx.translate(Engine.canvas.width / 2, Engine.canvas.height / 2)
-        ctx.translate(-Camera.main.transform.position.x, -Camera.main.transform.position.y)
+        //ctx.translate(-Camera.main.transform.position.x, -Camera.main.transform.position.y)
+        ctx.setTransform(ctx.getTransform().multiply(Camera.main.transform.getWorldMatrix().inverse()))
 
         for (const layer of Engine.layers.filter(layer => layer !== "UI")) {
             for (const gameObject of this.gameObjects.filter(go => go.layer === layer)) {
@@ -63,6 +105,11 @@ class Scene {
     }
 }
 
-function instantiate(gameObject, position = gameObject.transform.position, rotation = gameObject.transform.rotation, scale = gameObject.transform.scale) {
+function instantiate(
+    gameObject,
+    position = gameObject.transform.position, 
+    rotation = gameObject.transform.rotation,
+    scale = gameObject.transform.scale)
+{
     return SceneManager.currentScene.instantiate(gameObject, position, rotation, scale)
 }

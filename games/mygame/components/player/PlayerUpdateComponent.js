@@ -27,10 +27,14 @@ class PlayerUpdateComponent extends Component {
         
         const facingIndicator = instantiate(new FacingIndicatorGameObject(), new Vector2(0, -90))
         facingIndicator.transform.setParent(player.transform)
+        player.attachedObjects.push(lantern)
+        player.attachedObjects.push(light)
+        player.attachedObjects.push(facingIndicator)
     }
 
     update() {
-        const velocity = this.gameObject.getComponent(MovementComponent).velocity
+        const movement = this.gameObject.getComponent(MovementComponent)
+        const velocity = movement.velocity
         velocity.x = 0
         velocity.y = 0
 
@@ -49,6 +53,9 @@ class PlayerUpdateComponent extends Component {
         if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
             velocity.x += this.speed
         }
+
+        // clamp velocity to max speed
+        movement.velocity = Vector2.clampMagnitude(velocity, this.speed)
         
         if (Input.keysDownThisFrame.includes("Space")) {
             // interact button pressed

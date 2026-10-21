@@ -20,6 +20,18 @@ class Vector2 {
         return new Vector2(this.x - other.x, this.y - other.y)
     }
 
+    dot(other) {
+        return this.x * other.x + this.y * other.y
+    }
+
+    cross(other) {
+        return this.x * other.y - this.y * other.x
+    }
+
+    orthogonal() {
+        return new Vector2(-this.y, this.x)
+    }
+
     get magnitude() {
         // which is the same as Math.sqrt(this.x**2 + this.y**2)
         return Math.hypot(this.x, this.y)
@@ -37,15 +49,10 @@ class Vector2 {
         return Math.atan2(cross, dot)
     }
 
-    dot(other) {
-        return this.x * other.x + this.y * other.y
-    }
-
-    cross(other) {
-        return this.x * other.y - this.y * other.x
-    }
-
-    orthogonal() {
-        return new Vector2(-this.y, this.x)
+    static clampMagnitude(vector, maxLength) {
+        const length = vector.magnitude
+        if (length <= maxLength) return vector.clone()
+        const scale = maxLength / length
+        return new Vector2(vector.x * scale, vector.y * scale)
     }
 }

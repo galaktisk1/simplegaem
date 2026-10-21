@@ -20,7 +20,8 @@ class MessageManager extends Component {
         const messageObj = this.gameObject
         const objpos = messageObj.transform.position
         const spacing = 12
-        let y = objpos.y
+        const topPadding = 20
+        let y = objpos.y + topPadding
 
         Globals.messages = Globals.messages.filter(message => !message.gameObject.markForDestroy)
 

@@ -3,14 +3,19 @@ class PlayerGameObject extends GameObject {
         super("Player", [], "characters")
         this.addComponent(new PlayerUpdateComponent())
         this.addComponent(new MovementComponent())
-        // player circle
+        this.addComponent(new Collider(), {
+            points: [
+                new Vector2(-75, -75),
+                new Vector2(75, -75),
+                new Vector2(75, 75),
+                new Vector2(-75, 75)
+            ]
+        })
         this.addComponent(new Circle(), {
             fillStyle: "grey", 
             radius: 75
         })
-        // health probably doesnt either
         this.addComponent(new Health())
-        // inventory currently doesnt persist between scenes
         this.addComponent(new Inventory())
     }
 }
