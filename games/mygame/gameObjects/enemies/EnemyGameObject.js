@@ -5,11 +5,8 @@ class EnemyGameObject extends GameObject{
         this.definition = definition
         this.visualChildrenCreated = false
         this.addComponent(new Polygon(), { fillStyle: definition.fillStyle, points: definition.points })
-        
-        this.addComponent(new Health(), {
-            maxHealth: definition.maxHealth,
-            currentHealth: definition.maxHealth,
-        })
+        this.addComponent(new Collider())
+        this.addComponent(new Health())
         this.addComponent(new MovementComponent())
         this.addComponent(new EnemyController(), {
             speed: definition.movementSpeed,

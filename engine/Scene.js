@@ -1,5 +1,6 @@
 class Scene {
     gameObjects = [];
+    mouseWorldPosition
 
     constructor(backgroundColor) {
         let camera = new GameObject("MainCamera", ["MainCamera"])
@@ -35,6 +36,7 @@ class Scene {
         //Collisions
         const collidable = GameObject.findGameObjectsByType(Collider)
 
+        this.mouseWorldPosition = undefined
         if(Input.mousePosition){
             let matrix = new DOMMatrix()
             matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
@@ -42,6 +44,7 @@ class Scene {
 
             let worldPositionDOMPoint = matrix.inverse().transformPoint(Input.mousePosition)
             let worldPosition = new Vector2(worldPositionDOMPoint.x, worldPositionDOMPoint.y)
+            this.mouseWorldPosition = worldPosition
             for(const go of collidable){
                 if(Collisions.isCollisionPointPolygon(worldPosition, go)) {
                     go.broadcastMessage("onMouseOver", [])
@@ -52,8 +55,8 @@ class Scene {
         for (let i = 0, len = collidable.length; i < len; i++) {
             for (let j = i + 1; j < len; j++) {
                 if(Collisions.isCollisionsPolygonPolygon(collidable[i], collidable[j])) {
-                    collidable[i].broadcastMessage("onCollisionStay", collidable[j])
-                    collidable[j].broadcastMessage("onCollisionStay", collidable[i])
+                    collidable[i].broadcastMessage("onCollisionStay", [collidable[j]])
+                    collidable[j].broadcastMessage("onCollisionStay", [collidable[i]])
                 }
             }
         }

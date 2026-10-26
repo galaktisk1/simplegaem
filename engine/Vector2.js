@@ -41,6 +41,13 @@ class Vector2 {
         return a.minus(b).magnitude
     }
 
+    static angle(from, to) {
+        const dot = from.dot(to)
+        const magProduct = from.magnitude * to.magnitude
+        if (magProduct === 0) return 0
+        return Math.acos(Math.min(Math.max(dot / magProduct, -1), 1))
+    }
+
     // Unity signedAngle equivalent
     // signed angle between two vectors in radians
     static signedAngle(from, to) {

@@ -4,7 +4,18 @@ class EnemyController extends Component{
     // TODO: Attack at that distance using the configured cooldown.
     // TODO: Maintain the preferred distance by following or retreating as the player moves.
     speed = 120
-    attackDistance = 100
+    attackDistance = 135
+    start() {
+        const definition = this.gameObject.definition
+        
+        // roll the health value and set it
+        const health = this.gameObject.getComponent(Health)
+        const healthRange = definition.healthMax - definition.healthMin + 1
+        const rolledHealth = GameSession.randomE.nextInt(healthRange) + definition.healthMin
+        health.currentHealth = rolledHealth
+        health.maxHealth = rolledHealth
+
+    }
     update() {
         const enemy = this.gameObject
         const enemypos = this.transform.position
@@ -25,10 +36,10 @@ class EnemyController extends Component{
             velocity.x = directionToPlayer.x / distanceToPlayer * this.speed
             velocity.y = directionToPlayer.y / distanceToPlayer * this.speed
         }
-        
-        
-        if (health.currentHealth <= 0) {
-            enemy.destroy()
-        }
+    }
+    onMouseOver() {
+        if (!Input.mouseButtonsDownThisFrame.includes(0) || this.gameObject.markForDestroy) return
+        const msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
+        msgmanager.showMessage(`You see a ${this.gameObject.definition.name}`, 3)
     }
 }

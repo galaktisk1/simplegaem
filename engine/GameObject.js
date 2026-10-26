@@ -30,7 +30,7 @@ class GameObject {
         return this.components.find(c => c instanceof type)
     }
 
-    broadcastMessage(message, ...args) { 
+    broadcastMessage(message, args = []) { 
         for (const component of this.components) {
             component[message]?.(...args)
         }

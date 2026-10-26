@@ -18,9 +18,5 @@ class DungeonBuilderComponent extends Component {
                     incomingDoor.gridPosition)
             }
         }
-        
-
-        
-
     }
 }

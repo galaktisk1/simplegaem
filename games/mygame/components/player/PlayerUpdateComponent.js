@@ -27,9 +27,6 @@ class PlayerUpdateComponent extends Component {
         
         const facingIndicator = instantiate(new FacingIndicatorGameObject(), new Vector2(0, -90))
         facingIndicator.transform.setParent(player.transform)
-        player.attachedObjects.push(lantern)
-        player.attachedObjects.push(light)
-        player.attachedObjects.push(facingIndicator)
     }
 
     update() {
@@ -69,38 +66,14 @@ class PlayerUpdateComponent extends Component {
             }
         }
         
-        // testing mouse stuff
-        const canvasRect = Engine.canvas.getBoundingClientRect()
-        const mousePos = Input.mousePosition
+        const mouseWorldPos = SceneManager.currentScene.mouseWorldPosition
         
         
         // rotate player to face mouse
-        if (mousePos) {
-            const centeredX = mousePos.x - canvasRect.left - canvasRect.width / 2
-            const centeredY = mousePos.y - canvasRect.top - canvasRect.height / 2
-            const cameraPos = Camera.main.gameObject.transform.position
-            const mouseWorldPos = new Vector2(centeredX + cameraPos.x, centeredY + cameraPos.y)
-            
+        if (mouseWorldPos) {
             this.transform.lookAt(mouseWorldPos)
-            
-            
-            
-            
             // left click actions
             if (Input.mouseButtonsDownThisFrame.includes(0)) {
-            console.log(`Mouse clicked at world position: x=${mouseWorldPos.x}, y=${mouseWorldPos.y}`)
-            
-            // now check if the mouse is close to the enemy world position
-            const enemies = GameObject.findGameObjectsWithTag("Enemy")
-            for (const enemy of enemies) {
-                const enemyPos = enemy.transform.position
-                const distanceToMouse = Vector2.distance(mouseWorldPos, enemyPos)
-                if (distanceToMouse < 50) { // arbitrary proximity threshold
-                    console.log(`Mouse is close to enemy at x=${enemyPos.x}, y=${enemyPos.y}`)
-                    msgmanager.showMessage(`You see a ${enemy.definition.name}`, 3)
-                    }
-            }
-
             const fireball = instantiate(new FireballGameObject(), this.transform.position.clone())
             fireball.launch(this.transform.up)
         }
@@ -120,5 +93,12 @@ class PlayerUpdateComponent extends Component {
         }
         Camera.main.gameObject.transform.position = player.transform.position.clone()
     }
-    
+    onCollisionStay(other) {
+        if (other.tags.includes("Wall")) {
+            // stop player movement when colliding with a wall
+            // handle movement so it checks each proposed X/Y step before accepting it
+            const movement = this.gameObject.getComponent(MovementComponent)
+            
+        }
+    }
 }
