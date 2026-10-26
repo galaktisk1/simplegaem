@@ -1,6 +1,7 @@
 class ProducerGameObject extends GameObject{
-    constructor(){
-        super("GameObject")
+    // miner game object that will mine below on the grid
+    constructor() {
+        super("ProducerGameObject", ["Producer"], "machines")
         this.addComponent(new Polygon(), {fillStyle: "red", points:Assets.triangle})
         this.addComponent(new ProducerController())
         this.addComponent(new Inventory())

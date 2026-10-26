@@ -1,3 +1,3 @@
 class Settings{
-    static layers = ["background", "midground", "foreground", "default", "UI"]
+    static layers = ["background", "machines", "ores", "default", "UI"]
 }

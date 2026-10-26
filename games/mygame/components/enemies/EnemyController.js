@@ -12,8 +12,9 @@ class EnemyController extends Component{
         const health = this.gameObject.getComponent(Health)
         const healthRange = definition.healthMax - definition.healthMin + 1
         const rolledHealth = GameSession.randomE.nextInt(healthRange) + definition.healthMin
-        health.currentHealth = rolledHealth
         health.maxHealth = rolledHealth
+        const experience = this.gameObject.getComponent(Experience)
+        experience.currentExperience = definition.experiencePerHealth * rolledHealth + definition.experienceBase
 
     }
     update() {
@@ -36,7 +37,16 @@ class EnemyController extends Component{
             velocity.x = directionToPlayer.x / distanceToPlayer * this.speed
             velocity.y = directionToPlayer.y / distanceToPlayer * this.speed
         }
+
+        if (health.currentHealth <= 0) {
+            // give the player experience held, then destroy, plus other on death actions
+            const experienceToGive = this.gameObject.getComponent(Experience).currentExperience
+            player.getComponent(Experience).addExperience(experienceToGive)
+            // go will destroy through the Health component getting down to 0 health
+            
+        }
     }
+
     onMouseOver() {
         if (!Input.mouseButtonsDownThisFrame.includes(0) || this.gameObject.markForDestroy) return
         const msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)

@@ -4,9 +4,9 @@ class Inventory extends Component {
         this.inventory = []
     }
     
-    addItem(item) {
+    addItem(item, amount) {
         if (!item?.itemDef) return undefined
-        const amount = item.amount ?? 1
+        if (amount === undefined) amount = item.amount ?? 1
         if (!Number.isInteger(amount) || amount < 1) return undefined
         if (!item.itemDef.stackable && amount !== 1) return undefined
         if (this.getInventory().includes(item)) return item
