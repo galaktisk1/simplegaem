@@ -32,9 +32,33 @@ class Vector2 {
         return new Vector2(-this.y, this.x)
     }
 
+    normalized() { 
+        const mag = this.magnitude
+        if (mag === 0) return new Vector2(0, 0)
+        return new Vector2(this.x / mag, this.y / mag)
+    }
+
+    scaled(scalar) {
+        return new Vector2(this.x * scalar, this.y * scalar)
+    }
+
+    plusEquals(other) {
+        this.x += other.x
+        this.y += other.y
+        return this
+    }
+
+    negate() {
+        return this.scaled(-1)
+    }
+
     get magnitude() {
         // which is the same as Math.sqrt(this.x**2 + this.y**2)
         return Math.hypot(this.x, this.y)
+    }
+
+    static zero() {
+        return new Vector2(0, 0)
     }
 
     static distance(a, b) {

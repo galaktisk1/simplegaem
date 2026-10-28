@@ -35,7 +35,9 @@ class Scene {
 
         //Collisions
         const collidable = GameObject.findGameObjectsByType(Collider)
+        const rigidbodies = GameObject.findGameObjectsByType(Rigidbody)
 
+        // handle mouse over collisions
         this.mouseWorldPosition = undefined
         if(Input.mousePosition){
             let matrix = new DOMMatrix()
@@ -52,13 +54,33 @@ class Scene {
             }
         }
 
+        // handle polygon-polygon collisions
+        const physicalCollisions = []
         for (let i = 0, len = collidable.length; i < len; i++) {
             for (let j = i + 1; j < len; j++) {
-                if(Collisions.isCollisionsPolygonPolygon(collidable[i], collidable[j])) {
+                const mtv = Collisions.isCollisionPolygonPolygon(collidable[i], collidable[j])
+                if(mtv) {
                     collidable[i].broadcastMessage("onCollisionStay", [collidable[j]])
                     collidable[j].broadcastMessage("onCollisionStay", [collidable[i]])
+
+                    if (collidable[i].getComponent(Rigidbody) || collidable[j].getComponent(Rigidbody)) {
+                        physicalCollisions.push({one: collidable[i], two: collidable[j], mtv})
+                    }
                 }
             }
+        }
+
+        // handle physics
+        for (const collision of physicalCollisions) {
+            // loop through all of them, move the objects by the minimum translation vector to resolve the collision
+            // both wont always necessarily have a rigidbody, so just move the ones that do have it
+            if (collision.one.getComponent(Rigidbody)) {
+                collision.one.transform.position.plusEquals(collision.mtv)
+            }
+            if (collision.two.getComponent(Rigidbody)) {
+                collision.two.transform.position.plusEquals(collision.mtv.negate())
+            }
+
         }
 
         for (const gameObject of this.gameObjects) {

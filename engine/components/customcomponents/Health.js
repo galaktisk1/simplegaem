@@ -23,11 +23,25 @@ class Health extends Component {
         if (this._currentHealth < 0) this._currentHealth = 0
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, attacker = GameObject, target = GameObject) {
         const go = this.gameObject
         this._currentHealth -= amount
         if (this._currentHealth <= 0) {
             this._currentHealth = 0
+            if (go.getComponent(Experience) == true) {
+                if (attacker && attacker.getComponent(Experience)) {
+                    const attExperience = attacker.getComponent(Experience)
+                    const tarExperience = go.getComponent(Experience)
+                    attExperience.addExperience(tarExperience.currentExperience)
+                } else {
+                    const experienceToGive = go.getComponent(Experience).currentExperience
+                    // by default, find the player and give the experience
+                    const player = GameObject.find("Player")
+                    if (player) {
+                        player.getComponent(Experience).addExperience(experienceToGive)
+                    }
+                }
+            }
             go.destroy()
         }
     }
