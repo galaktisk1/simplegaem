@@ -14,11 +14,11 @@ class Collisions {
         for (let i = 0; i < worldSpacePoints.length; i++) {
             let point1 = worldSpacePoints[i]
             let point2 = worldSpacePoints[(i + 1) % worldSpacePoints.length]
-            let edge = point2.minus(point1).normalized()
-            let axis = edge.orthogonal()
+            let edge = point2.minus(point1).normalized
+            let axis = Vector2.perpendicular(edge)
             // check for overlap
-            let pointProjection = point.dot(axis)
-            let polygonProjections = worldSpacePoints.map(p => p.dot(axis))
+            let pointProjection = Vector2.dot(point, axis)
+            let polygonProjections = worldSpacePoints.map(p => Vector2.dot(p, axis))
             if (pointProjection < Math.min(...polygonProjections) || pointProjection > Math.max(...polygonProjections)) {
                 return false
             }
@@ -49,20 +49,20 @@ class Collisions {
         for (let i = 0; i < worldSpacePoints1.length; i++) {
             let point1 = worldSpacePoints1[i]
             let point2 = worldSpacePoints1[(i + 1) % worldSpacePoints1.length]
-            let edge = point2.minus(point1).normalized()
-            allAxes.push(edge.orthogonal())
+            let edge = point2.minus(point1).normalized
+            allAxes.push(Vector2.perpendicular(edge))
         }
         for (let i = 0; i < worldSpacePoints2.length; i++) {
             let point1 = worldSpacePoints2[i]
             let point2 = worldSpacePoints2[(i + 1) % worldSpacePoints2.length]
-            let edge = point2.minus(point1).normalized()
-            allAxes.push(edge.orthogonal())
+            let edge = point2.minus(point1).normalized
+            allAxes.push(Vector2.perpendicular(edge))
         }
 
         let minimumTransformVector = new Vector2(Number.MAX_VALUE, Number.MAX_VALUE)
         for (let axis of allAxes) {
-            let projections1 = worldSpacePoints1.map(p => p.dot(axis))
-            let projections2 = worldSpacePoints2.map(p => p.dot(axis))
+            let projections1 = worldSpacePoints1.map(p => Vector2.dot(p, axis))
+            let projections2 = worldSpacePoints2.map(p => Vector2.dot(p, axis))
             if (Math.max(...projections2) < Math.min(...projections1) || Math.min(...projections2) > Math.max(...projections1)) {
                 return false
             }
@@ -72,10 +72,10 @@ class Collisions {
                 Math.max(...projections1) - Math.min(...projections2)
             )
             if (minOverlap < minimumTransformVector.magnitude){
-                minimumTransformVector = axis.normalized().scaled(minOverlap)
+                minimumTransformVector = axis.normalized.scaled(minOverlap)
             }
         }
-        if (gameObject1.transform.position.minus(gameObject2.transform.position).dot(minimumTransformVector) > 0) {
+        if (Vector2.dot(gameObject1.transform.position.minus(gameObject2.transform.position), minimumTransformVector) > 0) {
             return minimumTransformVector
         } else {
             return minimumTransformVector.scaled(-1)

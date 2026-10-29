@@ -37,7 +37,6 @@ class UpdateComponent extends Component {
         // }
 
         Camera.main.gameObject.transform.position = this.transform.position.clone()
-        Camera.main.transform.scale = new Vector2(2, 2)
 
     }
     onCollisionStay(other) {

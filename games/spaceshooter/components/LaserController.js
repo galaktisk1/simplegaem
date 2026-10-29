@@ -1,16 +1,12 @@
 class LaserController extends Component {
     speed = 3 * 60
-
+    direction
     update() {
-        const velocity = this.gameObject.getComponent(MovementComponent).velocity
-        const speed = this.speed
         const laserpos = this.transform.position
         const laser = this.gameObject
         const shippos = GameObject.find("Player").transform.position
         const enemy = GameObject.findGameObjectsWithTag("Enemy")
         const distanceToShip = Vector2.distance(laserpos, shippos)
-
-        velocity.y = -speed
 
         if (distanceToShip > 250) {
             laser.destroy()

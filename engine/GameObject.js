@@ -20,9 +20,20 @@ class GameObject {
     }
 
     addComponent(component, parameters) {
+        // if a script requires other components, make sure they are added first
+        for(const type of component.constructor.requires ?? []) {
+            if (!this.getComponent(type)) {
+                this.addComponent(new type())
+            }
+        }
+        component.gameObject = this
         Object.assign(component, parameters)
         this.components.push(component)
-        component.gameObject = this
+        // run the awake method if it exists
+        component.awake?.()
+        if (component.enabled) {
+            component.onEnable?.()
+        }
     }
 
     getComponent(type) {
@@ -38,13 +49,16 @@ class GameObject {
 
     start() {
         for (const component of this.components.filter(c => !c.didStart)) {
+            if (!component.enabled) continue
             component.start?.()
             component.didStart = true
         }
     }
 
     update() {
+        this.start()
         for (const component of this.components) {
+            if (!component.enabled) continue
             component.update?.()
         }
     }
@@ -53,6 +67,7 @@ class GameObject {
         ctx.save()
         ctx.setTransform(ctx.getTransform().multiply(this.transform.getWorldMatrix()))
         for (const component of this.components) {
+            if (!component.enabled) continue
             component.draw?.(ctx)
         }
         ctx.restore()
@@ -69,7 +84,12 @@ class GameObject {
 
     removeDestroyedComponents() {
         for (const component of this.components) {
-            if (component.markForDestroy) component.onDestroy?.()
+            if (component.markForDestroy) {
+                if (component.enabled) {
+                    component.onDisable?.()
+                }
+                component.onDestroy?.()
+            }
         }
         this.components = this.components.filter(c => !c.markForDestroy)
         
