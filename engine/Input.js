@@ -55,4 +55,35 @@ class Input {
         Input.mouseButtonsDownThisFrame = []
         Input.mouseButtonsUpThisFrame = []
     }
+
+    // better matching how you get input in Unity (Input.GetKey, Input.GetKeyDown, Input.GetKeyUp)
+    static getKey(key){
+        return Input.keysDown.includes(key)
+    }
+    static getKeyDown(key){
+        return Input.keysDownThisFrame.includes(key)
+    }
+    static getKeyUp(key){
+        return Input.keysUpThisFrame.includes(key)
+    }
+
+    static getMouseButton(button){
+        return Input.mouseButtonsDown.includes(button)
+    }
+
+    static getMouseButtonDown(button){
+        return Input.mouseButtonsDownThisFrame.includes(button)
+    }
+
+    static getMouseButtonUp(button){
+        return Input.mouseButtonsUpThisFrame.includes(button)
+    }
+    
+    static getMousePosition(){
+        return Input.mousePosition
+    }
+
+    static getMouseDelta(){
+        return Input.mouseDelta
+    }
 }
