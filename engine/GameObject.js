@@ -61,6 +61,9 @@ class GameObject {
             if (!component.enabled) continue
             component.update?.()
         }
+        for (const component of this.components) {
+            component.updateCoroutines()
+        }
     }
 
     draw(ctx) {

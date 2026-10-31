@@ -5,6 +5,7 @@ class EnemyController extends Component{
     // TODO: Maintain the preferred distance by following or retreating as the player moves.
     speed = 120
     attackDistance = 135
+    isAttacking = false
     start() {
         const definition = this.gameObject.definition
         
@@ -37,13 +38,17 @@ class EnemyController extends Component{
             velocity.x = directionToPlayer.x / distanceToPlayer * this.speed
             velocity.y = directionToPlayer.y / distanceToPlayer * this.speed
         }
+        if (distanceToPlayer <= this.attackDistance && !this.isAttacking) {
+            this.isAttacking = true
+            this.startCoroutine(this.attack(player))
+        }
 
         if (health.currentHealth <= 0) {
             // give the player experience held, then destroy, plus other on death actions
             const experienceToGive = this.gameObject.getComponent(Experience).currentExperience
             player.getComponent(Experience).addExperience(experienceToGive)
             // go will destroy through the Health component getting down to 0 health
-            
+            Component.destroy(this)
         }
     }
 
@@ -51,5 +56,11 @@ class EnemyController extends Component{
         if (!Input.mouseButtonsDownThisFrame.includes(0) || this.gameObject.markForDestroy) return
         const msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         msgmanager.showMessage(`You see a ${this.gameObject.definition.name}`, 3)
+    }
+
+    *attack(target) {
+        console.log(this.gameObject.definition.name + " attacks", target.name)
+        yield new WaitForSeconds(1)
+        this.isAttacking = false
     }
 }
