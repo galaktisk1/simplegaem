@@ -1,25 +1,24 @@
 class HurtCubeController extends Component{
     
-    timeSinceHurt
-    start(){
-        this.timeSinceHurt = 0
-    }
-    update(){
-        const player = GameObject.find("Player")
-        if (!player) return
-        const playerHealth = player.getComponent(Health)
-        const cubepos = this.transform.position
-        const playerpos = player.transform.position
-        const distanceToCube = Vector2.distance(cubepos, playerpos)
+    isHurting = false
+    update() {
         
-        if (distanceToCube < 25 && this.timeSinceHurt > 60) {
-            playerHealth.takeDamage(10)
-            GameObject.find("PopUpManager")
-                .getComponent(PopUpManager)
-                .showPopup("10", player, "red")
-            this.timeSinceHurt = 0
-        }
-
-        this.timeSinceHurt += Time.deltaTime * 60
+    }
+    *hurt() {
+        const player = GameObject.find("Player")
+        const playerHealth = player.getComponent(Health)
+        playerHealth.takeDamage(10)
+        GameObject.find("PopUpManager")
+            .getComponent(PopUpManager)
+            .showPopup("10", player, "red")
+        yield new WaitForSeconds(1)
+        this.isHurting = false
+    }
+    onCollisionStay(other) {
+        const player = GameObject.find("Player")
+        if (other !== player) return
+        if (this.isHurting) return
+        this.isHurting = true
+        this.startCoroutine(this.hurt())
     }
 }

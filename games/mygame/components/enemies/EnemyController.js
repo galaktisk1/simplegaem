@@ -75,6 +75,8 @@ class EnemyController extends Component{
         const damageRoll = GameSession.randomE.nextInt(damageRange) + definition.damageMin
         const health = target.getComponent(Health)
         health.takeDamage(damageRoll, this.gameObject)
+        const popUpManager = GameObject.find("PopUpManager").getComponent(PopUpManager)
+        popUpManager.showPopup(damageRoll, target, "red")
         yield new WaitForSeconds(1)
         this.isAttacking = false
     }

@@ -1,6 +1,7 @@
 class GateGameObject extends GameObject {
     constructor() {
         super("Gate", [], "world")
+        this.addComponent(new Collider())
         this.addComponent(new Polygon(), {
             fillStyle: "brown", 
             points: [

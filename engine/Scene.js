@@ -71,6 +71,11 @@ class Scene {
         }
         this.lastHovered = hovered
 
+        // Update all game objects here before collisions with polygons
+        for (const gameObject of [...this.gameObjects]) {
+            gameObject.update()
+        }
+
         // handle polygon-polygon collisions
         const physicalCollisions = []
         for (let i = 0, len = collidable.length; i < len; i++) {
@@ -103,9 +108,7 @@ class Scene {
 
         }
 
-        for (const gameObject of [...this.gameObjects]) {
-            gameObject.update()
-        }
+        
 
         for (const gameObject of this.gameObjects) {
             if (gameObject.markForDestroy) {
