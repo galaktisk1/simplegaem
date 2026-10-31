@@ -19,36 +19,38 @@ class EnemyController extends Component{
 
     }
     update() {
+        const definition = this.gameObject.definition
         const enemy = this.gameObject
         const enemypos = this.transform.position
 
-        const velocity = enemy.getComponent(MovementComponent).velocity
-        const health = enemy.getComponent(Health)
+        const movement = enemy.getComponent(MovementComponent)
+        const velocity = movement.velocity
+        
         velocity.x = 0
         velocity.y = 0
 
         const player = GameObject.find("Player")
         if (!player) return
         const playerpos = player.transform.position
+        this.transform.lookAt(playerpos)
+        
+        
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude
-        this.transform.lookAt(playerpos)
-
-        if (distanceToPlayer > this.attackDistance) {
-            velocity.x = directionToPlayer.x / distanceToPlayer * this.speed
-            velocity.y = directionToPlayer.y / distanceToPlayer * this.speed
+        if (distanceToPlayer > this.attackDistance && Time.deltaTime > 0) {
+            movement.moveTowards(playerpos, definition.movementSpeed)
         }
         if (distanceToPlayer <= this.attackDistance && !this.isAttacking) {
             this.isAttacking = true
             this.startCoroutine(this.attack(player))
         }
-
+        
+        const health = enemy.getComponent(Health)
         if (health.currentHealth <= 0) {
             // give the player experience held, then destroy, plus other on death actions
             const experienceToGive = this.gameObject.getComponent(Experience).currentExperience
             player.getComponent(Experience).addExperience(experienceToGive)
             // go will destroy through the Health component getting down to 0 health
-            Component.destroy(this)
         }
     }
 
@@ -59,7 +61,20 @@ class EnemyController extends Component{
     }
 
     *attack(target) {
-        console.log(this.gameObject.definition.name + " attacks", target.name)
+        const definition = this.gameObject.definition
+        // safe from attacking a destroyed or non-existent target
+        if(!target || target.markForDestroy) {
+            this.isAttacking = false
+            return
+        }
+        // debug
+        console.log(definition.name + " attacks", target.name)
+        
+        
+        const damageRange = definition.damageMax - definition.damageMin + 1
+        const damageRoll = GameSession.randomE.nextInt(damageRange) + definition.damageMin
+        const health = target.getComponent(Health)
+        health.takeDamage(damageRoll, this.gameObject)
         yield new WaitForSeconds(1)
         this.isAttacking = false
     }

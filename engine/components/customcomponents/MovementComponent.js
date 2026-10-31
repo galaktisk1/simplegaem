@@ -9,7 +9,19 @@ class MovementComponent extends Component {
             this.velocity = this.velocity.minus(normal.scaled(speedIntoNormal))
         }
     }
-
+    
+    moveTowards(targetPosition, speed) {
+        const currentPosition = this.transform.position
+        const maxDistanceDelta = speed * Time.deltaTime
+        const distance = targetPosition.minus(currentPosition).magnitude
+        if (distance == 0 || Time.deltaTime <= 0) {
+            this.velocity = Vector2.zero;
+            return;
+        }
+        const nextPosition = Vector2.moveTowards(currentPosition, targetPosition, maxDistanceDelta)
+        const nextVelocity = nextPosition.minus(currentPosition).scaled(1 / Time.deltaTime)
+        this.velocity = nextVelocity
+    }
 
     get velocity() {
         return this.gameObject.getComponent(Rigidbody).velocity

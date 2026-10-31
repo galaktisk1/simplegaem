@@ -6,6 +6,8 @@ const EnemyDefinitions = {
         scale: new Vector2(15, 15),
         healthMin: 1,
         healthMax: 6,
+        damageMin: 1,
+        damageMax: 4,
         movementSpeed: 120,
         // TODO: Add preferred attack distance, damage, and attack cooldown for EnemyController.
         children: [

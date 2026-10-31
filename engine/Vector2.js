@@ -200,6 +200,9 @@ class Vector2 {
         smoothTime = Math.max(0.0001, smoothTime)
         const omega = 2 / smoothTime
         const x = omega * deltaTime
+        
+        // 0.48 and 0.235 are coefficients used to approximate exp(-timeStep).
+        // This follows the original smooth-damping algorithm.
         const exp = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x)
 
         const change = Vector2.clampMagnitude(current.minus(target), maxSpeed * smoothTime)
