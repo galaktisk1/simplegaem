@@ -23,7 +23,15 @@ class Health extends Component {
         if (this._currentHealth < 0) this._currentHealth = 0
     }
 
-    takeDamage(amount, attacker = GameObject, target = GameObject) {
+    update() {
+        // this is for the cheat code of dying instantly
+        if (this._currentHealth <= 0) {
+            const go = this.gameObject
+            go.destroy()
+        }
+    }
+
+    takeDamage(amount, attacker, target) {
         const go = this.gameObject
         this._currentHealth -= amount
         if (this._currentHealth <= 0) {

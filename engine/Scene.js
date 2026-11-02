@@ -41,6 +41,7 @@ class Scene {
         const rigidbodies = GameObject.findGameObjectsByType(Rigidbody)
 
         // handle mouse over collisions
+        /** @type {GameObject | undefined} */
         let hovered = undefined
         this.mouseWorldPosition = undefined
         if(Input.mousePosition){
@@ -52,8 +53,9 @@ class Scene {
             let worldPosition = new Vector2(worldPositionDOMPoint.x, worldPositionDOMPoint.y)
             this.mouseWorldPosition = worldPosition
             
-            for(const go of collidable){
-                if(Collisions.isCollisionPointPolygon(worldPosition, go)) {
+            for (const go of collidable) {
+                const point = go.layer === "UI" ? Input.mousePosition : worldPosition
+                if (Collisions.isCollisionPointPolygon(point, go)) {
                     hovered = go
                 }
             }

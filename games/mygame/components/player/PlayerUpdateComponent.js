@@ -1,19 +1,21 @@
 // https://github.com/afritz1/OpenTESArena/wiki/Movement has a movement example:
-    /**
-     * dist <- speed
-        if backward then dist <- dist / 2
-        if pc.swimming and not pc.inBoat then
-        if pc.race == ARGONIAN then dist <- dist / 2 else dist <- dist / 4
-        endif
-        pc.move(<corresponding angle>, dist * speedMod)
-        endif
-    */
-   // im thinking of how i could use this later for more complex movement
+/**
+ * dist <- speed
+    if backward then dist <- dist / 2
+    if pc.swimming and not pc.inBoat then
+    if pc.race == ARGONIAN then dist <- dist / 2 else dist <- dist / 4
+    endif
+    pc.move(<corresponding angle>, dist * speedMod)
+    endif
+*/
+// im thinking of how i could use this later for more complex movement
 
 
 class PlayerUpdateComponent extends Component {
-    speed= 4 * 60
-    
+    speed = 4 * 60
+
+    allowedInputs = []
+
     start() {
         const player = this.gameObject
         // health and inv global set up
@@ -24,9 +26,10 @@ class PlayerUpdateComponent extends Component {
 
         const light = instantiate(new LightingGameObject(), Vector2.zero)
         light.transform.setParent(player.transform)
-        
+
         const facingIndicator = instantiate(new FacingIndicatorGameObject(), Vector2.up.scaled(90))
         facingIndicator.transform.setParent(player.transform)
+        Camera.main.transform.position = this.transform.position.clone()
     }
 
     update() {
@@ -36,8 +39,36 @@ class PlayerUpdateComponent extends Component {
         velocity.y = 0
 
         const msgmanager = GameObject.find("MessageManager")
-                .getComponent(MessageManager)
-        
+            .getComponent(MessageManager)
+
+
+        // cheat codes :)
+        if (Input.getKey("KeyB")) {
+            // die button
+            this.gameObject.getComponent(Health).currentHealth = 0
+        }
+
+
+        // today is to make the different methods of player interaction,
+        // use E to enter inspect mode
+        // use F to enter attack mode
+        // and more later, T was an idea for "tresspass" for sneak attacks, lockpick,so on
+        if (Input.getKey("KeyE")) {
+            // make a ui element in the top left that says the mode,
+
+            // alter allowed key inputs based on the current mode
+        }
+        if (Input.getKey("KeyF")) {
+            // follow the same method as above for attack mode
+        }
+        if (Input.getKey("KeyT")) {
+            // follow the same method as above for trespass mode
+        }
+
+
+
+
+        //regular input section
         if (Input.getKey("ArrowUp") || Input.getKey("KeyW")) {
             velocity.y -= this.speed
         }
@@ -53,19 +84,24 @@ class PlayerUpdateComponent extends Component {
 
         // clamp velocity to max speed
         movement.velocity = Vector2.clampMagnitude(velocity, this.speed)
-        
-        if (Input.keysDownThisFrame.includes("Space")) {
-            // interact button pressed
+
+        if (Input.getKeyDown("Space")) {
+            // interact button pressed, this is available in any mode
+            // its just for like interacting with merchants, keys, itembags, so on
+
         }
-        
+
         // Show inventory once per key press.
         if (Input.getKeyDown("KeyI")) {
+            // for now this displays messages
             const inventory = GameObject.find("Player").getComponent(Inventory).inventory
             for (const item of inventory) {
                 msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
             }
+            // however, this should display a UI of the inventory
         }
-        
+
+        // i wish this wasnt in the scene, but so be it for now
         const mouseWorldPos = SceneManager.currentScene.mouseWorldPosition
         // rotate player to face mouse
         if (mouseWorldPos) {
@@ -74,13 +110,13 @@ class PlayerUpdateComponent extends Component {
             if (Input.getMouseButtonDown(0)) {
                 const fireball = instantiate(new FireballGameObject(), this.transform.position.clone())
                 fireball.launch(this.transform.up)
-                }
+            }
         }
         const player = this.gameObject
         // test smooth damp by applying it to the camera position
         const cameraVelocity = Vector2.zero
-        const cameraSmoothTime = 0.3
-        
+        const cameraSmoothTime = 0.2
+
         Camera.main.gameObject.transform.position = Vector2.smoothDamp(
             Camera.main.gameObject.transform.position,
             player.transform.position,
@@ -101,6 +137,17 @@ class PlayerUpdateComponent extends Component {
             const textLabel = message.gameObject.getComponent(TextLabel)
             textLabel.fillStyle = "red"
             message.gameObject.transform.scale = new Vector2(5, 5)
+
+            // this is wrong because i stop all coroutines on gameobject destroy
+            // just demonstrating the idea of where i want restarting the game to theoretically happen
+            // in reality just when the player doesnt exist
+            this.startCoroutine(this.restartGame())
         }
-    }   
+    }
+
+    // very bad coroutine cause itll do nothing due to being wiped on gameobject destroy
+    *restartGame() {
+        yield new WaitForSeconds(5)
+        SceneManager.loadScene(TestRoom)
+    }
 }
