@@ -1,5 +1,4 @@
 class TurretController extends Component{
-    timeSinceShot = 0
     start(){
         
     }
@@ -9,17 +8,18 @@ class TurretController extends Component{
             const e = enemy[0]
             const target = e
             this.transform.lookAt(target.transform.worldPosition)
-            // cooldown
-            this.timeSinceShot += 1
-            if (this.timeSinceShot > 20) {
-                this.timeSinceShot = 0
-                // get turret world pos
-                const worldPos = this.transform.worldPosition
-                const laser = instantiate(new LaserGameObject(), worldPos)
-                const movement = laser.getComponent(ProjectileMovementComponent)
-                movement.launch(target.transform.worldPosition.minus(worldPos))
-                
+            if(!this.isFiring){
+                this.isFiring = true
+                this.startCoroutine(this.fire(target))
             }
         }
+    }
+    *fire(target){
+        const worldPos = this.transform.worldPosition
+        const laser = instantiate(new LaserGameObject(), worldPos)
+        const movement = laser.getComponent(ProjectileMovementComponent)
+        movement.launch(target.transform.worldPosition.minus(worldPos))
+        yield new WaitForSeconds(0.5)
+        this.isFiring = false
     }
 }

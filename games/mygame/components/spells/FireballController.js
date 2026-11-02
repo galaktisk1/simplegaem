@@ -1,15 +1,10 @@
 class FireballController extends Component{
-    lifetime = 3
+    lifetime = 1
     start(){
-            
+        this.startCoroutine(this.destroyAfterDelay())
     }
     update(){
         const spell = this.gameObject
-        this.lifetime -= Time.deltaTime
-        if (this.lifetime <= 0) {
-            spell.destroy()
-            return
-        }
         const spellPos = spell.transform.position
 
         const enemy = GameObject.findGameObjectsWithTag("Enemy")
@@ -29,5 +24,9 @@ class FireballController extends Component{
                 }
             }
         }
+    }
+    *destroyAfterDelay() {
+        yield new WaitForSeconds(this.lifetime)
+        this.gameObject.destroy()
     }
 }

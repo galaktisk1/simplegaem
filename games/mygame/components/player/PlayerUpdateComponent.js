@@ -19,13 +19,13 @@ class PlayerUpdateComponent extends Component {
         // health and inv global set up
         player.getComponent(Health).currentHealth = GameSession.playerhealth
         player.getComponent(Inventory).inventory = GameSession.playerinventory
-        const lantern = instantiate(new LanternGameObject(), new Vector2(-62, 0))
+        const lantern = instantiate(new LanternGameObject(), Vector2.left.scaled(62))
         lantern.transform.setParent(player.transform)
 
-        const light = instantiate(new LightingGameObject(), new Vector2(0, 0))
+        const light = instantiate(new LightingGameObject(), Vector2.zero)
         light.transform.setParent(player.transform)
         
-        const facingIndicator = instantiate(new FacingIndicatorGameObject(), new Vector2(0, -90))
+        const facingIndicator = instantiate(new FacingIndicatorGameObject(), Vector2.up.scaled(90))
         facingIndicator.transform.setParent(player.transform)
     }
 
@@ -38,16 +38,16 @@ class PlayerUpdateComponent extends Component {
         const msgmanager = GameObject.find("MessageManager")
                 .getComponent(MessageManager)
         
-        if (Input.keysDown.includes("ArrowUp") || Input.keysDown.includes("KeyW")) {
+        if (Input.getKey("ArrowUp") || Input.getKey("KeyW")) {
             velocity.y -= this.speed
         }
-        if (Input.keysDown.includes("ArrowDown") || Input.keysDown.includes("KeyS")) {
+        if (Input.getKey("ArrowDown") || Input.getKey("KeyS")) {
             velocity.y += this.speed
         }
-        if (Input.keysDown.includes("ArrowLeft") || Input.keysDown.includes("KeyA")) {
+        if (Input.getKey("ArrowLeft") || Input.getKey("KeyA")) {
             velocity.x -= this.speed
         }
-        if (Input.keysDown.includes("ArrowRight") || Input.keysDown.includes("KeyD")) {
+        if (Input.getKey("ArrowRight") || Input.getKey("KeyD")) {
             velocity.x += this.speed
         }
 
@@ -59,7 +59,7 @@ class PlayerUpdateComponent extends Component {
         }
         
         // Show inventory once per key press.
-        if (Input.keysDownThisFrame.includes("KeyI")) {
+        if (Input.getKeyDown("KeyI")) {
             const inventory = GameObject.find("Player").getComponent(Inventory).inventory
             for (const item of inventory) {
                 msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
@@ -67,38 +67,40 @@ class PlayerUpdateComponent extends Component {
         }
         
         const mouseWorldPos = SceneManager.currentScene.mouseWorldPosition
-        
-        
         // rotate player to face mouse
         if (mouseWorldPos) {
             this.transform.lookAt(mouseWorldPos)
             // left click actions
-            if (Input.mouseButtonsDownThisFrame.includes(0)) {
-            const fireball = instantiate(new FireballGameObject(), this.transform.position.clone())
-            fireball.launch(this.transform.up)
+            if (Input.getMouseButtonDown(0)) {
+                const fireball = instantiate(new FireballGameObject(), this.transform.position.clone())
+                fireball.launch(this.transform.up)
+                }
         }
-        }
+        const player = this.gameObject
+        // test smooth damp by applying it to the camera position
+        const cameraVelocity = Vector2.zero
+        const cameraSmoothTime = 0.3
+        
+        Camera.main.gameObject.transform.position = Vector2.smoothDamp(
+            Camera.main.gameObject.transform.position,
+            player.transform.position,
+            cameraVelocity,
+            cameraSmoothTime,
+            Infinity,
+            Time.deltaTime
+        )
+    }
 
-        
-        
-        
+    onDestroy() {
         const player = this.gameObject
         const healthComp = player.getComponent(Health)
-        
+        const msgmanager = GameObject.find("MessageManager")
+            .getComponent(MessageManager)
         if (healthComp.currentHealth <= 0) {
             const message = msgmanager.showMessage(`You have died!`, 6)
             const textLabel = message.gameObject.getComponent(TextLabel)
             textLabel.fillStyle = "red"
             message.gameObject.transform.scale = new Vector2(5, 5)
         }
-        Camera.main.gameObject.transform.position = player.transform.position.clone()
-    }
-    onCollisionStay(other) {
-        if (other.tags.includes("Wall")) {
-            // stop player movement when colliding with a wall
-            // handle movement so it checks each proposed X/Y step before accepting it
-            const movement = this.gameObject.getComponent(MovementComponent)
-            
-        }
-    }
+    }   
 }

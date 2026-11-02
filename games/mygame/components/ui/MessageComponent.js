@@ -6,12 +6,11 @@ class MessageComponent extends Component {
         txtlabel.text = msg
         currentmsg.lifetime = lifetime
         Globals.messages.push({ gameObject: currentmsg})
+        this.startCoroutine(this.destroyAfterDelay())
     }
 
-    update() {
-        this.gameObject.lifetime -= Time.deltaTime
-        if (this.gameObject.lifetime <= 0) {
-            this.gameObject.destroy()
-        }
+    *destroyAfterDelay() {
+        yield new WaitForSeconds(this.gameObject.lifetime)
+        this.gameObject.destroy()
     }
 }
