@@ -36,6 +36,11 @@ class Scene {
 
     update() {
 
+        // important this happens before physics
+        for (const gameObject of [...this.gameObjects]) {
+            gameObject.broadcastMessage("fixedUpdate", [])
+        }
+
         //Collisions
         const collidable = GameObject.findGameObjectsByType(Collider)
         const rigidbodies = GameObject.findGameObjectsByType(Rigidbody)
@@ -73,22 +78,32 @@ class Scene {
         }
         this.lastHovered = hovered
 
-        // Update all game objects here before collisions with polygons
-        for (const gameObject of [...this.gameObjects]) {
-            gameObject.update()
-        }
+        
 
         // handle polygon-polygon collisions
         const physicalCollisions = []
         for (let i = 0, len = collidable.length; i < len; i++) {
             for (let j = i + 1; j < len; j++) {
-                const mtv = Collisions.isCollisionPolygonPolygon(collidable[i], collidable[j])
-                if(mtv) {
-                    collidable[i].broadcastMessage("onCollisionStay", [collidable[j], mtv])
-                    collidable[j].broadcastMessage("onCollisionStay", [collidable[i], mtv.negate()])
+                // shortcuts
+                const one = collidable[i]
+                const two = collidable[j]
+                const oneRb = one.getComponent(Rigidbody)
+                const twoRb = two.getComponent(Rigidbody)
+                const oneC = one.getComponent(Collider)
+                const twoC = two.getComponent(Collider)
 
-                    if (collidable[i].getComponent(Rigidbody) || collidable[j].getComponent(Rigidbody)) {
-                        physicalCollisions.push({one: collidable[i], two: collidable[j], mtv})
+                if (!oneRb && !twoRb) continue
+                
+                const mtv = Collisions.isCollisionPolygonPolygon(one, two)
+                if(mtv) {
+                    if (!oneC.isTrigger || !twoC.isTrigger) {
+                        one.broadcastMessage("onCollisionStay", [two, mtv])
+                        two.broadcastMessage("onCollisionStay", [one, mtv.negate()])
+                        physicalCollisions.push({ one, two, mtv })
+                    }
+                    else {
+                        one.broadcastMessage("onTriggerStay", [two, mtv])
+                        two.broadcastMessage("onTriggerStay", [one, mtv.negate()])
                     }
                 }
             }
@@ -96,21 +111,26 @@ class Scene {
 
         // handle physics
         for (const collision of physicalCollisions) {
-            // loop through all of them, move the objects by the minimum translation vector to resolve the collision
-            // both wont always necessarily have a rigidbody, so just move the ones that do have it
-            // if both have a rigidbody, move them both by HALF of mtv  
-            if (collision.one.getComponent(Rigidbody) && collision.two.getComponent(Rigidbody)) {
-                collision.one.transform.position.plusEquals(collision.mtv.scaled(0.5))
-                collision.two.transform.position.plusEquals(collision.mtv.negate().scaled(0.5))
-            } else if (collision.one.getComponent(Rigidbody)) {
-                collision.one.transform.position.plusEquals(collision.mtv)
-            } else if (collision.two.getComponent(Rigidbody)) {
-                collision.two.transform.position.plusEquals(collision.mtv.negate())
-            }
+            // shortcuts
+            const oneRb = collision.one.getComponent(Rigidbody)
+            const twoRb = collision.two.getComponent(Rigidbody)
+            const onepos = collision.one.transform.position
+            const twopos = collision.two.transform.position
 
+            if (oneRb && twoRb) {
+                onepos.plusEquals(collision.mtv.scaled(0.5))
+                twopos.plusEquals(collision.mtv.negate().scaled(0.5))
+            } else if (oneRb) {
+                onepos.plusEquals(collision.mtv)
+            } else if (twoRb) {
+                twopos.plusEquals(collision.mtv.negate())
+            }
         }
 
-        
+        // this shall happen after physics
+        for (const gameObject of [...this.gameObjects]) {
+            gameObject.update()
+        }
 
         for (const gameObject of this.gameObjects) {
             if (gameObject.markForDestroy) {
