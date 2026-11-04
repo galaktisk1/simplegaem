@@ -96,7 +96,7 @@ class Scene {
                 
                 const mtv = Collisions.isCollisionPolygonPolygon(one, two)
                 if(mtv) {
-                    if (!oneC.isTrigger || !twoC.isTrigger) {
+                    if (!oneC.isTrigger && !twoC.isTrigger) {
                         one.broadcastMessage("onCollisionStay", [two, mtv])
                         two.broadcastMessage("onCollisionStay", [one, mtv.negate()])
                         physicalCollisions.push({ one, two, mtv })

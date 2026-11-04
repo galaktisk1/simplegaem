@@ -1,7 +1,7 @@
 class SquareController extends Component {
   speed = 50
   hasJumped = false
-  lastJumpTime
+  lastJumpTime = -Infinity
   start() {
     this.rigidBody = this.gameObject.getComponent(Rigidbody)
   }
@@ -25,10 +25,16 @@ class SquareController extends Component {
       this.rigidBody.velocity.y = -this.speed * 2
       this.lastJumpTime = Time.time
     }
-    if (Input.getKey("Space") && !this.hasJumped && Time.time - this.lastJumpTime < 0.3) {
+    if (Input.getKey("Space") && Time.time - this.lastJumpTime < 0.3) {
       this.rigidBody.velocity.y = -this.speed * 2
     }
       Camera.main.transform.position = this.transform.position.clone()
+  }
+
+  onTriggerStay(other) {
+    if (other.name === "CoinGameObject") {
+      other.destroy()
+    }
   }
 
   onCollisionStay(other, minimumTransformVector) {
