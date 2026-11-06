@@ -1,5 +1,9 @@
 class ItemPickupComponent extends Component {
     isCollected = false
+    start() {
+        this.popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
+        this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
+    }
 
     collect() {
         if (!this.isCollected) {
@@ -15,22 +19,19 @@ class ItemPickupComponent extends Component {
                 GameSession.gold += item.amount
             }
             else {
-                const popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
                 if (item.itemDef.id === "key") {
-                    popupmanager.showPopup("Key Get", player, "yellow")
+                    this.popupmanager.showPopup("Key Get", player, "yellow")
                 }
                 playerinv.addItem(item)
             }
             console.log(playerinv.inventory)
             this.isCollected = true
-            const msgmanager = GameObject.find("MessageManager")
-                .getComponent(MessageManager)
-            msgmanager.showMessage(`You picked up a ${item.itemDef.name}`, 3)
+            this.msgmanager.showMessage(`You picked up a ${item.itemDef.name}`, 3)
             item.destroy()
         }
     }
 
-    onCollisionStay(other) {
+    onTriggerStay(other) {
         if (!this.isCollected && other.name === "Player") {
             this.collect()
         }

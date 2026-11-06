@@ -13,4 +13,8 @@ class ItemLibrary {
     getGoldDefinition() {
         return this.getDefinition("gold")
     }
+
+    getByQuality(quality) {
+        return Object.values(this.defs).filter(def => def.quality === quality)
+    }
 }

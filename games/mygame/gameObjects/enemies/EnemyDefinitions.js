@@ -38,6 +38,10 @@ const EnemyDefinitions = {
         experiencePerHealth: 5,
         experienceBase: 60,
         movementSpeed: 100,
+        loot: [
+            { chance: 19, item: "gold", min: 2, max: 20 },
+            { chance: 25, quality: "low" },
+        ],
         children: [
             {
                 name: "GoblinStick",

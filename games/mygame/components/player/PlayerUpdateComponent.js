@@ -13,8 +13,8 @@
 
 class PlayerUpdateComponent extends Component {
     speed = 4 * 60
-
     allowedInputs = []
+    cameraVelocity = Vector2.zero
 
     start() {
         // declare components and references ill need later
@@ -40,6 +40,28 @@ class PlayerUpdateComponent extends Component {
         facingIndicator.transform.setParent(this.player.transform)
 
         Camera.main.transform.position = this.player.transform.position.clone()
+        this.cameraVelocity = Vector2.zero
+    }
+
+    fixedUpdate() {
+        this.movementVelocity.x = 0
+        this.movementVelocity.y = 0
+        //regular input section
+        if (Input.getKey("ArrowUp") || Input.getKey("KeyW")) {
+            this.movementVelocity.y -= this.speed
+        }
+        if (Input.getKey("ArrowDown") || Input.getKey("KeyS")) {
+            this.movementVelocity.y += this.speed
+        }
+        if (Input.getKey("ArrowLeft") || Input.getKey("KeyA")) {
+            this.movementVelocity.x -= this.speed
+        }
+        if (Input.getKey("ArrowRight") || Input.getKey("KeyD")) {
+            this.movementVelocity.x += this.speed
+        }
+
+        // clamp velocity to max speed
+        this.movement.velocity = Vector2.clampMagnitude(this.movementVelocity, this.speed)
     }
 
     update() {
@@ -69,24 +91,7 @@ class PlayerUpdateComponent extends Component {
 
 
 
-        this.movementVelocity.x = 0
-        this.movementVelocity.y = 0
-        //regular input section
-        if (Input.getKey("ArrowUp") || Input.getKey("KeyW")) {
-            this.movementVelocity.y -= this.speed
-        }
-        if (Input.getKey("ArrowDown") || Input.getKey("KeyS")) {
-            this.movementVelocity.y += this.speed
-        }
-        if (Input.getKey("ArrowLeft") || Input.getKey("KeyA")) {
-            this.movementVelocity.x -= this.speed
-        }
-        if (Input.getKey("ArrowRight") || Input.getKey("KeyD")) {
-            this.movementVelocity.x += this.speed
-        }
-
-        // clamp velocity to max speed
-        this.movement.velocity = Vector2.clampMagnitude(this.movementVelocity, this.speed)
+        
 
         if (Input.getKeyDown("Space")) {
             // interact button pressed, this is available in any mode
@@ -116,18 +121,18 @@ class PlayerUpdateComponent extends Component {
             }
         }
         // test smooth damp by applying it to the camera position
-        const cameraVelocity = Vector2.zero
         const cameraSmoothTime = 0.2
 
         Camera.main.gameObject.transform.position = Vector2.smoothDamp(
             Camera.main.gameObject.transform.position,
             this.player.transform.position,
-            cameraVelocity,
+            this.cameraVelocity,
             cameraSmoothTime,
             Infinity,
             Time.deltaTime
         )
     }
+
 
     onDestroy() {
         if (this.health.currentHealth <= 0) {

@@ -12,11 +12,24 @@ const itemLibrary = new ItemLibrary({
     potion: {
         id: "potion",
         name: "potion",
-        stackable: true
+        stackable: true,
+        quality: "low"
     },
     bread: {
         id: "bread",
         name: "bread",
         stackable: true
+    },
+    rustySword: {
+        id: "rustySword",
+        name: "rusty sword",
+        stackable: false,
+        quality: "low"
+    },
+    copperAmulet: {
+        id: "copperAmulet",
+        name: "copper amulet",
+        stackable: false,
+        quality: "low"
     }
 })

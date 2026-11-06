@@ -33,10 +33,11 @@ class Health extends Component {
 
     takeDamage(amount, attacker, target) {
         const go = this.gameObject
+        if (go.markForDestroy) return
         this._currentHealth -= amount
         if (this._currentHealth <= 0) {
             this._currentHealth = 0
-            if (go.getComponent(Experience) == true) {
+            if (go.getComponent(Experience)) {
                 if (attacker && attacker.getComponent(Experience)) {
                     const attExperience = attacker.getComponent(Experience)
                     const tarExperience = go.getComponent(Experience)
