@@ -99,15 +99,15 @@ class PlayerUpdateComponent extends Component {
 
         }
 
-        // Show inventory once per key press.
-        if (Input.getKeyDown("KeyI")) {
-            // for now this displays messages
-            const inventory = GameObject.find("Player").getComponent(Inventory).inventory
-            for (const item of inventory) {
-                this.msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
-            }
-            // however, this should display a UI of the inventory
-        }
+        // // Show inventory once per key press.
+        // if (Input.getKeyDown("KeyI")) {
+        //     // for now this displays messages
+        //     const inventory = GameObject.find("Player").getComponent(Inventory).inventory
+        //     for (const item of inventory) {
+        //         this.msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
+        //     }
+        //     // however, this should display a UI of the inventory
+        // }
 
         // i wish this wasnt in the scene, but so be it for now
         const mouseWorldPos = SceneManager.currentScene.mouseWorldPosition
