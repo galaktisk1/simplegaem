@@ -38,6 +38,8 @@ class Scene {
 
         // important this happens before physics
         for (const gameObject of [...this.gameObjects]) {
+            // call start on each game object before fixedUpdate
+            gameObject.start()
             gameObject.broadcastMessage("fixedUpdate", [])
         }
 

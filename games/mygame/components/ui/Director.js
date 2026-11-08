@@ -5,9 +5,14 @@ class Director extends Component {
     // this could hold spawning enemies within the dungeon
     // essentially, this acts as a global manager for game-wide behaviors
     update() {
-        if(!GameObject.find("Player")) {
+        if (!GameObject.find("Player") && !this.restarting) {
+            this.restarting = true
             this.startCoroutine(this.restartGame())
         }
+    }
+
+    start() {
+        this.restarting = false
     }
     *restartGame() {
         yield new WaitForSeconds(5)

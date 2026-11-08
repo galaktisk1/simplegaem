@@ -1,6 +1,6 @@
 class DirectorGameObject extends GameObject {
     constructor() {
         super("Director")
-        this.addComponent(Director)
+        this.addComponent(new Director())
     }
 }
