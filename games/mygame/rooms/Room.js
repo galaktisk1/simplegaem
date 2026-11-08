@@ -7,7 +7,7 @@ class Room {
 
     getDoorways() {
         const doorways = []
-        const tileSize = Assets.floor.scale.x * 2
+        const tileSize = Room.tileSize
         for (let y = 0; y < this.layout.length; y++) {
             for (let x = 0; x < this.layout[y].length; x++) {
                 if (this.layout[y][x] === "D") {
@@ -69,5 +69,12 @@ class Room {
             })
         }
         return edges
+    }
+    static get tileSize() { return Assets.floor.scale.x * 2 }
+    cellToLocal(x, y) {
+    return new Vector2((x - 0.5) * Room.tileSize, (y - 0.5) * Room.tileSize)
+    }
+    cellToWorld(origin, x, y) {
+    return origin.plus(this.cellToLocal(x, y))
     }
 }

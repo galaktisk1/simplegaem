@@ -1,18 +1,16 @@
 <html lang="en">
-
-<head>
+  <head>
     <title>GameLoop</title>
     <style>
-        * {
-            margin: 0;
-            overflow: hidden;
-        }
+      * {
+        margin: 0;
+        overflow: hidden;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <canvas id="canv">
-    </canvas>
+  <body>
+    <canvas id="canv"> </canvas>
     <!-- engine scripts -->
     <script src="../../engine/Vector2.js"></script>
     <script src="../../engine/Input.js"></script>
@@ -43,6 +41,7 @@
 
     <!-- game scripts -->
     <script src="items/ItemDefinitions.js"></script>
+    <script src="items/WeaponDefinitions.js"></script>
     <script src="items/Loot.js"></script>
     <script src="Assets.js"></script>
 
@@ -79,6 +78,8 @@
     <script src="components/ui/PopUpController.js"></script>
     <script src="components/ui/PopUpManager.js"></script>
     <script src="components/ui/MessageManager.js"></script>
+    <script src="components/ui/Director.js"></script>
+    <script src="components/ui/InventoryUI.js"></script>
 
     <!-- player -->
     <script src="components/player/PlayerUpdateComponent.js"></script>
@@ -88,7 +89,6 @@
 
     <!-- enemies -->
     <script src="components/enemies/EnemyController.js"></script>
-
 
     <!-- game objects -->
     <!-- world -->
@@ -119,16 +119,18 @@
     <script src="gameObjects/ui/PopUpGameObject.js"></script>
     <script src="gameObjects/ui/PopUpManagerGameObject.js"></script>
     <script src="gameObjects/ui/MessageManagerGameObject.js"></script>
+    <script src="gameObjects/ui/DirectorGameObject.js"></script>
+    <script src="gameObjects/ui/InventoryUIGameObject.js"></script>
 
     <!-- enemies -->
     <script src="gameObjects/enemies/EnemyDefinitions.js"></script>
     <script src="gameObjects/enemies/EnemyGameObject.js"></script>
 
+    <script src="gameObjects/HitboxGameObject.js"></script>
 
 
     <script>
-        Engine.start(TestRoom, Settings)
+      Engine.start(TestRoom, Settings);
     </script>
-</body>
-
+  </body>
 </html>

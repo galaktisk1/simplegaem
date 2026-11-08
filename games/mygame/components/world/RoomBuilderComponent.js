@@ -1,11 +1,8 @@
 class RoomBuilderComponent extends Component {
-    /**
-     * @param {{ x: number, y: number } | null} [protectedDoorway=null]
-     */
-    buildRoom(room, roomWorldPos, protectedDoorway = null) {
+    buildRoom(room, roomWorldPos,  connected = []) {
         const random = GameSession.randomD
         const layout = room.layout
-        const tileSize = Assets.floor.scale.x * 2
+        const tileSize = Room.tileSize
         // layout has:
         // # for wall
         // . for floor
@@ -22,14 +19,18 @@ class RoomBuilderComponent extends Component {
                 }
             }
         }
-        let openDoors = []
         for (let y = 0; y < layout.length; y++) {
             for (let x = 0; x < layout[y].length; x++) {
                 const cell = layout[y][x]
-                const cellLocalPos = new Vector2((x - 0.5) * tileSize, (y - 0.5) * tileSize)
+                const cellLocalPos = room.cellToLocal(x, y)
 
                 if (cell === ".") {
                     this.createFloor({ position: cellLocalPos }, roomWorldPos)
+                }
+                if (cell === "l") {
+                    // create a floor and a wall object on the right edge of that floor
+                    this.createFloor({ position: cellLocalPos }, roomWorldPos)
+                    this.createWall({ position: cellLocalPos, rotation: 0 }, roomWorldPos)
                 }
                 if (cell !== "#" && cell !== "D") continue
                 const edges = room.getBoundaryEdges(layout, x, y, tileSize)
@@ -37,31 +38,12 @@ class RoomBuilderComponent extends Component {
                     for (const edge of edges) this.createWall(edge, roomWorldPos)
                 }
 
-                if (cell === "l") {
-                    // create a floor and a wall object on the right edge of that floor
-                    this.createFloor({ position: cellLocalPos }, roomWorldPos)
-                    this.createWall({ position: cellLocalPos, rotation: 0 }, roomWorldPos)
-                }
-
                 if (cell === "D" && edges.length > 0) {
-                    const doorway = edges[0]
-                    const isProtected = protectedDoorway && protectedDoorway.x === x && protectedDoorway.y === y
-                    if (!isProtected && openDoorCount > 1 && random.nextBool() == true) {
-                        openDoorCount--
-                        this.createWall(doorway, roomWorldPos)
-                    }
-                    else {
-                        // direction dtermined by :
-                        // Floor to the right → doorway faces left.
-                        // Floor to the left → faces right.
-                        // Floor below → faces up.
-                        // Floor above → faces down.
-                        openDoors.push({ position: roomWorldPos.plus(doorway.position), direction: doorway.direction })
-                    }
+                    const isConnected = connected.some(p => p.x === x && p.y === y)
+                    if (!isConnected) this.createWall(edges[0], roomWorldPos)
                 }
             }
         }
-        return openDoors
     }    
 
     createWall(wall, roomWorldPos) {
