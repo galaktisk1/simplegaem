@@ -84,4 +84,20 @@ class Seed {
     nextBool() {
         return (this.next() % 2) === 0;
     }
+    nextWeighted(table) {
+        const entries = Object.values(table)
+        // Add up the weights of all entries.
+        let totalWeight = 0;
+        for (const entry of entries) {
+            totalWeight += entry.weight || 0;
+        }
+        // Roll a number from 0 to totalWeight - 1.
+        let r = this.nextInt(totalWeight);
+        for (const entry of entries) {
+            r -= entry.weight || 0;
+            // pick the entry whose weight makes the roll negative
+            if (r < 0) return entry;
+        }
+        return null;
+    }
 }
