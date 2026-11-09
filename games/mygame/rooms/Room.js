@@ -1,6 +1,6 @@
-class Room { 
+class Room {
     layout
-    
+    static isConnector = false
     constructor() {
         this.layout = []
     }
@@ -25,7 +25,7 @@ class Room {
         return doorways
     }
 
-    getFloorCells(){
+    getFloorCells() {
         const floorCells = []
         for (let y = 0; y < this.layout.length; y++) {
             for (let x = 0; x < this.layout[y].length; x++) {
@@ -58,7 +58,8 @@ class Room {
         for (const neighbor of neighbors) {
             const floorX = x + neighbor.dx
             const floorY = y + neighbor.dy
-            if (layout[floorY]?.[floorX] !== ".") continue
+            const cell = layout[floorY]?.[floorX]
+            if (cell !== "." && cell !== "l") continue
             edges.push({
                 position: new Vector2(
                     (floorX - 0.5) * tileSize - neighbor.dx * tileSize / 2,
@@ -71,10 +72,16 @@ class Room {
         return edges
     }
     static get tileSize() { return Assets.floor.scale.x * 2 }
-    cellToLocal(x, y) {
-    return new Vector2((x - 0.5) * Room.tileSize, (y - 0.5) * Room.tileSize)
+    
+    get isConnector() {
+        return /** @type {typeof Room} */ (this.constructor).isConnector
     }
+
+    cellToLocal(x, y) {
+        return new Vector2((x - 0.5) * Room.tileSize, (y - 0.5) * Room.tileSize)
+    }
+    
     cellToWorld(origin, x, y) {
-    return origin.plus(this.cellToLocal(x, y))
+        return origin.plus(this.cellToLocal(x, y))
     }
 }

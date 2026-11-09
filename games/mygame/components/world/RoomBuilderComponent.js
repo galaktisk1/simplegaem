@@ -1,6 +1,5 @@
 class RoomBuilderComponent extends Component {
     buildRoom(room, roomWorldPos,  connected = []) {
-        const random = GameSession.randomD
         const layout = room.layout
         const tileSize = Room.tileSize
         // layout has:
@@ -30,7 +29,7 @@ class RoomBuilderComponent extends Component {
                 if (cell === "l") {
                     // create a floor and a wall object on the right edge of that floor
                     this.createFloor({ position: cellLocalPos }, roomWorldPos)
-                    this.createWall({ position: cellLocalPos, rotation: 0 }, roomWorldPos)
+                    this.createWall({ position: cellLocalPos, rotation: Math.PI / 2 }, roomWorldPos)
                 }
                 if (cell !== "#" && cell !== "D") continue
                 const edges = room.getBoundaryEdges(layout, x, y, tileSize)
