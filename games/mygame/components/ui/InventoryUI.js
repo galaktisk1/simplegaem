@@ -7,6 +7,8 @@ class InventoryUI extends Component {
     }
     update() {
         if (Input.getKeyDown("KeyI")) { this.open = !this.open }
+        // EQUIP: while open, a click on a weapon's row equips it on the player,
+        // the row is (mouse y - 60) / 24 since each line starts at y 60, 24 apart
     }
     draw(ctx) {
         if (!this.open || !this.inventory) return

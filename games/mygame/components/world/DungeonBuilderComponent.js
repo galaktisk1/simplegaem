@@ -4,22 +4,41 @@ class DungeonBuilderComponent extends Component {
         this.tileSize = Room.tileSize
         this.roomBuilder = this.gameObject.getComponent(RoomBuilderComponent)
         this.random = GameSession.randomD
+        this.populator = this.gameObject.getComponent(DungeonPopulatorComponent)
     }
 
+    /*
+    * Generates a connected dungeon layout
+    * Starting from one Square room, then selects a random 
+    * available doorway and tries to attach a new room
+
+    * Rooms cannot overlap existing floor tiles (occupied)
+    * Successful placement give unused doorways to frontier
+    * connector rooms count towards the depth of the dungeon, but not max rooms
+
+    * @param {Vector2} startPos - The starting position of the dungeon
+    * @param {number} [maxRooms=7] - The maximum number of non-connector rooms to place
+    * @returns {Array} An array of placed rooms with their positions and connections
+    */
     planDungeon(startPos, maxRooms = 7) {
 
+        // initialize sets and arrays to track occupied tiles and dead ends
         const occupied = new Set()
         const deadEnds = []
 
+        // establish starting room,
+        // template rooms available for placement
+        // description of data that each room will get (start)
+        // mark the starting room's floor tiles as occupied
         const startRoom = new SquareRoom()
         const templates = [LRoom, LargeCavernRoom, CubiclesRoom, HallwayRoom, TJunctionRoom, CrossroadsRoom]
         const start = { room: startRoom, origin: startPos, depth: 0, connected: [], parent: null, entryDoor: null, chain: 0 }
         for (const key of this.floorTiles(startRoom, startPos, this.tileSize)) occupied.add(key)
-
+        // add the starting room to the placed rooms list and set the initial real room count
         const placed = [start]
         let realRooms = 1
 
-
+        // initialize the frontier with the doorways of the starting room
         const frontier = []
         for (const door of startRoom.getDoorways()) {
             frontier.push({
@@ -30,29 +49,35 @@ class DungeonBuilderComponent extends Component {
             })
         }
 
-
+        // main loop to place rooms until the maximum number of real rooms is reached or no more frontier doors are available
         while (realRooms < maxRooms && frontier.length > 0 && placed.length < maxRooms * 3) {
-            // tak a random door from the frontier
+            // take a random door from the frontier
             const index = this.random.nextInt(frontier.length)
             const door = frontier.splice(index, 1)[0]
             if (!door) continue
 
+            // attempt to place a new room at the selected door
             const fit = this.tryPlaceRoom(door, templates, occupied, this.tileSize, this.random)
+            // if the room doesn't fit, mark the door as a dead end and continue
             if (!fit) {
                 deadEnds.push(door)
                 continue
             }
+            // mark the floor tiles of the new room as occupied
             const { room: newRoom, doorways, incomingDoor, origin: newOrigin, keys } = fit
             for (const key of keys) occupied.add(key)
 
+            // define what a connector is (a room that connects other rooms but doesn't count as a real room)
             const isConnector = newRoom.isConnector
-
+            // create a new placed room object with its properties and add it to the placed list
             const newPlaced = { room: newRoom, origin: newOrigin, depth: door.placedRoom.depth + 1, connected: [incomingDoor.gridPosition], parent: door.placedRoom, entryDoor: door, chain: isConnector ? door.placedRoom.chain + 1 : 0 }
             placed.push(newPlaced)
-            // increment realRooms if the new room is not a connector
+            // increment realRooms if the new room is not a connector room
             if (!isConnector) realRooms++
+            // mark the door of the parent room as connected
             door.placedRoom.connected.push(door.gridPosition)
 
+            // add the new room's doors to the frontier, except for the one we came through
             for (const newDoor of doorways) {
                 if (newDoor !== incomingDoor) {
                     frontier.push({
@@ -65,75 +90,16 @@ class DungeonBuilderComponent extends Component {
             }
 
         }
+        // debug log the placed rooms, remaining frontier doors, dead ends, and occupied tiles
         console.log(placed, frontier, deadEnds, occupied)
         return placed
     }
 
     buildDungeon(startPos) {
         const placed = this.planDungeon(startPos)
-        const random = GameSession.randomD
         for (const { room, origin, connected } of placed) {
             this.roomBuilder.buildRoom(room, origin, connected)
         }
-
-        // the exit goes in the room furthest from the start
-        const deepest = placed
-            .filter(p => !p.room.isConnector)
-            .reduce((best, p) => p.depth > best.depth ? p : best)
-
-        // find where the deepest room was entered
-        const entrance = deepest.connected[0]
-        const entranceDoor = deepest.room.getDoorways()
-            .find(d => d.gridPosition.x === entrance.x && d.gridPosition.y === entrance.y)
-        if (!entranceDoor) return placed
-        const entrancePos = deepest.origin.plus(entranceDoor.localPosition)
-
-        // pick the floor cell furthest from that entrance
-        const toWorld = c => deepest.room.cellToWorld(deepest.origin, c.position.x, c.position.y)
-        const cell = deepest.room.getFloorCells().reduce((best, c) =>
-            Vector2.distance(toWorld(c), entrancePos) > Vector2.distance(toWorld(best), entrancePos) ? c : best)
-
-        // spawn the exit at the selected cell
-        SceneManager.currentScene.instantiate(new ExitGameObject(), toWorld(cell), 0, new Vector2(70, 70))
-
-        // place the gate and make sure it is before the exit
-        const route = this.pathToStart(deepest).filter(p => p.depth >= 2)
-        const gated = route.length > 0
-            ? route[random.nextInt(route.length)]
-            : deepest
-        const doorway = gated.entryDoor
-        const vertical = doorway.direction === "left" || doorway.direction === "right"
-        const half = Room.tileSize / 2
-        const rotation = vertical ? Math.PI / 2 : 0
-        const hinge = vertical
-            ? doorway.position.minus(new Vector2(0, half))
-            : doorway.position.minus(new Vector2(half, 0))
-        SceneManager.currentScene.instantiate(new GateGameObject(), hinge, rotation)
-
-        // now place the key before the gate
-        const reachable = placed.filter(p => !this.isBehind(p, gated) && !p.room.isConnector)
-        const away = reachable.filter(p => p.depth > 0)
-        const choices = away.length > 0 ? away : reachable
-        const keyRoom = choices[random.nextInt(choices.length)]
-        const keyCells = keyRoom.room.getFloorCells()
-        const keyCell = keyCells[random.nextInt(keyCells.length)]
-        const keyPos = keyRoom.room.cellToWorld(keyRoom.origin, keyCell.position.x, keyCell.position.y)
-
-        SceneManager.currentScene.instantiate(new KeyGameObject(), keyPos.minus(new Vector2(20, 20)))
-
-        // now spawn enemies in the rooms
-        for (const p of placed) {
-            if (p.depth === 0 || p.room.isConnector) continue
-            const cells = p.room.getSpawnCells()
-            const count = Math.min(cells.length, 1 + Math.floor(cells.length / 4))
-            for (let i = 0; i < count; i++) {
-                const cell = cells.splice(random.nextInt(cells.length), 1)[0]
-                const def = random.nextWeighted(EnemyDefinitions)
-                const position = p.room.cellToWorld(p.origin, cell.position.x, cell.position.y)
-                SceneManager.currentScene.instantiate(new EnemyGameObject(def), position)
-            }
-        }
-
         return placed
     }
 
@@ -159,19 +125,6 @@ class DungeonBuilderComponent extends Component {
         return null
     }
 
-    pathToStart(room) {
-        const path = []
-        for (let r = room; r; r = r.parent) path.push(r)
-        return path
-    }
-
-    isBehind(room, gatedRoom) {
-        for (let r = room; r; r = r.parent) {
-            if (r === gatedRoom) return true
-        }
-        return false
-    }
-
     floorTiles(room, origin, tileSize) {
         const originX = Math.round(origin.x / tileSize)
         const originY = Math.round(origin.y / tileSize)
@@ -193,6 +146,4 @@ class DungeonBuilderComponent extends Component {
         }
         return copy
     }
-
-
 }

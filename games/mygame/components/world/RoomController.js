@@ -2,8 +2,11 @@ class RoomController extends Component {
     start() {
         Camera.main.backgroundColor = "black"
         if (SceneManager.currentScene instanceof Room1) {
-            this.dungeonBuilder = GameObject.find("DungeonBuilder").getComponent(DungeonBuilderComponent)
-            this.dungeonBuilder.buildDungeon(new Vector2(0, 0))
+            this.dungeonB = GameObject.find("DungeonBuilder")
+            this.dungeonBuilder = this.dungeonB.getComponent(DungeonBuilderComponent)
+            this.dungeonPopulator = this.dungeonB.getComponent(DungeonPopulatorComponent)
+            let placed = this.dungeonBuilder.buildDungeon(new Vector2(0, 0))
+            this.dungeonPopulator.populateDungeon(placed)
         }
         SceneManager.loadScene(GenericRoom, true)
     }

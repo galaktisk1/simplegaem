@@ -4,8 +4,8 @@ class SquareRoom extends Room {
     // D is a doorway, which can either be a door or empty
     // . is an empty space/floor
     layout = [
-        "###",
+        "#D#",
         "D.D",
-        "###"
+        "#D#"
     ]
 }

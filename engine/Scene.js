@@ -93,8 +93,15 @@ class Scene {
                 const twoRb = two.getComponent(Rigidbody)
                 const oneC = one.getComponent(Collider)
                 const twoC = two.getComponent(Collider)
+                const onepos = one.transform.position
+                const twopos = two.transform.position
 
                 if (!oneRb && !twoRb) continue
+
+                //temporary sorta broadphase
+                if (Vector2.distance(onepos, twopos) > 500) {
+                    continue
+                }
                 
                 const mtv = Collisions.isCollisionPolygonPolygon(one, two)
                 if(mtv) {

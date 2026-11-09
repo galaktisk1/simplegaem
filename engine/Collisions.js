@@ -27,8 +27,17 @@ class Collisions {
     }
 
     static isCollisionPolygonPolygon(gameObject1, gameObject2) {
+        const one = gameObject1
+        const two = gameObject2
+        const oneC = one.getComponent(Collider)
+        const twoC = two.getComponent(Collider)
+        const onepos = one.transform.position
+        const twopos = two.transform.position
+
+        
+
         let worldSpacePoints1 = []
-        for (let point of gameObject1.getComponent(Collider).points) {
+        for (let point of oneC.points) {
             worldSpacePoints1.push(
                 new Vector2(
                     gameObject1.transform.getWorldMatrix().transformPoint(point).x,
@@ -36,15 +45,17 @@ class Collisions {
                 )
             )
         }
+        
         let worldSpacePoints2 = []
-        for (let point of gameObject2.getComponent(Collider).points) {
+        for (let point of twoC.points) {
             worldSpacePoints2.push(
                 new Vector2(
-                    gameObject2.transform.getWorldMatrix().transformPoint(point).x,
-                    gameObject2.transform.getWorldMatrix().transformPoint(point).y
+                    two.transform.getWorldMatrix().transformPoint(point).x,
+                    two.transform.getWorldMatrix().transformPoint(point).y
                 )
             )
         }
+
         let allAxes = []
         for (let i = 0; i < worldSpacePoints1.length; i++) {
             let point1 = worldSpacePoints1[i]
@@ -75,7 +86,8 @@ class Collisions {
                 minimumTransformVector = axis.normalized.scaled(minOverlap)
             }
         }
-        if (Vector2.dot(gameObject1.transform.position.minus(gameObject2.transform.position), minimumTransformVector) > 0) {
+
+        if (Vector2.dot(onepos.minus(twopos), minimumTransformVector) > 0) {
             return minimumTransformVector
         } else {
             return minimumTransformVector.scaled(-1)

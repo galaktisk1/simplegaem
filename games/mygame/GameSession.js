@@ -4,6 +4,7 @@ class GameSession {
     static playerinventory = []
     static playerhealth
     static playermaxhealth = 100
+    static playerexp = 0
     static floor = 0
     static playerlevel = 1
     static seed = "123"

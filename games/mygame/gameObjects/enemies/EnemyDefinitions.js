@@ -15,7 +15,7 @@ const EnemyDefinitions = {
             { chance: 10, item: "gold", min: 1, max: 5 },
         ],
         weight: 138,
-        // TODO: Add preferred attack distance, damage, and attack cooldown for EnemyController.
+        // TODO: Add preferred attack distance and attack cooldown for EnemyController.
         children: [
             {
                 name: "RatTail",

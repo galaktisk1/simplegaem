@@ -23,7 +23,10 @@ class PlayerUpdateComponent extends Component {
         this.movementVelocity = this.movement.velocity
         this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.health = this.gameObject.getComponent(Health)
+        this.experience = this.gameObject.getComponent(Experience)
         this.inventory = this.gameObject.getComponent(Inventory)
+        // MELEE: this.weapon = the equipped weapon definition (damageMin, damageMax),
+        // fists (Arena's punch, 1-2) when nothing is equipped
 
         // health and inv global set up
         this.health.currentHealth = GameSession.playerhealth ?? GameSession.playermaxhealth
@@ -67,6 +70,7 @@ class PlayerUpdateComponent extends Component {
 
     update() {
         GameSession.playerhealth = this.health.currentHealth
+        GameSession.playerexp = this.experience.level.current
         // cheat codes :)
         if (Input.getKey("KeyB")) {
             // die button
@@ -112,22 +116,15 @@ class PlayerUpdateComponent extends Component {
 
         }
 
-        // // Show inventory once per key press.
-        // if (Input.getKeyDown("KeyI")) {
-        //     // for now this displays messages
-        //     const inventory = GameObject.find("Player").getComponent(Inventory).inventory
-        //     for (const item of inventory) {
-        //         this.msgmanager.showMessage(`${item.itemDef.name} x${item.amount}`, 3)
-        //     }
-        //     // however, this should display a UI of the inventory
-        // }
-
         // i wish this wasnt in the scene, but so be it for now
         const mouseWorldPos = SceneManager.currentScene.mouseWorldPosition
         // rotate player to face mouse
         if (mouseWorldPos) {
             this.player.transform.lookAt(mouseWorldPos)
             // left click actions
+            // MELEE: left click should start a sword swing here instead,
+            // spawning a HitboxGameObject as a child of the player for the swing time.
+            // The fireball can move to another key.
             if (Input.getMouseButtonDown(0)) {
                 const fireball = instantiate(new FireballGameObject(), this.player.transform.position.clone())
                 fireball.launch(this.player.transform.up)

@@ -13,6 +13,8 @@ class Engine {
         addEventListener("mousedown", Input.mousedown)
         addEventListener("mouseup", Input.mouseup)
         addEventListener("mousemove", Input.mousemove)
+        // remember F12 or ctrl shift I to open devtools
+        addEventListener("contextmenu", e=>e.preventDefault())
 
         SceneManager.nextScene = nextScene
         if (settings) {
@@ -39,8 +41,10 @@ class Engine {
     }
 
     static draw() {
-        Engine.canvas.width = window.innerWidth
-        Engine.canvas.height = window.innerHeight
+        if (Engine.canvas.width !== window.innerWidth || Engine.canvas.height !== window.innerHeight) {
+            Engine.canvas.width = window.innerWidth
+            Engine.canvas.height = window.innerHeight
+        }
 
         SceneManager.currentScene.draw(Engine.ctx)
     }
