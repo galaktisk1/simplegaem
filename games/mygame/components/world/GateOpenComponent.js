@@ -3,6 +3,10 @@ class GateOpenComponent extends Component {
     isOpening = false
     speed = 1
     targetRotation = 0
+    start() {
+        this.collider = this.gameObject.getComponent(Collider)
+        this.collider.isTrigger = false
+    }
 
     update() {
         if (this.isOpen) return
@@ -20,6 +24,8 @@ class GateOpenComponent extends Component {
             if (currentRotation == targetRotation) {
                 this.isOpening = false
                 this.isOpen = true
+                // once the gate is fully open, it should be solid again
+                this.collider.isTrigger = false
             }
         }
     }
@@ -34,6 +40,8 @@ class GateOpenComponent extends Component {
         if (key) {
             playerinv.removeItem(key, 1)
             this.isOpening = true
+            // if door is moving, dont collide with it
+            this.collider.isTrigger = true
             const msgmanager = GameObject.find("MessageManager")
                 .getComponent(MessageManager)
             msgmanager.showMessage("You opened the gate", 3)

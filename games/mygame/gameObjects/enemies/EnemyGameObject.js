@@ -9,7 +9,7 @@ class EnemyGameObject extends GameObject{
         this.addComponent(new Health())
         this.addComponent(new MovementComponent())
         this.addComponent(new EnemyController(), {
-            speed: definition.movementSpeed,
+            speed: definition.SPD * 3,
         })
         this.addComponent(new Experience())
         this.transform.scale = definition.scale.clone()

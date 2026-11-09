@@ -120,6 +120,20 @@ class DungeonBuilderComponent extends Component {
 
         SceneManager.currentScene.instantiate(new KeyGameObject(), keyPos.minus(new Vector2(20, 20)))
 
+        // now spawn enemies in the rooms
+        const random = GameSession.randomD
+        for (const p of placed) {
+            if (p.depth === 0 || p.room.isConnector) continue
+            const cells = p.room.getSpawnCells()
+            const count = Math.min(cells.length, 1 + Math.floor(cells.length / 4))
+            for (let i = 0; i < count; i++) {
+                const cell = cells.splice(random.nextInt(cells.length), 1)[0]
+                const def = random.nextWeighted(EnemyDefinitions)
+                const position = p.room.cellToWorld(p.origin, cell.position.x, cell.position.y)
+                SceneManager.currentScene.instantiate(new EnemyGameObject(def), position)
+            }
+        }
+
         return placed
     }
 

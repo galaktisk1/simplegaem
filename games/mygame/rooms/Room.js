@@ -71,8 +71,23 @@ class Room {
         }
         return edges
     }
+
+    // for enemies, get all floor cells where they can spawn
+    getSpawnCells() {
+        const neighbors = [
+            { dx: 1, dy: 0 },
+            { dx: -1, dy: 0 },
+            { dx: 0, dy: 1 },
+            { dx: 0, dy: -1 }
+        ]
+        return this.getFloorCells().filter(cell => {
+            const { x, y } = cell.position
+            return !neighbors.some(n => this.layout[y + n.dy]?.[x + n.dx] === "D")
+        })
+    }
+
     static get tileSize() { return Assets.floor.scale.x * 2 }
-    
+
     get isConnector() {
         return /** @type {typeof Room} */ (this.constructor).isConnector
     }
@@ -80,7 +95,7 @@ class Room {
     cellToLocal(x, y) {
         return new Vector2((x - 0.5) * Room.tileSize, (y - 0.5) * Room.tileSize)
     }
-    
+
     cellToWorld(origin, x, y) {
         return origin.plus(this.cellToLocal(x, y))
     }
