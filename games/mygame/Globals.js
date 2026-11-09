@@ -1,4 +1,4 @@
 class Globals {
-// for genuine globals
+    // for genuine globals
     static messages = []
 }

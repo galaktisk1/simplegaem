@@ -1,4 +1,4 @@
-class ItemBagController extends Component{
+class ItemBagController extends Component {
     start() {
         this.player = GameObject.find("Player")
         if (!this.player) return
@@ -8,15 +8,15 @@ class ItemBagController extends Component{
         this.inventory = this.gameObject.getComponent(Inventory)
         const items = this.gameObject.items ?? [
             // test items
-            {itemDef: itemLibrary.getDefinition("gold"), amount: 87},
-            {itemDef: itemLibrary.getDefinition("potion"), amount: 1},
-            {itemDef: itemLibrary.getDefinition("bread"), amount: 2},
+            { itemDef: itemLibrary.getDefinition("gold"), amount: 87 },
+            { itemDef: itemLibrary.getDefinition("potion"), amount: 1 },
+            { itemDef: itemLibrary.getDefinition("bread"), amount: 2 },
         ]
         for (const item of items) {
             this.inventory.addItem(item)
         }
     }
-    
+
     onTriggerStay(other) {
         if (other.name === "Player") {
             for (const item of this.baginv.getInventory()) {

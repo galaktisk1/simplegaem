@@ -4,7 +4,7 @@ class GateGameObject extends GameObject {
         this.addComponent(new Collider())
         const length = Room.tileSize
         this.addComponent(new Polygon(), {
-            fillStyle: "brown", 
+            fillStyle: "brown",
             points: [
                 new Vector2(0, -10),
                 new Vector2(length, -10),

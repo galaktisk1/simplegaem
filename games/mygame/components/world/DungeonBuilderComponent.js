@@ -71,6 +71,7 @@ class DungeonBuilderComponent extends Component {
 
     buildDungeon(startPos) {
         const placed = this.planDungeon(startPos)
+        const random = GameSession.randomD
         for (const { room, origin, connected } of placed) {
             this.roomBuilder.buildRoom(room, origin, connected)
         }
@@ -98,7 +99,7 @@ class DungeonBuilderComponent extends Component {
         // place the gate and make sure it is before the exit
         const route = this.pathToStart(deepest).filter(p => p.depth >= 2)
         const gated = route.length > 0
-            ? route[GameSession.randomD.nextInt(route.length)]
+            ? route[random.nextInt(route.length)]
             : deepest
         const doorway = gated.entryDoor
         const vertical = doorway.direction === "left" || doorway.direction === "right"
@@ -113,15 +114,14 @@ class DungeonBuilderComponent extends Component {
         const reachable = placed.filter(p => !this.isBehind(p, gated) && !p.room.isConnector)
         const away = reachable.filter(p => p.depth > 0)
         const choices = away.length > 0 ? away : reachable
-        const keyRoom = choices[GameSession.randomD.nextInt(choices.length)]
+        const keyRoom = choices[random.nextInt(choices.length)]
         const keyCells = keyRoom.room.getFloorCells()
-        const keyCell = keyCells[GameSession.randomD.nextInt(keyCells.length)]
+        const keyCell = keyCells[random.nextInt(keyCells.length)]
         const keyPos = keyRoom.room.cellToWorld(keyRoom.origin, keyCell.position.x, keyCell.position.y)
 
         SceneManager.currentScene.instantiate(new KeyGameObject(), keyPos.minus(new Vector2(20, 20)))
 
         // now spawn enemies in the rooms
-        const random = GameSession.randomD
         for (const p of placed) {
             if (p.depth === 0 || p.room.isConnector) continue
             const cells = p.room.getSpawnCells()

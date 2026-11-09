@@ -1,12 +1,12 @@
-class FireballGameObject extends GameObject{
-    constructor(){
+class FireballGameObject extends GameObject {
+    constructor() {
         super("FireballGameObject", [], "spells")
-        this.addComponent(new Circle(), {fillStyle: "red", radius: Assets.circle.radius})
+        this.addComponent(new Circle(), { fillStyle: "red", radius: Assets.circle.radius })
         this.addComponent(new ProjectileMovementComponent())
         this.addComponent(new FireballController())
         this.transform.scale = new Vector2(15, 15)
     }
-    launch(direction){
+    launch(direction) {
         const movement = this.getComponent(ProjectileMovementComponent)
         if (!movement) return
         const length = direction.magnitude

@@ -1,6 +1,6 @@
 // general enemy class that can make any enemy based on its definition
-class EnemyGameObject extends GameObject{
-    constructor(definition){
+class EnemyGameObject extends GameObject {
+    constructor(definition) {
         super(definition.name, ["Enemy"], "characters")
         this.definition = definition
         this.visualChildrenCreated = false

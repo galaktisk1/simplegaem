@@ -5,7 +5,7 @@ class MessageComponent extends Component {
         const txtlabel = currentmsg.getComponent(TextLabel)
         txtlabel.text = msg
         currentmsg.lifetime = lifetime
-        Globals.messages.push({ gameObject: currentmsg})
+        Globals.messages.push({ gameObject: currentmsg })
         this.startCoroutine(this.destroyAfterDelay())
     }
 

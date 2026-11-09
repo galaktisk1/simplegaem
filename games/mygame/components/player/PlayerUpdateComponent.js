@@ -26,7 +26,7 @@ class PlayerUpdateComponent extends Component {
         this.inventory = this.gameObject.getComponent(Inventory)
 
         // health and inv global set up
-        this.health.currentHealth = GameSession.playerhealth
+        this.health.currentHealth = GameSession.playerhealth ?? GameSession.playermaxhealth
         this.inventory.inventory = GameSession.playerinventory
 
         // game objects attached to the player
@@ -40,6 +40,7 @@ class PlayerUpdateComponent extends Component {
         facingIndicator.transform.setParent(this.player.transform)
 
         Camera.main.transform.position = this.player.transform.position.clone()
+        Camera.main.transform.scale = new Vector2(3, 3)
         this.cameraVelocity = Vector2.zero
     }
 
@@ -65,7 +66,7 @@ class PlayerUpdateComponent extends Component {
     }
 
     update() {
-        
+        GameSession.playerhealth = this.health.currentHealth
         // cheat codes :)
         if (Input.getKey("KeyB")) {
             // die button
@@ -87,6 +88,18 @@ class PlayerUpdateComponent extends Component {
         }
         if (Input.getKey("KeyT")) {
             // follow the same method as above for trespass mode
+        }
+
+        // zoom in and out with P and O keys, crashes if you zzom too far in
+        if (Input.getKeyDown("KeyP")) {
+            const x = Camera.main.transform.scale.x
+            const y = Camera.main.transform.scale.y
+            Camera.main.transform.scale = new Vector2(x+0.5, y+0.5)
+        }
+        if (Input.getKeyDown("KeyO")) {
+            const x = Camera.main.transform.scale.x
+            const y = Camera.main.transform.scale.y
+            Camera.main.transform.scale = new Vector2(x-0.5, y-0.5)
         }
 
 
@@ -144,13 +157,13 @@ class PlayerUpdateComponent extends Component {
             // this is wrong because i stop all coroutines on gameobject destroy
             // just demonstrating the idea of where i want restarting the game to theoretically happen
             // in reality just when the player doesnt exist
-            this.startCoroutine(this.restartGame())
+            // this.startCoroutine(this.restartGame())
         }
     }
 
     // very bad coroutine cause itll do nothing due to being wiped on gameobject destroy
     *restartGame() {
-        yield new WaitForSeconds(5)
-        SceneManager.loadScene(TestRoom)
+        yield new WaitForSeconds(1)
+        this.health.currentHealth = GameSession.playermaxhealth ?? 100
     }
 }

@@ -1,9 +1,9 @@
-class FireballController extends Component{
+class FireballController extends Component {
     lifetime = 1
-    start(){
+    start() {
         this.startCoroutine(this.destroyAfterDelay())
     }
-    update(){
+    update() {
         const spell = this.gameObject
         const spellPos = spell.transform.position
 

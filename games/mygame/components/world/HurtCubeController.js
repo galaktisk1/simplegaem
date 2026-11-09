@@ -1,8 +1,8 @@
-class HurtCubeController extends Component{
-    
+class HurtCubeController extends Component {
+
     isHurting = false
     update() {
-        
+
     }
     *hurt() {
         const player = GameObject.find("Player")

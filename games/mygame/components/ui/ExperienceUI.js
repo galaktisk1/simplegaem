@@ -1,4 +1,4 @@
-class ExperienceUI extends Component{
+class ExperienceUI extends Component {
     start() {
         this.player = GameObject.find("Player")
         if (!this.player) return;

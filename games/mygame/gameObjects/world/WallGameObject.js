@@ -2,7 +2,7 @@ class WallGameObject extends GameObject {
     constructor() {
         super("Wall", ["Wall"], "world")
         this.addComponent(new Polygon(), {
-            fillStyle: "#4d4d4d", 
+            fillStyle: "#4d4d4d",
             points: Assets.wall.points
         })
         this.addComponent(new Collider())

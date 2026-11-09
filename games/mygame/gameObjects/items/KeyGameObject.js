@@ -11,7 +11,7 @@ class KeyGameObject extends GameObject {
                 new Vector2(0, 40),
             ],
         })
-        this.addComponent(new Collider(), {isTrigger: true})
+        this.addComponent(new Collider(), { isTrigger: true })
         this.addComponent(new ItemPickupComponent())
     }
 }

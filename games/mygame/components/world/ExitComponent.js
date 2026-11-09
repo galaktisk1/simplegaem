@@ -4,17 +4,17 @@ class ExitComponent extends Component {
     update() {
         if (!this.beenDoneExited) {
 
-        const player = GameObject.find("Player")
-        if (!player) return
-        const exitpos = this.transform.position
-        const playerpos = player.transform.position
+            const player = GameObject.find("Player")
+            if (!player) return
+            const exitpos = this.transform.position
+            const playerpos = player.transform.position
 
-        const distanceToExit = Vector2.distance(exitpos, playerpos)
-        if (distanceToExit < 60) {
-            this.beenDoneExited = true
-            const msgmanager = GameObject.find("MessageManager")
-                .getComponent(MessageManager)
-            msgmanager.showMessage("You exit the room", 3)
+            const distanceToExit = Vector2.distance(exitpos, playerpos)
+            if (distanceToExit < 60) {
+                this.beenDoneExited = true
+                const msgmanager = GameObject.find("MessageManager")
+                    .getComponent(MessageManager)
+                msgmanager.showMessage("You exit the room", 3)
             }
         }
     }

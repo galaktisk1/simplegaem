@@ -11,7 +11,7 @@ class ItemPickupComponent extends Component {
             if (!player) return
             const playerinv = player.getComponent(Inventory)
             const item = this.gameObject
-            
+
             // debug
             console.log("Picked up item:", item)
             // Check if the item is gold and handle accordingly

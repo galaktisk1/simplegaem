@@ -12,7 +12,7 @@ class PlayerGameObject extends GameObject {
             ]
         })
         this.addComponent(new Circle(), {
-            fillStyle: "grey", 
+            fillStyle: "grey",
             radius: 75
         })
         this.addComponent(new Health())

@@ -1,141 +1,143 @@
 <html lang="en">
-  <head>
-    <title>GameLoop</title>
-    <style>
-      * {
-        margin: 0;
-        overflow: hidden;
-      }
-    </style>
-  </head>
 
-  <body>
-    <canvas id="canv"> </canvas>
-    <!-- engine scripts -->
-    <script src="../../engine/Vector2.js"></script>
-    <script src="../../engine/Input.js"></script>
-    <script src="../../engine/Seed.js"></script>
-    <script src="../../engine/Engine.js"></script>
-    <script src="../../engine/Scene.js"></script>
-    <script src="../../engine/SceneManager.js"></script>
-    <script src="../../engine/GameObject.js"></script>
-    <script src="../../engine/Component.js"></script>
-    <script src="../../engine/ItemLibrary.js"></script>
-    <script src="../../engine/Time.js"></script>
-    <script src="../../engine/Collisions.js"></script>
-    <script src="../../engine/Wait.js"></script>
+<head>
+  <title>GameLoop</title>
+  <style>
+    * {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
 
-    <script src="../../engine/components/Polygon.js"></script>
-    <script src="../../engine/components/Collider.js"></script>
-    <script src="../../engine/components/Rigidbody.js"></script>
-    <script src="../../engine/components/Circle.js"></script>
-    <script src="../../engine/components/Transform.js"></script>
-    <script src="../../engine/components/TextLabel.js"></script>
-    <script src="../../engine/components/Camera.js"></script>
-    <!-- custom engine components -->
-    <script src="../../engine/components/customcomponents/Health.js"></script>
-    <script src="../../engine/components/customcomponents/Inventory.js"></script>
-    <script src="../../engine/components/customcomponents/MovementComponent.js"></script>
-    <script src="../../engine/components/customcomponents/ProjectileMovementComponent.js"></script>
-    <script src="../../engine/components/customcomponents/Experience.js"></script>
+<body>
+  <canvas id="canv"> </canvas>
+  <!-- engine scripts -->
+  <script src="../../engine/Vector2.js"></script>
+  <script src="../../engine/Input.js"></script>
+  <script src="../../engine/Seed.js"></script>
+  <script src="../../engine/Engine.js"></script>
+  <script src="../../engine/Scene.js"></script>
+  <script src="../../engine/SceneManager.js"></script>
+  <script src="../../engine/GameObject.js"></script>
+  <script src="../../engine/Component.js"></script>
+  <script src="../../engine/ItemLibrary.js"></script>
+  <script src="../../engine/Time.js"></script>
+  <script src="../../engine/Collisions.js"></script>
+  <script src="../../engine/Wait.js"></script>
 
-    <!-- game scripts -->
-    <script src="items/ItemDefinitions.js"></script>
-    <script src="items/WeaponDefinitions.js"></script>
-    <script src="items/Loot.js"></script>
-    <script src="Assets.js"></script>
+  <script src="../../engine/components/Polygon.js"></script>
+  <script src="../../engine/components/Collider.js"></script>
+  <script src="../../engine/components/Rigidbody.js"></script>
+  <script src="../../engine/components/Circle.js"></script>
+  <script src="../../engine/components/Transform.js"></script>
+  <script src="../../engine/components/TextLabel.js"></script>
+  <script src="../../engine/components/Camera.js"></script>
+  <!-- custom engine components -->
+  <script src="../../engine/components/customcomponents/Health.js"></script>
+  <script src="../../engine/components/customcomponents/Inventory.js"></script>
+  <script src="../../engine/components/customcomponents/MovementComponent.js"></script>
+  <script src="../../engine/components/customcomponents/ProjectileMovementComponent.js"></script>
+  <script src="../../engine/components/customcomponents/Experience.js"></script>
 
-    <script src="Globals.js"></script>
-    <script src="Settings.js"></script>
-    <script src="GameSession.js"></script>
+  <!-- game scripts -->
+  <script src="items/ItemDefinitions.js"></script>
+  <script src="items/WeaponDefinitions.js"></script>
+  <script src="items/Loot.js"></script>
+  <script src="Assets.js"></script>
 
-    <script src="scenes/GenericRoom.js"></script>
-    <script src="scenes/Room1.js"></script>
-    <script src="scenes/Room2.js"></script>
-    <script src="scenes/TestRoom.js"></script>
+  <script src="Globals.js"></script>
+  <script src="Settings.js"></script>
+  <script src="GameSession.js"></script>
 
-    <script src="rooms/Room.js"></script>
-    <script src="rooms/SquareRoom.js"></script>
-    <script src="rooms/LRoom.js"></script>
-    <script src="rooms/LargeCavernRoom.js"></script>
-    <script src="rooms/CubiclesRoom.js"></script>
-    <script src="rooms/HallwayRoom.js"></script>
-    <script src="rooms/TJunctionRoom.js"></script>
-    <script src="rooms/CrossroadsRoom.js"></script>
+  <script src="scenes/GenericRoom.js"></script>
+  <script src="scenes/Room1.js"></script>
+  <script src="scenes/Room2.js"></script>
+  <script src="scenes/TestRoom.js"></script>
 
-    <!-- components -->
-    <!-- world -->
-    <script src="components/world/ExitComponent.js"></script>
-    <script src="components/world/GateOpenComponent.js"></script>
-    <script src="components/world/RoomController.js"></script>
-    <script src="components/world/RoomBuilderComponent.js"></script>
-    <script src="components/world/HurtCubeController.js"></script>
-    <script src="components/world/DungeonBuilderComponent.js"></script>
+  <script src="rooms/Room.js"></script>
+  <script src="rooms/SquareRoom.js"></script>
+  <script src="rooms/LRoom.js"></script>
+  <script src="rooms/LargeCavernRoom.js"></script>
+  <script src="rooms/CubiclesRoom.js"></script>
+  <script src="rooms/HallwayRoom.js"></script>
+  <script src="rooms/TJunctionRoom.js"></script>
+  <script src="rooms/CrossroadsRoom.js"></script>
 
-    <!-- items -->
-    <script src="components/items/ItemPickupComponent.js"></script>
-    <script src="components/items/ItemBagController.js"></script>
+  <!-- components -->
+  <!-- world -->
+  <script src="components/world/ExitComponent.js"></script>
+  <script src="components/world/GateOpenComponent.js"></script>
+  <script src="components/world/RoomController.js"></script>
+  <script src="components/world/RoomBuilderComponent.js"></script>
+  <script src="components/world/HurtCubeController.js"></script>
+  <script src="components/world/DungeonBuilderComponent.js"></script>
 
-    <!-- ui -->
-    <script src="components/ui/MessageComponent.js"></script>
-    <script src="components/ui/PopUpController.js"></script>
-    <script src="components/ui/PopUpManager.js"></script>
-    <script src="components/ui/MessageManager.js"></script>
-    <script src="components/ui/Director.js"></script>
-    <script src="components/ui/InventoryUI.js"></script>
-    <script src="components/ui/ExperienceUI.js"></script>
+  <!-- items -->
+  <script src="components/items/ItemPickupComponent.js"></script>
+  <script src="components/items/ItemBagController.js"></script>
 
-    <!-- player -->
-    <script src="components/player/PlayerUpdateComponent.js"></script>
+  <!-- ui -->
+  <script src="components/ui/MessageComponent.js"></script>
+  <script src="components/ui/PopUpController.js"></script>
+  <script src="components/ui/PopUpManager.js"></script>
+  <script src="components/ui/MessageManager.js"></script>
+  <script src="components/ui/Director.js"></script>
+  <script src="components/ui/InventoryUI.js"></script>
+  <script src="components/ui/ExperienceUI.js"></script>
 
-    <!-- spells -->
-    <script src="components/spells/FireballController.js"></script>
+  <!-- player -->
+  <script src="components/player/PlayerUpdateComponent.js"></script>
 
-    <!-- enemies -->
-    <script src="components/enemies/EnemyController.js"></script>
+  <!-- spells -->
+  <script src="components/spells/FireballController.js"></script>
 
-    <!-- game objects -->
-    <!-- world -->
-    <script src="gameObjects/world/ExitGameObject.js"></script>
-    <script src="gameObjects/world/FloorGameObject.js"></script>
-    <script src="gameObjects/world/GateGameObject.js"></script>
-    <script src="gameObjects/world/RoomControllerGameObject.js"></script>
-    <script src="gameObjects/world/DungeonBuilderGameObject.js"></script>
-    <script src="gameObjects/world/WallGameObject.js"></script>
-    <script src="gameObjects/world/HurtCubeGameObject.js"></script>
+  <!-- enemies -->
+  <script src="components/enemies/EnemyController.js"></script>
 
-    <!-- items -->
-    <script src="gameObjects/items/KeyGameObject.js"></script>
-    <script src="gameObjects/items/ItemBagGameObject.js"></script>
+  <!-- game objects -->
+  <!-- world -->
+  <script src="gameObjects/world/ExitGameObject.js"></script>
+  <script src="gameObjects/world/FloorGameObject.js"></script>
+  <script src="gameObjects/world/GateGameObject.js"></script>
+  <script src="gameObjects/world/RoomControllerGameObject.js"></script>
+  <script src="gameObjects/world/DungeonBuilderGameObject.js"></script>
+  <script src="gameObjects/world/WallGameObject.js"></script>
+  <script src="gameObjects/world/HurtCubeGameObject.js"></script>
 
-    <!-- player -->
-    <script src="gameObjects/player/LightingGameObject.js"></script>
-    <script src="gameObjects/player/LanternGameObject.js"></script>
-    <script src="gameObjects/player/PlayerGameObject.js"></script>
-    <script src="gameObjects/player/FacingIndicatorGameObject.js"></script>
+  <!-- items -->
+  <script src="gameObjects/items/KeyGameObject.js"></script>
+  <script src="gameObjects/items/ItemBagGameObject.js"></script>
 
-    <!-- spells -->
-    <script src="gameObjects/spells/FireballGameObject.js"></script>
+  <!-- player -->
+  <script src="gameObjects/player/LightingGameObject.js"></script>
+  <script src="gameObjects/player/LanternGameObject.js"></script>
+  <script src="gameObjects/player/PlayerGameObject.js"></script>
+  <script src="gameObjects/player/FacingIndicatorGameObject.js"></script>
 
-    <!-- ui -->
-    <script src="gameObjects/ui/MessageGameObject.js"></script>
-    <script src="gameObjects/ui/TestTextGameObject.js"></script>
-    <script src="gameObjects/ui/PopUpGameObject.js"></script>
-    <script src="gameObjects/ui/PopUpManagerGameObject.js"></script>
-    <script src="gameObjects/ui/MessageManagerGameObject.js"></script>
-    <script src="gameObjects/ui/DirectorGameObject.js"></script>
-    <script src="gameObjects/ui/InventoryUIGameObject.js"></script>
-    <script src="gameObjects/ui/ExperienceUIGameObject.js"></script>
+  <!-- spells -->
+  <script src="gameObjects/spells/FireballGameObject.js"></script>
 
-    <!-- enemies -->
-    <script src="gameObjects/enemies/EnemyDefinitions.js"></script>
-    <script src="gameObjects/enemies/EnemyGameObject.js"></script>
+  <!-- ui -->
+  <script src="gameObjects/ui/MessageGameObject.js"></script>
+  <script src="gameObjects/ui/TestTextGameObject.js"></script>
+  <script src="gameObjects/ui/PopUpGameObject.js"></script>
+  <script src="gameObjects/ui/PopUpManagerGameObject.js"></script>
+  <script src="gameObjects/ui/MessageManagerGameObject.js"></script>
+  <script src="gameObjects/ui/DirectorGameObject.js"></script>
+  <script src="gameObjects/ui/InventoryUIGameObject.js"></script>
+  <script src="gameObjects/ui/ExperienceUIGameObject.js"></script>
 
-    <script src="gameObjects/HitboxGameObject.js"></script>
+  <!-- enemies -->
+  <script src="gameObjects/enemies/EnemyDefinitions.js"></script>
+  <script src="gameObjects/enemies/EnemyGameObject.js"></script>
+
+  <script src="gameObjects/HitboxGameObject.js"></script>
 
 
-    <script>
-      Engine.start(TestRoom, Settings);
-    </script>
-  </body>
+  <script>
+    Engine.start(TestRoom, Settings);
+  </script>
+</body>
+
 </html>

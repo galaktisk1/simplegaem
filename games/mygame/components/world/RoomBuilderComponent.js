@@ -1,5 +1,5 @@
 class RoomBuilderComponent extends Component {
-    buildRoom(room, roomWorldPos,  connected = []) {
+    buildRoom(room, roomWorldPos, connected = []) {
         const layout = room.layout
         const tileSize = Room.tileSize
         // layout has:
@@ -43,7 +43,7 @@ class RoomBuilderComponent extends Component {
                 }
             }
         }
-    }    
+    }
 
     createWall(wall, roomWorldPos) {
         const position = roomWorldPos.plus(wall.position)

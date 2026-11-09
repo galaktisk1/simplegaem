@@ -10,9 +10,9 @@ class InventoryUI extends Component {
     }
     draw(ctx) {
         if (!this.open || !this.inventory) return
-        
-        ctx.fillStyle = "rgba(0, 0, 0, 0.75)"   // see-through dark panel
-        ctx.fillRect(0, 0, Engine.canvas.width-40, Engine.canvas.height-40)       // x, y, width, height
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.75)"
+        ctx.fillRect(0, 0, Engine.canvas.width - 40, Engine.canvas.height - 40)
         ctx.fillStyle = "white"
         ctx.font = "20px Arial"
         ctx.fillText("Inventory", 10, 28)
