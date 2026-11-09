@@ -1,7 +1,7 @@
 class Scene {
     gameObjects = [];
     mouseWorldPosition
-    
+
     /** @type {GameObject | undefined} */
     lastHovered = undefined
 
@@ -17,10 +17,9 @@ class Scene {
 
     instantiate(
         gameObject,
-        position = gameObject.transform.position, 
-        rotation = gameObject.transform.rotation, 
-        scale = gameObject.transform.scale)
-    {
+        position = gameObject.transform.position,
+        rotation = gameObject.transform.rotation,
+        scale = gameObject.transform.scale) {
         this.gameObjects.push(gameObject)
         gameObject.transform.position = position
         gameObject.transform.rotation = rotation
@@ -45,13 +44,35 @@ class Scene {
 
         //Collisions
         const collidable = GameObject.findGameObjectsByType(Collider)
-        const rigidbodies = GameObject.findGameObjectsByType(Rigidbody)
+
+        // Broad-phase collsions
+        const bodies = collidable.map(go => {
+            const collider = go.getComponent(Collider)
+            const m = go.transform.getWorldMatrix()
+            const points = collider.points.map(p => {
+                const q = m.transformPoint(p)
+                return new Vector2(q.x, q.y)
+            })
+            let minX = Infinity
+            let minY = Infinity
+            let maxX = -Infinity
+            let maxY = -Infinity
+            for (const point of /** @type {Vector2[]} */ (points)) {
+                minX = Math.min(minX, point.x)
+                minY = Math.min(minY, point.y)
+                maxX = Math.max(maxX, point.x)
+                maxY = Math.max(maxY, point.y)
+            }
+            const center = new Vector2((minX + maxX) / 2, (minY + maxY) / 2)
+            // get the rb component here so it doesnt keep happening repeatedly in the collision loop
+            return { go, collider, rb: go.getComponent(Rigidbody), points, minX, minY, maxX, maxY, center }
+        })
 
         // handle mouse over collisions
         /** @type {GameObject | undefined} */
         let hovered = undefined
         this.mouseWorldPosition = undefined
-        if(Input.mousePosition){
+        if (Input.mousePosition) {
             let matrix = new DOMMatrix()
             matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
             matrix.multiplySelf(Camera.main.transform.getWorldMatrix().inverse())
@@ -59,12 +80,12 @@ class Scene {
             let worldPositionDOMPoint = matrix.inverse().transformPoint(Input.mousePosition)
             let worldPosition = new Vector2(worldPositionDOMPoint.x, worldPositionDOMPoint.y)
             this.mouseWorldPosition = worldPosition
-            
-            for (const go of collidable) {
-                const point = go.layer === "UI" ? Input.mousePosition : worldPosition
-                if (Collisions.isCollisionPointPolygon(point, go)) {
-                    hovered = go
-                }
+
+            // use the same bodies for mouse collsions
+            for (const body of bodies) {
+                const point = body.go.layer === "UI" ? Input.mousePosition : worldPosition
+                if (point.x < body.minX || point.x > body.maxX || point.y < body.minY || point.y > body.maxY) continue
+                if (Collisions.isCollisionPointPolygon(point, body.go)) hovered = body.go
             }
         }
         if (hovered !== this.lastHovered) {
@@ -80,35 +101,32 @@ class Scene {
         }
         this.lastHovered = hovered
 
-        
+
 
         // handle polygon-polygon collisions
         const physicalCollisions = []
-        for (let i = 0, len = collidable.length; i < len; i++) {
-            for (let j = i + 1; j < len; j++) {
-                // shortcuts
-                const one = collidable[i]
-                const two = collidable[j]
-                const oneRb = one.getComponent(Rigidbody)
-                const twoRb = two.getComponent(Rigidbody)
-                const oneC = one.getComponent(Collider)
-                const twoC = two.getComponent(Collider)
-                const onepos = one.transform.position
-                const twopos = two.transform.position
-
-                if (!oneRb && !twoRb) continue
-
-                //temporary sorta broadphase
-                if (Vector2.distance(onepos, twopos) > 500) {
-                    continue
-                }
+        for (let i = 0; i < bodies.length; i++) {
+            for (let j = i + 1; j < bodies.length; j++) {
+                const a = bodies[i]
+                const b = bodies[j]
                 
-                const mtv = Collisions.isCollisionPolygonPolygon(one, two)
-                if(mtv) {
+                // cheap checks
+                if (!a.rb && !b.rb) continue
+                if (a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY) continue
+
+                // now perform the more expensive polygon-polygon collision check
+                const one = a.go
+                const two = b.go
+                const oneC = a.collider
+                const twoC = b.collider
+                const oneRb = a.rb
+                const twoRb = b.rb
+                const mtv = Collisions.polygonPolygonPoints(a.points, b.points, a.center, b.center)
+                if (mtv) {
                     if (!oneC.isTrigger && !twoC.isTrigger) {
                         one.broadcastMessage("onCollisionStay", [two, mtv])
                         two.broadcastMessage("onCollisionStay", [one, mtv.negate()])
-                        physicalCollisions.push({ one, two, mtv })
+                        physicalCollisions.push({ one, two, oneRb, twoRb, mtv })
                     }
                     else {
                         one.broadcastMessage("onTriggerStay", [two, mtv])
@@ -121,8 +139,8 @@ class Scene {
         // handle physics
         for (const collision of physicalCollisions) {
             // shortcuts
-            const oneRb = collision.one.getComponent(Rigidbody)
-            const twoRb = collision.two.getComponent(Rigidbody)
+            const oneRb = collision.oneRb
+            const twoRb = collision.twoRb
             const onepos = collision.one.transform.position
             const twopos = collision.two.transform.position
 
@@ -186,9 +204,8 @@ class Scene {
 
 function instantiate(
     gameObject,
-    position = gameObject.transform.position, 
+    position = gameObject.transform.position,
     rotation = gameObject.transform.rotation,
-    scale = gameObject.transform.scale)
-{
+    scale = gameObject.transform.scale) {
     return SceneManager.currentScene.instantiate(gameObject, position, rotation, scale)
 }

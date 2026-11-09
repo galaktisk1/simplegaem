@@ -1,14 +1,13 @@
 class Collisions {
     static isCollisionPointPolygon(point, gameObject) {
         // move everything into world space
+        const one = gameObject
+        const oneC = one.getComponent(Collider)
         let worldSpacePoints = []
-        for (let point of gameObject.getComponent(Collider).points) {
-            worldSpacePoints.push(
-                new Vector2(
-                    gameObject.transform.getWorldMatrix().transformPoint(point).x,
-                    gameObject.transform.getWorldMatrix().transformPoint(point).y
-                )
-            )
+        const m = gameObject.transform.getWorldMatrix()
+        for (let point of oneC.points) {
+            const p = m.transformPoint(point)
+            worldSpacePoints.push(new Vector2(p.x, p.y))
         }
         // find axes for projection
         for (let i = 0; i < worldSpacePoints.length; i++) {
@@ -34,28 +33,27 @@ class Collisions {
         const onepos = one.transform.position
         const twopos = two.transform.position
 
-        
 
+        // do matrices once for each polygon to transform points into world space
         let worldSpacePoints1 = []
+        const m1 = one.transform.getWorldMatrix()
         for (let point of oneC.points) {
-            worldSpacePoints1.push(
-                new Vector2(
-                    gameObject1.transform.getWorldMatrix().transformPoint(point).x,
-                    gameObject1.transform.getWorldMatrix().transformPoint(point).y
-                )
-            )
-        }
-        
-        let worldSpacePoints2 = []
-        for (let point of twoC.points) {
-            worldSpacePoints2.push(
-                new Vector2(
-                    two.transform.getWorldMatrix().transformPoint(point).x,
-                    two.transform.getWorldMatrix().transformPoint(point).y
-                )
-            )
+            const p = m1.transformPoint(point)
+            worldSpacePoints1.push(new Vector2(p.x, p.y))
         }
 
+        let worldSpacePoints2 = []
+        const m2 = two.transform.getWorldMatrix()
+        for (let point of twoC.points) {
+            const p = m2.transformPoint(point)
+            worldSpacePoints2.push(new Vector2(p.x, p.y))
+        }
+
+        return Collisions.polygonPolygonPoints(worldSpacePoints1, worldSpacePoints2, onepos, twopos)
+    }
+
+    // now do the axes check
+    static polygonPolygonPoints(worldSpacePoints1, worldSpacePoints2, center1, center2) {
         let allAxes = []
         for (let i = 0; i < worldSpacePoints1.length; i++) {
             let point1 = worldSpacePoints1[i]
@@ -82,12 +80,12 @@ class Collisions {
                 Math.max(...projections2) - Math.min(...projections1),
                 Math.max(...projections1) - Math.min(...projections2)
             )
-            if (minOverlap < minimumTransformVector.magnitude){
+            if (minOverlap < minimumTransformVector.magnitude) {
                 minimumTransformVector = axis.normalized.scaled(minOverlap)
             }
         }
 
-        if (Vector2.dot(onepos.minus(twopos), minimumTransformVector) > 0) {
+        if (Vector2.dot(center1.minus(center2), minimumTransformVector) > 0) {
             return minimumTransformVector
         } else {
             return minimumTransformVector.scaled(-1)
