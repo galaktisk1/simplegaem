@@ -5,6 +5,7 @@ class ExitGameObject extends GameObject {
             fillStyle: 'blue',
             points: Assets.square
         })
+        this.addComponent(new Collider(), { isTrigger: true })
         this.addComponent(new ExitComponent())
     }
 }

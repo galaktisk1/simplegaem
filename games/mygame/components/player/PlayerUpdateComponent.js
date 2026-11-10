@@ -34,16 +34,16 @@ class PlayerUpdateComponent extends Component {
 
         // game objects attached to the player
         const lantern = instantiate(new LanternGameObject(), Vector2.left.scaled(62))
-        lantern.transform.setParent(this.player.transform)
+        // lantern.transform.setParent(this.player.transform)
 
-        const light = instantiate(new LightingGameObject(), Vector2.zero)
-        light.transform.setParent(this.player.transform)
+        // const light = instantiate(new LightingGameObject(), Vector2.zero)
+        // light.transform.setParent(this.player.transform)
 
         const facingIndicator = instantiate(new FacingIndicatorGameObject(), Vector2.up.scaled(90))
         facingIndicator.transform.setParent(this.player.transform)
 
         Camera.main.transform.position = this.player.transform.position.clone()
-        Camera.main.transform.scale = new Vector2(3, 3)
+        Camera.main.transform.scale = Vector2.one
         this.cameraVelocity = Vector2.zero
     }
 
@@ -103,7 +103,7 @@ class PlayerUpdateComponent extends Component {
         if (Input.getKeyDown("KeyO")) {
             const x = Camera.main.transform.scale.x
             const y = Camera.main.transform.scale.y
-            Camera.main.transform.scale = new Vector2(x-0.5, y-0.5)
+            Camera.main.transform.scale = new Vector2(Math.max(0.5, x-0.5), Math.max(0.5, y-0.5))
         }
 
 

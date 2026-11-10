@@ -8,12 +8,13 @@ class RoomController extends Component {
             let placed = this.dungeonBuilder.buildDungeon(new Vector2(0, 0))
             this.dungeonPopulator.populateDungeon(placed)
         }
+        // if there is an exit
+        this.exit = GameObject.find("Exit")?.getComponent(ExitComponent)
         SceneManager.loadScene(GenericRoom, true)
     }
 
     update() {
-        const exit = GameObject.find("Exit")
-        if (exit && exit.getComponent(ExitComponent).beenDoneExited) {
+        if (this.exit && this.exit.beenDoneExited) {
             // back and forth room1 to room2
             if (SceneManager.currentScene instanceof Room1) {
                 SceneManager.nextScene = Room2
