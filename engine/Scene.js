@@ -39,7 +39,8 @@ class Scene {
         for (const gameObject of [...this.gameObjects]) {
             // call start on each game object before fixedUpdate
             gameObject.start()
-            gameObject.broadcastMessage("fixedUpdate", [])
+            if (Time.timeScale > 0)
+                gameObject.broadcastMessage("fixedUpdate", [])
         }
 
         //Collisions
@@ -128,55 +129,56 @@ class Scene {
         this.lastHovered = hovered
 
 
+        if (Time.timeScale > 0) {
+            // handle polygon-polygon collisions
+            const physicalCollisions = []
+            for (let i = 0; i < bodies.length; i++) {
+                for (let j = i + 1; j < bodies.length; j++) {
+                    const a = bodies[i]
+                    const b = bodies[j]
+                    
+                    // cheap checks
+                    if (!a.rb && !b.rb) continue
+                    if (a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY) continue
 
-        // handle polygon-polygon collisions
-        const physicalCollisions = []
-        for (let i = 0; i < bodies.length; i++) {
-            for (let j = i + 1; j < bodies.length; j++) {
-                const a = bodies[i]
-                const b = bodies[j]
-                
-                // cheap checks
-                if (!a.rb && !b.rb) continue
-                if (a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY) continue
-
-                // now perform the more expensive polygon-polygon collision check
-                const one = a.go
-                const two = b.go
-                const oneC = a.collider
-                const twoC = b.collider
-                const oneRb = a.rb
-                const twoRb = b.rb
-                const mtv = Collisions.polygonPolygonPoints(a.points, b.points, a.center, b.center)
-                if (mtv) {
-                    if (!oneC.isTrigger && !twoC.isTrigger) {
-                        one.broadcastMessage("onCollisionStay", [two, mtv])
-                        two.broadcastMessage("onCollisionStay", [one, mtv.negate()])
-                        physicalCollisions.push({ one, two, oneRb, twoRb, mtv })
-                    }
-                    else {
-                        one.broadcastMessage("onTriggerStay", [two, mtv])
-                        two.broadcastMessage("onTriggerStay", [one, mtv.negate()])
+                    // now perform the more expensive polygon-polygon collision check
+                    const one = a.go
+                    const two = b.go
+                    const oneC = a.collider
+                    const twoC = b.collider
+                    const oneRb = a.rb
+                    const twoRb = b.rb
+                    const mtv = Collisions.polygonPolygonPoints(a.points, b.points, a.center, b.center)
+                    if (mtv) {
+                        if (!oneC.isTrigger && !twoC.isTrigger) {
+                            one.broadcastMessage("onCollisionStay", [two, mtv])
+                            two.broadcastMessage("onCollisionStay", [one, mtv.negate()])
+                            physicalCollisions.push({ one, two, oneRb, twoRb, mtv })
+                        }
+                        else {
+                            one.broadcastMessage("onTriggerStay", [two, mtv])
+                            two.broadcastMessage("onTriggerStay", [one, mtv.negate()])
+                        }
                     }
                 }
             }
-        }
 
-        // handle physics
-        for (const collision of physicalCollisions) {
-            // shortcuts
-            const oneRb = collision.oneRb
-            const twoRb = collision.twoRb
-            const onepos = collision.one.transform.position
-            const twopos = collision.two.transform.position
+            // handle physics
+            for (const collision of physicalCollisions) {
+                // shortcuts
+                const oneRb = collision.oneRb
+                const twoRb = collision.twoRb
+                const onepos = collision.one.transform.position
+                const twopos = collision.two.transform.position
 
-            if (oneRb && twoRb) {
-                onepos.plusEquals(collision.mtv.scaled(0.5))
-                twopos.plusEquals(collision.mtv.negate().scaled(0.5))
-            } else if (oneRb) {
-                onepos.plusEquals(collision.mtv)
-            } else if (twoRb) {
-                twopos.plusEquals(collision.mtv.negate())
+                if (oneRb && twoRb) {
+                    onepos.plusEquals(collision.mtv.scaled(0.5))
+                    twopos.plusEquals(collision.mtv.negate().scaled(0.5))
+                } else if (oneRb) {
+                    onepos.plusEquals(collision.mtv)
+                } else if (twoRb) {
+                    twopos.plusEquals(collision.mtv.negate())
+                }
             }
         }
 

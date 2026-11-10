@@ -75,7 +75,9 @@ class EnemyController extends Component {
             this.movement.moveTowards(playerpos, this.speed)
         }
     }
+
     update() {
+        if (Time.timeScale === 0) return
         const enemypos = this.enemy.transform.position
         if (!this.player || this.player.markForDestroy) return
         const playerpos = this.player.transform.position
