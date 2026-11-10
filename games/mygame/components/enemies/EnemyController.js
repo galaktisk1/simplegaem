@@ -36,7 +36,7 @@ class EnemyController extends Component {
         const playerpos = this.player.transform.position
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude
-        if (distanceToPlayer > this.sightDistance && !this.isAlerted) return
+        if (!this.isAlerted) return
         if (distanceToPlayer > this.attackDistance && Time.deltaTime > 0) {
             this.movement.moveTowards(playerpos, this.speed)
         }
@@ -49,12 +49,16 @@ class EnemyController extends Component {
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude
 
-        if (distanceToPlayer > this.sightDistance && !this.isAlerted) {
+        const occluders = SceneManager.currentScene.occluders ?? []
+        const direction = directionToPlayer.normalized
+        const blocked = Raycast.cast(enemypos, direction, occluders, distanceToPlayer) !== null
+
+        const canSee = distanceToPlayer <= this.sightDistance && !blocked
+        if (canSee) this.isAlerted = true
+        if (!this.isAlerted) {
             this.enemy.transform.rotation = 0
             return
         }
-        // mark the enemy as alerted once it sees the player
-        this.isAlerted = true
         // if the player is too far, the enemy loses alertness
         if (distanceToPlayer > this.sightDistance * 2) {
             this.isAlerted = false
@@ -62,7 +66,7 @@ class EnemyController extends Component {
         }
         this.enemy.transform.lookAt(playerpos)
 
-        if (distanceToPlayer <= this.attackDistance && !this.isAttacking) {
+        if (distanceToPlayer <= this.attackDistance && !blocked && !this.isAttacking) {
             this.isAttacking = true
             this.startCoroutine(this.attack(this.player))
         }
