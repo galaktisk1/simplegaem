@@ -1,4 +1,11 @@
 class ItemBagController extends Component {
+    // items: [{ itemDef, amount }]
+    items = null
+
+    init(items) {
+        this.items = items
+    }
+
     start() {
         this.player = GameObject.find("Player")
         if (!this.player) return
@@ -6,7 +13,7 @@ class ItemBagController extends Component {
         this.popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
         this.baginv = this.gameObject.getComponent(Inventory)
         this.inventory = this.gameObject.getComponent(Inventory)
-        const items = this.gameObject.items ?? [
+        const items = this.items ?? [
             // test items
             { itemDef: itemLibrary.getDefinition("gold"), amount: 87 },
             { itemDef: itemLibrary.getDefinition("potion"), amount: 1 },

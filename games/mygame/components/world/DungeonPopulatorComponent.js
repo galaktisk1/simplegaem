@@ -1,9 +1,9 @@
-class DungeonPopulatorComponent extends Component { 
+class DungeonPopulatorComponent extends Component {
     start() {
         this.random = GameSession.randomD
     }
 
-    populateDungeon(placed){
+    populateDungeon(placed) {
         // calculate deepest
         const deepest = placed
             .filter(p => !p.room.isConnector)
@@ -15,7 +15,7 @@ class DungeonPopulatorComponent extends Component {
         this.placeEnemies(placed, deepest)
 
     }
-    
+
     placeExit(placed, deepest) {
         // find where the deepest room was entered
         const entrance = deepest.connected[0]
@@ -69,15 +69,17 @@ class DungeonPopulatorComponent extends Component {
         // now spawn enemies in the rooms
         // , this will be a recurring spawn idea 
         // as soon as dungeons sprawl some more
+        const allowed = Object.values(EnemyDefinitions).filter(def => def.level <= GameSession.floor + 2)
         for (const p of placed) {
             if (p.depth === 0 || p.room.isConnector) continue
             const cells = p.room.getSpawnCells()
             const count = Math.min(cells.length, 1 + Math.floor(cells.length / 4))
             for (let i = 0; i < count; i++) {
                 const cell = cells.splice(this.random.nextInt(cells.length), 1)[0]
-                const def = this.random.nextWeighted(EnemyDefinitions)
+                const def = this.random.nextWeighted(allowed)
                 const position = p.room.cellToWorld(p.origin, cell.position.x, cell.position.y)
-                SceneManager.currentScene.instantiate(new EnemyGameObject(def), position)
+                SceneManager.currentScene.instantiate(new EnemyGameObject(), position)
+                    .getComponent(EnemyController).init(def)
             }
         }
     }

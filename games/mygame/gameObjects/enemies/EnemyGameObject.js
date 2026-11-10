@@ -1,34 +1,12 @@
-// general enemy class that can make any enemy based on its definition
+// general enemy prefab, EnemyController.init(definition) turns it into a specific enemy after it is instantiated
 class EnemyGameObject extends GameObject {
-    constructor(definition) {
-        super(definition.name, ["Enemy"], "characters")
-        this.definition = definition
-        this.visualChildrenCreated = false
-        this.addComponent(new Polygon(), { fillStyle: definition.fillStyle, points: definition.points })
+    constructor() {
+        super("Enemy", ["Enemy"], "characters")
+        this.addComponent(new Polygon())
         this.addComponent(new Collider())
         this.addComponent(new Health())
         this.addComponent(new MovementComponent())
-        this.addComponent(new EnemyController(), {
-            speed: definition.SPD * 3,
-        })
-        this.addComponent(new Experience())
-        this.transform.scale = definition.scale.clone()
-    }
-
-    start() {
-        if (!this.visualChildrenCreated) {
-            for (const childDefinition of this.definition.children ?? []) {
-                const child = new GameObject(childDefinition.name, [], this.layer)
-                child.addComponent(new Polygon(), {
-                    fillStyle: childDefinition.fillStyle,
-                    points: childDefinition.points.map(point => point.clone()),
-                })
-                child.transform.setParent(this.transform)
-                child.transform.rotation = childDefinition.rotation ?? 0
-                instantiate(child, childDefinition.position.clone())
-            }
-            this.visualChildrenCreated = true
-        }
-        super.start()
+        this.addComponent(new EnemyController())
+        this.addComponent(new Attributes())
     }
 }

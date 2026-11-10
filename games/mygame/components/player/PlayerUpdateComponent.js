@@ -23,14 +23,20 @@ class PlayerUpdateComponent extends Component {
         this.movementVelocity = this.movement.velocity
         this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.health = this.gameObject.getComponent(Health)
-        this.experience = this.gameObject.getComponent(Experience)
+        this.attributes = this.gameObject.getComponent(Attributes)
         this.inventory = this.gameObject.getComponent(Inventory)
-        // MELEE: this.weapon = the equipped weapon definition (damageMin, damageMax),
-        // fists (Arena's punch, 1-2) when nothing is equipped
+
+        this.weapon = { name: "fists", damageMin: 1, damageMax: 2 }
 
         // health and inv global set up
-        this.health.currentHealth = GameSession.playerhealth ?? GameSession.playermaxhealth
         this.inventory.inventory = GameSession.playerinventory
+        if (GameSession.playerattributes) {
+            this.attributes.load(GameSession.playerattributes)
+            this.health.maxHealth = GameSession.playermaxhealth
+            this.health.currentHealth = GameSession.playerhealth
+        } else {
+            this.attributes.rollCharacter()
+        }
 
         // game objects attached to the player
         const lantern = instantiate(new LanternGameObject(), Vector2.left.scaled(62))
@@ -70,7 +76,8 @@ class PlayerUpdateComponent extends Component {
 
     update() {
         GameSession.playerhealth = this.health.currentHealth
-        GameSession.playerexp = this.experience.level.current
+        GameSession.playermaxhealth = this.health.maxHealth
+        GameSession.playerattributes = this.attributes.save()
         // cheat codes :)
         if (Input.getKey("KeyB")) {
             // die button
@@ -98,17 +105,17 @@ class PlayerUpdateComponent extends Component {
         if (Input.getKeyDown("KeyP")) {
             const x = Camera.main.transform.scale.x
             const y = Camera.main.transform.scale.y
-            Camera.main.transform.scale = new Vector2(x+0.5, y+0.5)
+            Camera.main.transform.scale = new Vector2(x + 0.5, y + 0.5)
         }
         if (Input.getKeyDown("KeyO")) {
             const x = Camera.main.transform.scale.x
             const y = Camera.main.transform.scale.y
-            Camera.main.transform.scale = new Vector2(Math.max(0.5, x-0.5), Math.max(0.5, y-0.5))
+            Camera.main.transform.scale = new Vector2(Math.max(0.5, x - 0.5), Math.max(0.5, y - 0.5))
         }
 
 
 
-        
+
 
         if (Input.getKeyDown("Space")) {
             // interact button pressed, this is available in any mode
@@ -122,10 +129,14 @@ class PlayerUpdateComponent extends Component {
         if (mouseWorldPos) {
             this.player.transform.lookAt(mouseWorldPos)
             // left click actions
-            // MELEE: left click should start a sword swing here instead,
-            // spawning a HitboxGameObject as a child of the player for the swing time.
-            // The fireball can move to another key.
-            if (Input.getMouseButtonDown(0)) {
+            if (Input.getMouseButtonDown(0) && (!this.swing || this.swing.markForDestroy)) {
+                this.swing = instantiate(new HitboxGameObject(), Vector2.zero)
+                this.swing.getComponent(HitboxController).init(this.player, this.weapon)
+                this.swing.transform.setParent(this.player.transform)
+            }
+
+            // right click actions
+            if (Input.getMouseButtonDown(2)) {
                 const fireball = instantiate(new FireballGameObject(), this.player.transform.position.clone())
                 fireball.launch(this.player.transform.up)
             }

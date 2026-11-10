@@ -4,7 +4,7 @@ class Director extends Component {
     // or anything else that needs to be consistent throughout the game
     // this could hold spawning enemies within the dungeon
     // essentially, this acts as a global manager for game-wide behaviors
-    
+
 
     start() {
         this.restarting = false
@@ -14,7 +14,7 @@ class Director extends Component {
     }
 
     update() {
-        if (!this.player && !this.restarting) {
+        if ((!this.player || this.player.markForDestroy) && !this.restarting) {
             this.restarting = true
             this.startCoroutine(this.restartGame())
         }
@@ -22,8 +22,11 @@ class Director extends Component {
 
     *restartGame() {
         yield new WaitForSeconds(5)
-        // set it to undefined so the players update component knows the player gets max health
+        // all behavior on restarting the game
         GameSession.playerhealth = undefined
-        SceneManager.loadScene(TestRoom)
+        GameSession.floor = 0
+        GameSession.playerattributes = null
+        GameSession.playermaxhealth = undefined
+        SceneManager.loadScene(CharacterCreator)
     }
 }

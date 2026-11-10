@@ -8,13 +8,48 @@ class EnemyController extends Component {
     sightDistance = 700
     isAttacking = false
     isAlerted = false
+    definition = null
+
+    // like Unity's GetComponent<EnemyController>().Init(definition)
+    init(definition) {
+        this.definition = definition
+        const go = this.gameObject
+        go.name = definition.name
+        go.transform.scale = definition.scale.clone()
+        Object.assign(go.getComponent(Polygon), { fillStyle: definition.fillStyle, points: definition.points })
+
+        const a = definition.attributes
+        this.speed = a.SPD * 3
+        Object.assign(go.getComponent(Attributes), {
+            level: definition.level,
+            strength: a.STR,
+            intelligence: a.INT,
+            willpower: a.WIL,
+            agility: a.AGI,
+            speed: a.SPD,
+            endurance: a.END,
+            personality: a.PER,
+            luck: a.LUC,
+        })
+    }
 
     start() {
-        this.definition = this.gameObject.definition
+        // children wait for start, scenes can instantiate enemies in their constructor before they are the current scene
+        for (const childDefinition of this.definition.children ?? []) {
+            const child = new GameObject(childDefinition.name, [], this.gameObject.layer)
+            child.addComponent(new Polygon(), {
+                fillStyle: childDefinition.fillStyle,
+                points: childDefinition.points.map(point => point.clone()),
+            })
+            child.transform.setParent(this.transform)
+            child.transform.rotation = childDefinition.rotation ?? 0
+            instantiate(child, childDefinition.position.clone())
+        }
+
         this.enemy = this.gameObject
         this.movement = this.gameObject.getComponent(MovementComponent)
         this.health = this.gameObject.getComponent(Health)
-        this.experience = this.gameObject.getComponent(Experience)
+        this.attributes = this.gameObject.getComponent(Attributes)
         this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
         this.player = GameObject.find("Player")
@@ -23,8 +58,7 @@ class EnemyController extends Component {
         const healthRange = this.definition.healthMax - this.definition.healthMin + 1
         const rolledHealth = GameSession.randomE.nextInt(healthRange) + this.definition.healthMin
         health.maxHealth = rolledHealth
-        const experience = this.gameObject.getComponent(Experience)
-        experience.currentExperience = this.definition.experiencePerHealth * rolledHealth + this.definition.experienceBase
+        this.attributes.currentExperience = this.definition.experiencePerHealth * rolledHealth + this.definition.experienceBase
 
     }
     fixedUpdate() {
@@ -32,7 +66,7 @@ class EnemyController extends Component {
         velocity.x = 0
         velocity.y = 0
         const enemypos = this.enemy.transform.position
-        if (!this.player) return
+        if (!this.player || this.player.markForDestroy) return
         const playerpos = this.player.transform.position
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude
@@ -43,7 +77,7 @@ class EnemyController extends Component {
     }
     update() {
         const enemypos = this.enemy.transform.position
-        if (!this.player) return
+        if (!this.player || this.player.markForDestroy) return
         const playerpos = this.player.transform.position
 
         const directionToPlayer = playerpos.minus(enemypos)
@@ -76,7 +110,8 @@ class EnemyController extends Component {
         if (this.health.currentHealth > 0) return
         const drops = Loot.roll(this.definition.loot)
         if (drops.length === 0) return
-        instantiate(new ItemBagGameObject(drops), this.transform.position.clone())
+        instantiate(new ItemBagGameObject(), this.transform.position.clone())
+            .getComponent(ItemBagController).init(drops)
     }
 
     onDamaged() {
@@ -85,7 +120,7 @@ class EnemyController extends Component {
 
     onMouseOver() {
         if (!Input.getMouseButtonDown(0) || this.gameObject.markForDestroy) return
-        this.msgmanager.showMessage(`You see a ${this.gameObject.definition.name}`, 3)
+        this.msgmanager.showMessage(`You see a ${this.definition.name}`, 3)
     }
 
     *attack(target) {
@@ -94,15 +129,20 @@ class EnemyController extends Component {
             this.isAttacking = false
             return
         }
+        const targetAttributes = target.getComponent(Attributes)
         // debug
         console.log(this.definition.name + " attacks", target.name)
 
-
-        const damageRange = this.definition.damageMax - this.definition.damageMin + 1
-        const damageRoll = GameSession.randomE.nextInt(damageRange) + this.definition.damageMin
-        const health = target.getComponent(Health)
-        health.takeDamage(damageRoll, this.gameObject, target)
-        this.popupmanager.showPopup(damageRoll, target, "red")
+        if (!Combat.rollToHit(this.attributes, targetAttributes)) {
+            this.popupmanager.showPopup("Miss", target, "gray")
+        } else {
+            const damageRange = this.definition.damageMax - this.definition.damageMin + 1
+            const damageRoll = GameSession.randomE.nextInt(damageRange) + this.definition.damageMin
+            const health = target.getComponent(Health)
+            health.takeDamage(damageRoll, this.gameObject, target)
+            this.popupmanager.showPopup(damageRoll, target, "red")
+        }
+        // the cooldown runs whether it hit or missed
         yield new WaitForSeconds(1)
         this.isAttacking = false
     }

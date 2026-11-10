@@ -1,8 +1,7 @@
+// loot bag prefab, ItemBagController.init(items) fills it, without init it becomes the test bag
 class ItemBagGameObject extends GameObject {
-    // items: [{ itemDef, amount }], leave empty for the test bag
-    constructor(items) {
+    constructor() {
         super("ItemBagGameObject", [], "items")
-        this.items = items
         this.addComponent(new Polygon(), { fillStyle: "brown", points: Assets.triangle })
         this.addComponent(new Inventory())
         this.addComponent(new Collider(), { isTrigger: true })

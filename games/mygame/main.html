@@ -39,7 +39,7 @@
   <script src="../../engine/components/customcomponents/Inventory.js"></script>
   <script src="../../engine/components/customcomponents/MovementComponent.js"></script>
   <script src="../../engine/components/customcomponents/ProjectileMovementComponent.js"></script>
-  <script src="../../engine/components/customcomponents/Experience.js"></script>
+
 
   <!-- game scripts -->
   <script src="items/ItemDefinitions.js"></script>
@@ -47,14 +47,18 @@
   <script src="items/Loot.js"></script>
   <script src="Assets.js"></script>
 
+  <script src="Attributes.js"></script>
   <script src="Globals.js"></script>
   <script src="Settings.js"></script>
   <script src="GameSession.js"></script>
+  <script src="Combat.js"></script>
+  <script src="ClassDefinitions.js"></script>
 
   <script src="scenes/GenericRoom.js"></script>
   <script src="scenes/Room1.js"></script>
   <script src="scenes/Room2.js"></script>
   <script src="scenes/TestRoom.js"></script>
+  <script src="scenes/CharacterCreator.js"></script>
 
   <script src="rooms/Room.js"></script>
   <script src="rooms/SquareRoom.js"></script>
@@ -87,6 +91,8 @@
   <script src="components/ui/Director.js"></script>
   <script src="components/ui/InventoryUI.js"></script>
   <script src="components/ui/ExperienceUI.js"></script>
+  <script src="components/ui/CharacterCreatorUI.js"></script>
+  <script src="components/ui/AttributeRowController.js"></script>
 
   <!-- player -->
   <script src="components/player/PlayerUpdateComponent.js"></script>
@@ -99,6 +105,8 @@
 
   <!-- enemies -->
   <script src="components/enemies/EnemyController.js"></script>
+
+  <script src="components/HitboxController.js"></script>
 
   <!-- game objects -->
   <!-- world -->
@@ -133,6 +141,9 @@
   <script src="gameObjects/ui/DirectorGameObject.js"></script>
   <script src="gameObjects/ui/InventoryUIGameObject.js"></script>
   <script src="gameObjects/ui/ExperienceUIGameObject.js"></script>
+  <script src="gameObjects/ui/UITextGameObject.js"></script>
+  <script src="gameObjects/ui/AttributeRowGameObject.js"></script>
+  <script src="gameObjects/ui/CharacterCreatorGameObject.js"></script>
 
   <!-- enemies -->
   <script src="gameObjects/enemies/EnemyDefinitions.js"></script>
@@ -142,7 +153,7 @@
 
 
   <script>
-    Engine.start(TestRoom, Settings);
+    Engine.start(CharacterCreator, Settings);
   </script>
 </body>
 
