@@ -15,7 +15,7 @@ class VisionComponent extends Component {
     }
 
     draw(ctx) {
-        if (!this.player) return
+        if (!this.player || this.player.markForDestroy) return
         const origin = this.player.transform.worldPosition
         // the shape the player can see, from the raycasts
         const poly = Raycast.visibilityPolygon(origin, this.radius, SceneManager.currentScene.occluders ?? [])

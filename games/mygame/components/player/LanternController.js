@@ -20,7 +20,7 @@ class LanternController extends Component {
     }
 
     update() {
-        if (!this.player) return
+        if (!this.player || this.player.markForDestroy) return
         const bob = new Vector2(0, Math.sin(Time.time * this.bobSpeed) * this.bobHeight)
         const target = this.player.transform.position.plus(this.offset).plus(bob)
         this.transform.position = Vector2.smoothDamp(
