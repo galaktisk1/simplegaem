@@ -78,6 +78,7 @@ class PlayerUpdateComponent extends Component {
         GameSession.playerhealth = this.health.currentHealth
         GameSession.playermaxhealth = this.health.maxHealth
         GameSession.playerattributes = this.attributes.save()
+        if (Time.timeScale === 0) return
         // cheat codes :)
         if (Input.getKey("KeyB")) {
             // die button
@@ -167,6 +168,16 @@ class PlayerUpdateComponent extends Component {
             // in reality just when the player doesnt exist
             // this.startCoroutine(this.restartGame())
         }
+    }
+
+    onLevelUp() {
+        const screen = GameObject.find("StatsScreen")
+        if (screen) return
+        SceneManager.currentScene.instantiate(new StatsScreenGameObject()).getComponent(CharacterCreatorUI).init(
+            this.player.getComponent(Attributes),
+            this.player.getComponent(Health),
+            "levelUp"
+        )
     }
 
     // very bad coroutine cause itll do nothing due to being wiped on gameobject destroy

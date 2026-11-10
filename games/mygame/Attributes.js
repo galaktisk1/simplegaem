@@ -80,15 +80,21 @@ class Attributes extends Component {
     }
 
     levelUp() {
+        // you need a class to level
+        if (!this.characterClass) return
+        // remember starting level to check if we leveled up
+        const startLevel = this.level
         while (this.level <= this.levelsXp.length && this.currentExperience >= this.levelsXp[this.level - 1]) {
             this.level++
             this.bonusPoints += 3 + GameSession.randomE.nextInt(4)
 
             const health = this.gameObject.getComponent(Health)
             if (health) {
-                if (!this.characterClass) return
                 health.maxHealth += 1 + GameSession.randomE.nextInt(this.characterClass.healthDie) + this.bonusToHealth
             }
+        }
+        if (this.level > startLevel) {
+            this.gameObject.broadcastMessage("onLevelUp", [])
         }
     }
 
