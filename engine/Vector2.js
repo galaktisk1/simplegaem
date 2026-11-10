@@ -25,10 +25,10 @@ class Vector2 {
     }
 
     /** Replaces this vector's x and y values in place. */
-    set(newX, newY) {this.x = newX; this.y = newY}
+    set(newX, newY) { this.x = newX; this.y = newY }
 
     /** Returns an independent copy of this vector. */
-    clone(){
+    clone() {
         return new Vector2(this.x, this.y)
     }
 
@@ -75,7 +75,7 @@ class Vector2 {
     }
 
     /** Returns a unit-length copy, or a zero vector if this vector is zero. */
-    get normalized() { 
+    get normalized() {
         const mag = this.magnitude
         if (mag === 0) return Vector2.zero
         return new Vector2(this.x / mag, this.y / mag)
@@ -117,7 +117,7 @@ class Vector2 {
     static cross(lhs, rhs) {
         return lhs.x * rhs.y - lhs.y * rhs.x
     }
-    
+
     // instance version
     cross(other) {
         return Vector2.cross(this, other)
@@ -205,7 +205,7 @@ class Vector2 {
         smoothTime = Math.max(0.0001, smoothTime)
         const omega = 2 / smoothTime
         const x = omega * deltaTime
-        
+
         // 0.48 and 0.235 are coefficients used to approximate exp(-timeStep).
         // This follows the original smooth-damping algorithm.
         const exp = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x)
@@ -247,17 +247,29 @@ class Vector2 {
         return this.scaled(-1)
     }
 
-    
+
 
     /** Returns a new vector with both coordinates multiplied by scalar. */
     scaled(scalar) {
         return new Vector2(this.x * scalar, this.y * scalar)
     }
 
-    static get zero() {return new Vector2(0, 0)}
-    static get one() {return new Vector2(1, 1)}
-    static get up() {return new Vector2(0, -1)}
-    static get down() {return new Vector2(0, 1)}
-    static get left() {return new Vector2(-1, 0)}
+    static get zero() { return new Vector2(0, 0) }
+    static get one() { return new Vector2(1, 1) }
+    static get up() { return new Vector2(0, -1) }
+    static get down() { return new Vector2(0, 1) }
+    static get left() { return new Vector2(-1, 0) }
     static get right() { return new Vector2(1, 0) }
+
+    // static anchor points for UI elements
+    // ONLY USED FOR UI ELEMENTS
+    static get topLeft() { return new Vector2(0, 0) }
+    static get topCenter() { return new Vector2(0.5, 0) }
+    static get topRight() { return new Vector2(1, 0) }
+    static get middleLeft() { return new Vector2(0, 0.5) }
+    static get center() { return new Vector2(0.5, 0.5) }
+    static get middleRight() { return new Vector2(1, 0.5) }
+    static get bottomLeft() { return new Vector2(0, 1) }
+    static get bottomCenter() { return new Vector2(0.5, 1) }
+    static get bottomRight() { return new Vector2(1, 1) }
 }

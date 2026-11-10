@@ -20,8 +20,16 @@ class GameObject {
     }
 
     addComponent(component, parameters) {
+        // if the component is a Transform and one already exists, replace it instead of adding a new one
+        // for RectTransform
+        if (component instanceof Transform && this.components[0]) {
+            component.gameObject = this
+            Object.assign(component, parameters)
+            this.components[0] = component
+            return
+        }
         // if a script requires other components, make sure they are added first
-        for(const type of component.constructor.requires ?? []) {
+        for (const type of component.constructor.requires ?? []) {
             if (!this.getComponent(type)) {
                 this.addComponent(new type())
             }
@@ -41,7 +49,7 @@ class GameObject {
         return this.components.find(c => c instanceof type)
     }
 
-    broadcastMessage(message, args = []) { 
+    broadcastMessage(message, args = []) {
         for (const component of this.components) {
             component[message]?.(...args)
         }
@@ -95,7 +103,7 @@ class GameObject {
             }
         }
         this.components = this.components.filter(c => !c.markForDestroy)
-        
+
     }
 
     static find(name) {
