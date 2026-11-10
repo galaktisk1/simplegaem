@@ -117,6 +117,11 @@ class Vector2 {
     static cross(lhs, rhs) {
         return lhs.x * rhs.y - lhs.y * rhs.x
     }
+    
+    // instance version
+    cross(other) {
+        return Vector2.cross(this, other)
+    }
 
     get magnitude() {
         // which is the same as Math.sqrt(this.x**2 + this.y**2)
@@ -242,6 +247,8 @@ class Vector2 {
         return this.scaled(-1)
     }
 
+    
+
     /** Returns a new vector with both coordinates multiplied by scalar. */
     scaled(scalar) {
         return new Vector2(this.x * scalar, this.y * scalar)
@@ -252,5 +259,5 @@ class Vector2 {
     static get up() {return new Vector2(0, -1)}
     static get down() {return new Vector2(0, 1)}
     static get left() {return new Vector2(-1, 0)}
-    static get right() {return new Vector2(1, 0)}
+    static get right() { return new Vector2(1, 0) }
 }

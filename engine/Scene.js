@@ -68,6 +68,32 @@ class Scene {
             return { go, collider, rb: go.getComponent(Rigidbody), points, minX, minY, maxX, maxY, center }
         })
 
+        // now store occluders for raycasting and anyone to use
+        // occluders block sight: solid colliders without a rigidbody (walls and closed gates).
+        // A thin rectangle blocks along the line down its middle, the line the wall sits on;
+        // other shapes block with every edge. Raycast.cleanSegments tidies these per query.
+        this.occluders = []
+        for (const body of bodies) {
+            if (body.rb || body.collider.isTrigger) continue
+            const pts = body.points
+            if (pts.length < 2) continue
+            if (pts.length === 4) {
+                const first = Vector2.distance(pts[0], pts[1])
+                const second = Vector2.distance(pts[1], pts[2])
+                // thin: one pair of opposite edges is much shorter than the other
+                if (Math.min(first, second) * 4 < Math.max(first, second)) {
+                    const mid = (p, q) => new Vector2((p.x + q.x) / 2, (p.y + q.y) / 2)
+                    const a = first < second ? mid(pts[0], pts[1]) : mid(pts[1], pts[2])
+                    const b = first < second ? mid(pts[2], pts[3]) : mid(pts[3], pts[0])
+                    this.occluders.push({ a, b })
+                    continue
+                }
+            }
+            for (let i = 0; i < pts.length; i++) {
+                this.occluders.push({ a: pts[i], b: pts[(i + 1) % pts.length] })
+            }
+        }
+
         // handle mouse over collisions
         /** @type {GameObject | undefined} */
         let hovered = undefined

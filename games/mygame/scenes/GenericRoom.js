@@ -2,6 +2,7 @@ class GenericRoom extends Scene {
     constructor() {
         super()
         this.instantiate(new PlayerGameObject(), new Vector2(110, 110))
+        this.instantiate(new VisionGameObject(), Vector2.zero)
         this.instantiate(new InventoryUIGameObject(), new Vector2(20, 20))
         this.instantiate(new ExperienceUIGameObject(), new Vector2(0, 0))
         this.instantiate(new MessageManagerGameObject())
