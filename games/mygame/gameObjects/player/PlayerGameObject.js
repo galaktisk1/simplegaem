@@ -1,6 +1,7 @@
 class PlayerGameObject extends GameObject {
     constructor() {
         super("Player", [], "characters")
+        
         this.addComponent(new PlayerUpdateComponent())
         this.addComponent(new MovementComponent())
         this.addComponent(new Collider(), {
@@ -17,6 +18,6 @@ class PlayerGameObject extends GameObject {
         })
         this.addComponent(new Health())
         this.addComponent(new Inventory())
-        this.addComponent(new Experience())
+        this.addComponent(new Attributes(), { characterClass: ClassDefinitions.warrior })
     }
 }

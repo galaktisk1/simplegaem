@@ -38,17 +38,17 @@ class Health extends Component {
         go.broadcastMessage("onDamaged", [amount, attacker, target])
         if (this._currentHealth <= 0) {
             this._currentHealth = 0
-            if (go.getComponent(Experience)) {
-                if (attacker && attacker.getComponent(Experience)) {
-                    const attExperience = attacker.getComponent(Experience)
-                    const tarExperience = go.getComponent(Experience)
-                    attExperience.addExperience(tarExperience.currentExperience)
+            if (go.getComponent(Attributes)) {
+                if (attacker && attacker.getComponent(Attributes)) {
+                    const attAttributes = attacker.getComponent(Attributes)
+                    const tarAttributes = go.getComponent(Attributes)
+                    attAttributes.addExperience(tarAttributes.currentExperience)
                 } else {
-                    const experienceToGive = go.getComponent(Experience).currentExperience
+                    const experienceToGive = go.getComponent(Attributes).currentExperience
                     // by default, find the player and give the experience
                     const player = GameObject.find("Player")
                     if (player) {
-                        player.getComponent(Experience).addExperience(experienceToGive)
+                        player.getComponent(Attributes).addExperience(experienceToGive)
                     }
                 }
             }
