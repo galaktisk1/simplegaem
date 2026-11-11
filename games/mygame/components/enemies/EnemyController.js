@@ -87,9 +87,10 @@ class EnemyController extends Component {
 
         const occluders = SceneManager.currentScene.occluders ?? []
         const direction = directionToPlayer.normalized
-        const blocked = Raycast.cast(enemypos, direction, occluders, distanceToPlayer) !== null
+        if (distanceToPlayer < this.sightDistance) 
+            this.blocked = Raycast.cast(enemypos, direction, occluders, distanceToPlayer) !== null
 
-        const canSee = distanceToPlayer <= this.sightDistance && !blocked
+        const canSee = distanceToPlayer <= this.sightDistance && !this.blocked
         if (canSee) this.isAlerted = true
         if (!this.isAlerted) {
             this.enemy.transform.rotation = 0
@@ -102,7 +103,7 @@ class EnemyController extends Component {
         }
         this.enemy.transform.lookAt(playerpos)
 
-        if (distanceToPlayer <= this.attackDistance && !blocked && !this.isAttacking) {
+        if (distanceToPlayer <= this.attackDistance && !this.blocked && !this.isAttacking) {
             this.isAttacking = true
             this.startCoroutine(this.attack(this.player))
         }

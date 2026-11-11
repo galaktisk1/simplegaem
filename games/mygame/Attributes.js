@@ -111,6 +111,16 @@ class Attributes extends Component {
         if (this.currentExperience < 0) this.currentExperience = 0
     }
 
+    get experienceIntoLevel() {
+        if (this.level <= 1) return this.currentExperience
+        return this.currentExperience - this.levelsXp[this.level - 2]
+    }
+
+    get experienceForLevel() {
+        if (this.level <= 1) return this.levelsXp[0]
+        return this.levelsXp[this.level - 1] - this.levelsXp[this.level - 2]
+    }
+
     // all below comes from OpenTESArena src/Stats/ArenaStatUtils.h and src/Player/ArenaPlayerUtils.h
 
     static scale100To256(value) {
@@ -146,5 +156,9 @@ class Attributes extends Component {
 
     get luckBonus() {
         return Math.trunc((Attributes.scale100To256(this.luck) - 116) / 25) * 2
+    }
+
+    get baseSpeed() {
+        return Math.floor(Attributes.scale100To256(this.speed) * 20 / 256) + 20
     }
 }

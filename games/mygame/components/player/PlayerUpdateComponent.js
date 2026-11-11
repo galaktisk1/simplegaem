@@ -12,7 +12,7 @@
 
 
 class PlayerUpdateComponent extends Component {
-    speed = 4 * 60
+    baseMoveSpeed = 4 * 60
     allowedInputs = []
     cameraVelocity = Vector2.zero
 
@@ -54,6 +54,7 @@ class PlayerUpdateComponent extends Component {
     }
 
     fixedUpdate() {
+        this.speed = this.baseMoveSpeed * this.attributes.baseSpeed / 30
         this.movementVelocity.x = 0
         this.movementVelocity.y = 0
         //regular input section

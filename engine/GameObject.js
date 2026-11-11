@@ -20,13 +20,14 @@ class GameObject {
     }
 
     addComponent(component, parameters) {
+        if (typeof component === "function") component = new component()
         // if the component is a Transform and one already exists, replace it instead of adding a new one
         // for RectTransform
         if (component instanceof Transform && this.components[0]) {
             component.gameObject = this
             Object.assign(component, parameters)
             this.components[0] = component
-            return
+            return component
         }
         // if a script requires other components, make sure they are added first
         for (const type of component.constructor.requires ?? []) {
@@ -42,6 +43,7 @@ class GameObject {
         if (component.enabled) {
             component.onEnable?.()
         }
+        return component
     }
 
     getComponent(type) {
