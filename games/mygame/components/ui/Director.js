@@ -14,6 +14,7 @@ class Director extends Component {
     }
 
     update() {
+        GameClock.tick(Time.deltaTime)
         if ((!this.player || this.player.markForDestroy) && !this.restarting) {
             this.restarting = true
             this.startCoroutine(this.restartGame())
@@ -27,6 +28,8 @@ class Director extends Component {
         GameSession.floor = 0
         GameSession.playerattributes = null
         GameSession.playermaxhealth = undefined
+        GameClock.totalSeconds = 8 * 60 * 60
+        GameClock.speed = 1
         SceneManager.loadScene(CharacterCreator)
     }
 }
