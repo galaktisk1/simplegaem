@@ -13,30 +13,26 @@
 
 class PlayerUpdateComponent extends Component {
     baseMoveSpeed = 4 * 60
-    allowedInputs = []
-    cameraVelocity = Vector2.zero
+    /** @type {{ update(): unknown, enter(): void, exit(): void } | null} */
+    action = null
+    actionTimer = 0
+    actionCap = 5
 
     start() {
         // declare components and references ill need later
         this.player = this.gameObject
         this.movement = this.gameObject.getComponent(MovementComponent)
-        this.movementVelocity = this.movement.velocity
         this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.health = this.gameObject.getComponent(Health)
         this.attributes = this.gameObject.getComponent(Attributes)
         this.inventory = this.gameObject.getComponent(Inventory)
-
         this.weapon = { name: "fists", damageMin: 1, damageMax: 2 }
+        this.input = this.gameObject.getComponent(PlayerInput)
+        this.cameraFollow = Camera.main.gameObject.addComponent(CameraFollow)
+        this.cameraFollow.init(this.player)
 
         // health and inv global set up
         this.inventory.inventory = GameSession.playerinventory
-        if (GameSession.playerattributes) {
-            this.attributes.load(GameSession.playerattributes)
-            this.health.maxHealth = GameSession.playermaxhealth
-            this.health.currentHealth = GameSession.playerhealth
-        } else {
-            this.attributes.rollCharacter()
-        }
 
         // game objects attached to the player
         const lantern = instantiate(new LanternGameObject(), Vector2.left.scaled(62))
@@ -48,46 +44,19 @@ class PlayerUpdateComponent extends Component {
         const facingIndicator = instantiate(new FacingIndicatorGameObject(), Vector2.up.scaled(90))
         facingIndicator.transform.setParent(this.player.transform)
 
-        Camera.main.transform.position = this.player.transform.position.clone()
-        Camera.main.transform.scale = Vector2.one
-        this.cameraVelocity = Vector2.zero
-    }
-
-    fixedUpdate() {
-        this.speed = this.baseMoveSpeed * this.attributes.baseSpeed / 30
-        this.movementVelocity.x = 0
-        this.movementVelocity.y = 0
-        //regular input section
-        if (Input.getKey("ArrowUp") || Input.getKey("KeyW")) {
-            this.movementVelocity.y -= this.speed
+        this.actions = {
+            move: new MoveAction(this)
         }
-        if (Input.getKey("ArrowDown") || Input.getKey("KeyS")) {
-            this.movementVelocity.y += this.speed
-        }
-        if (Input.getKey("ArrowLeft") || Input.getKey("KeyA")) {
-            this.movementVelocity.x -= this.speed
-        }
-        if (Input.getKey("ArrowRight") || Input.getKey("KeyD")) {
-            this.movementVelocity.x += this.speed
-        }
-
-        // clamp velocity to max speed
-        this.movement.velocity = Vector2.clampMagnitude(this.movementVelocity, this.speed)
+        this.setAction("move")
     }
 
     update() {
-        GameSession.playerhealth = this.health.currentHealth
-        GameSession.playermaxhealth = this.health.maxHealth
-        GameSession.playerattributes = this.attributes.save()
         if (Time.timeScale === 0) return
-        // cheat codes :)
-        if (Input.getKey("KeyB")) {
-            // die button
-            this.gameObject.getComponent(Health).currentHealth = 0
+        this.actionTimer += Time.deltaTime
+        for (let i = 0; i < this.actionCap && this.action; i++) {
+            if (this.action.update() !== true) break
         }
-
-
-        // today is to make the different methods of player interaction,
+        // below is for the action state machine i will be building,
         // use E to enter inspect mode
         // use F to enter attack mode
         // and more later, T was an idea for "tresspass" for sneak attacks, lockpick,so on
@@ -103,57 +72,52 @@ class PlayerUpdateComponent extends Component {
             // follow the same method as above for trespass mode
         }
 
-        // zoom in and out with P and O keys, crashes if you zzom too far in
-        if (Input.getKeyDown("KeyP")) {
-            const x = Camera.main.transform.scale.x
-            const y = Camera.main.transform.scale.y
-            Camera.main.transform.scale = new Vector2(x + 0.5, y + 0.5)
-        }
-        if (Input.getKeyDown("KeyO")) {
-            const x = Camera.main.transform.scale.x
-            const y = Camera.main.transform.scale.y
-            Camera.main.transform.scale = new Vector2(Math.max(0.5, x - 0.5), Math.max(0.5, y - 0.5))
-        }
 
-
-
-
-
-        if (Input.getKeyDown("Space")) {
+        if (this.input.interactPressed) {
             // interact button pressed, this is available in any mode
             // its just for like interacting with merchants, keys, itembags, so on
 
         }
 
-        // i wish this wasnt in the scene, but so be it for now
-        const mouseWorldPos = SceneManager.currentScene.mouseWorldPosition
+        const aimpoint = this.input.aimPoint
         // rotate player to face mouse
-        if (mouseWorldPos) {
-            this.player.transform.lookAt(mouseWorldPos)
+        if (aimpoint) {
+            this.player.transform.lookAt(aimpoint)
             // left click actions
-            if (Input.getMouseButtonDown(0) && (!this.swing || this.swing.markForDestroy)) {
+            if (this.input.attackPressed && (!this.swing || this.swing.markForDestroy)) {
                 this.swing = instantiate(new HitboxGameObject(), Vector2.zero)
                 this.swing.getComponent(HitboxController).init(this.player, this.weapon)
                 this.swing.transform.setParent(this.player.transform)
             }
 
+            // casting will become its own action state:
+            // press C, the game pauses and a magic menu opens,
+            // select a spell, then aim it while the game is still paused,
+            // click to fire, and the game resumes
             // right click actions
-            if (Input.getMouseButtonDown(2)) {
+            if (this.input.castPressed) {
                 const fireball = instantiate(new FireballGameObject(), this.player.transform.position.clone())
                 fireball.launch(this.player.transform.up)
             }
         }
-        // test smooth damp by applying it to the camera position
-        const cameraSmoothTime = 0.2
 
-        Camera.main.gameObject.transform.position = Vector2.smoothDamp(
-            Camera.main.gameObject.transform.position,
-            this.player.transform.position,
-            this.cameraVelocity,
-            cameraSmoothTime,
-            Infinity,
-            Time.deltaTime
-        )
+    }
+
+    // sets the current action for the player, exiting the previous one if necessary
+    // this is an action state machine like Super Mario 64 has for mario's separate actions (walking, jumping, attacking, etc.)
+    setAction(name) {
+        // exit the current action if there is one
+        if (this.action) {
+            this.action.exit()
+        }
+        this.actionTimer = 0
+        // set the new action based on the name
+        this.action = this.actions[name]
+        // if the action exists, call its enter method
+        if (this.action) {
+            this.action.enter()
+        }
+        return true
     }
 
 

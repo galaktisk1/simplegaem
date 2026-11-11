@@ -1,7 +1,9 @@
 class PlayerGameObject extends GameObject {
     constructor() {
         super("Player", [], "characters")
-        
+        this.addComponent(new PlayerPersistence())
+        this.addComponent(new PlayerInput())
+        this.addComponent(new DebugCheats())
         this.addComponent(new PlayerUpdateComponent())
         this.addComponent(new MovementComponent())
         this.addComponent(new Collider(), {

@@ -25,6 +25,10 @@ class Input {
     static mousePosition
     static mousePositionLastFrame
     static mouseDelta
+    static get mouseWorldPosition() {
+        if (!Input.mousePosition) return undefined
+        return Camera.main.screenToWorldPoint(Input.mousePosition)
+    }
 
     static mousemove(event) {
         if (Input.mousePosition) {
