@@ -2,7 +2,7 @@ class UIText extends Component {
     static requires = [RectTransform]
 
     text = ""
-    color = Color.white
+    color = Color.black
     font = "20px Arial"
     // top left default alignment
     horizontal = "left" // "left", "center", "right"

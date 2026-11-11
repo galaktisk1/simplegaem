@@ -20,10 +20,26 @@ class Scene {
         position = gameObject.transform.position,
         rotation = gameObject.transform.rotation,
         scale = gameObject.transform.scale) {
-        this.gameObjects.push(gameObject)
+
         gameObject.transform.position = position
         gameObject.transform.rotation = rotation
         gameObject.transform.scale = scale
+        
+        // register to instantiate children along with parent game object
+        const register = (go) => {
+            // check if the game object is already in the list
+            if (this.gameObjects.includes(go)) return
+
+            // push to it like before
+            this.gameObjects.push(go)
+
+            // recursively get children of the transform and register them as well
+            for (const child of go.transform.children)
+                register(child.gameObject)
+        }
+
+        register(gameObject)
+
         return gameObject
     }
 
@@ -70,9 +86,6 @@ class Scene {
         })
 
         // now store occluders for raycasting and anyone to use
-        // occluders block sight: solid colliders without a rigidbody (walls and closed gates).
-        // A thin rectangle blocks along the line down its middle, the line the wall sits on;
-        // other shapes block with every edge. Raycast.cleanSegments tidies these per query.
         this.occluders = []
         for (const body of bodies) {
             if (body.rb || body.collider.isTrigger) continue
@@ -81,7 +94,6 @@ class Scene {
             if (pts.length === 4) {
                 const first = Vector2.distance(pts[0], pts[1])
                 const second = Vector2.distance(pts[1], pts[2])
-                // thin: one pair of opposite edges is much shorter than the other
                 if (Math.min(first, second) * 4 < Math.max(first, second)) {
                     const mid = (p, q) => new Vector2((p.x + q.x) / 2, (p.y + q.y) / 2)
                     const a = first < second ? mid(pts[0], pts[1]) : mid(pts[1], pts[2])
@@ -102,6 +114,10 @@ class Scene {
         if (Input.mousePosition) {
             let matrix = new DOMMatrix()
             matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
+            if (Engine.cameraWidthInWorldSpace) {
+                const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
+                matrix.scaleSelf(1/scalar, 1/scalar)
+            }
             matrix.multiplySelf(Camera.main.transform.getWorldMatrix().inverse())
 
             let worldPositionDOMPoint = matrix.inverse().transformPoint(Input.mousePosition)
@@ -136,7 +152,7 @@ class Scene {
                 for (let j = i + 1; j < bodies.length; j++) {
                     const a = bodies[i]
                     const b = bodies[j]
-                    
+
                     // cheap checks
                     if (!a.rb && !b.rb) continue
                     if (a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY) continue
@@ -209,9 +225,28 @@ class Scene {
         ctx.fillStyle = Camera.main.backgroundColor
         ctx.fillRect(0, 0, Engine.canvas.width, Engine.canvas.height)
 
+        //aspect ratio
+        Engine.letterBoxingWidth = 0
+        Engine.letterBoxingHeight = 0
+        if(Engine.aspectRatio) {
+            const currentAspectRatio = Engine.canvas.width / Engine.canvas.height
+            if (Engine.aspectRatio > currentAspectRatio) {
+                const maxHeight = Engine.canvas.width / Engine.aspectRatio
+                Engine.letterBoxingHeight = Engine.canvas.height - maxHeight
+            }
+            else if (Engine.aspectRatio < currentAspectRatio) {
+                const maxWidth = Engine.canvas.height * Engine.aspectRatio
+                Engine.letterBoxingWidth = Engine.canvas.width - maxWidth
+            }
+        }
+
         // start camera code
         ctx.save()
         ctx.translate(Engine.canvas.width / 2, Engine.canvas.height / 2)
+        if(Engine.cameraWidthInWorldSpace) {
+            const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
+            ctx.scale(1/scalar, 1/scalar)
+        }
         //ctx.translate(-Camera.main.transform.position.x, -Camera.main.transform.position.y)
         ctx.setTransform(ctx.getTransform().multiply(Camera.main.transform.getWorldMatrix().inverse()))
 
@@ -223,7 +258,27 @@ class Scene {
         ctx.restore()
         // stop camera code
 
+        //letterboxing
+        ctx.fillStyle = "black"
+
+        const top = Engine.letterBoxingHeight / 2
+        const bottom = Engine.canvas.height - Engine.letterBoxingHeight / 2
+        const left = Engine.letterBoxingWidth / 2
+        const right = Engine.canvas.width - Engine.letterBoxingWidth / 2
+        
+        let width = Engine.canvas.width
+        let height = Engine.canvas.height
+        // top
+        ctx.fillRect(0, 0, width, top)
+        // bottom
+        ctx.fillRect(0, bottom, width, height - bottom)
+        // right
+        ctx.fillRect(right, 0, width - right, height)
+        // left
+        ctx.fillRect(0, 0, left, height)
+
         // ui layer
+        // ctx.translate(0, Engine.letterBoxingHeight / 2)
         for (const gameObject of this.gameObjects.filter(go => go.layer == "UI")) {
             gameObject.draw(ctx)
         }

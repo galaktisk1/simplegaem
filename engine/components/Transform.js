@@ -5,15 +5,26 @@ class Transform extends Component {
     _enabled = true
 
     parent
+    children = new Set()
 
     setParent(parentTransform) {
+        if (this.parent === parentTransform) return
+        // prevent this transform from becoming its own ancestor
+        for (let ancestor = parentTransform; ancestor; ancestor = ancestor.parent) {
+            if (ancestor === this) return
+        }
+        // remove from previous parent
+        this.parent?.children.delete(this)
+        // set parent transform relationship
         this.parent = parentTransform
+        // give the new parent
+        this.parent?.children.add(this)
     }
 
     get enabled() {
         return true
     }
-    
+
     set enabled(value) {
         console.warn("Transform component cannot be disabled")
     }
@@ -27,15 +38,15 @@ class Transform extends Component {
     // this has been updated to account for world position and parent rotation,
     // previously only did local point calculations
     lookAt(targetPosition) {
-    const m = this.getWorldMatrix()
-    // position is in e and f of the world matrix
-    // rotation is in a and b of the world matrix
-    const worldPosition = new Vector2(m.e, m.f)
-    const direction = targetPosition.minus(worldPosition)
-    if (direction.magnitude === 0) return
-    const worldAngle = Math.atan2(direction.x, -direction.y)
-    const parentRot = this.parent ? this.parent.worldRotation : 0
-    this.rotation = worldAngle - parentRot
+        const m = this.getWorldMatrix()
+        // position is in e and f of the world matrix
+        // rotation is in a and b of the world matrix
+        const worldPosition = new Vector2(m.e, m.f)
+        const direction = targetPosition.minus(worldPosition)
+        if (direction.magnitude === 0) return
+        const worldAngle = Math.atan2(direction.x, -direction.y)
+        const parentRot = this.parent ? this.parent.worldRotation : 0
+        this.rotation = worldAngle - parentRot
     }
 
     getLocalMatrix() {

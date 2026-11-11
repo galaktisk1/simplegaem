@@ -89,10 +89,8 @@ class GameObject {
     destroy() {
         if (this.markForDestroy) return
         this.markForDestroy = true
-        const children = SceneManager.currentScene.gameObjects.filter(go => go.transform.parent === this.transform)
-        for (const child of children) {
-            child.destroy()
-        }
+        for (const child of [...this.transform.children])
+            child.gameObject.destroy()
     }
 
     removeDestroyedComponents() {

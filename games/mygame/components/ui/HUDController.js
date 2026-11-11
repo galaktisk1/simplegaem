@@ -24,15 +24,16 @@ class HUDController extends Component {
             sizeDelta: new Vector2(0, 0)
         });
 
-        fill.transform.parent = background.transform;
+        fill.transform.setParent(background.transform);
 
         const fillImage = fill.addComponent(new UIImage(), {
             color: color,
             fillMethod: fillMethod
         });
 
+        // with new scene instatiation, just instantiate the parent, 
+        // the child will be included automatically
         SceneManager.currentScene.instantiate(background)
-        SceneManager.currentScene.instantiate(fill)
         const statBar = background.addComponent(new StatBar());
         statBar.init(fillImage, getCurrent, getMax);
         return statBar;

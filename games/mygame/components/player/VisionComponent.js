@@ -1,7 +1,7 @@
 // Lights what the player can see, and darkens everything else.
 // Uses an alpha mask, as in Nicky Case, "Sight & Light" (https://ncase.me/sight-and-light/):
-// darkness is painted on a hidden canvas, holes are cut in it where the player can see,
-// and that canvas is laid over the game like a sheet of dark glass with holes in it.
+// darkness is painted on a canvas, cut into where the player can see,
+// and that canvas is laid over the game
 class VisionComponent extends Component {
     radius = 750
     // rays stop on the middle line of a wall, so we light half a wall past the edge of what's seen
@@ -43,7 +43,7 @@ class VisionComponent extends Component {
         m.fillStyle = this.darkness
         m.fillRect(origin.x - R, origin.y - R, R * 2, R * 2)
 
-        // 2. cut holes in the darkness: "destination-out" erases instead of painting
+        // 2. cut hole
         m.globalCompositeOperation = "destination-out"
         m.beginPath()
         this.tracePolygon(m, poly)
@@ -57,7 +57,6 @@ class VisionComponent extends Component {
         // back to normal painting for next frame
         m.globalCompositeOperation = "source-over"
 
-        // 3. lay the mask over the game; it's screen-sized, so draw it in screen pixels
         ctx.save()
         ctx.setTransform(1, 0, 0, 1, 0, 0)
         ctx.drawImage(mask, 0, 0)
