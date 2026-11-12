@@ -17,6 +17,7 @@ class SceneManager {
             const tempScene = new nextScene()
             for (const gameObject of tempScene.gameObjects) {
                 SceneManager.currentScene.gameObjects.push(gameObject)
+                gameObject.scene = SceneManager.currentScene
             }
         }
     }

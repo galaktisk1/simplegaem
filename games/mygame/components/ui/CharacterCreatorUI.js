@@ -1,6 +1,6 @@
 class CharacterCreatorUI extends Component {
-    attributes = null
-    health = null
+    attributes
+    health
     mode = "create"
     
     start() {
@@ -119,6 +119,7 @@ class CharacterCreatorUI extends Component {
         // Arena makes you spend every point before starting
         if (Input.getKeyDown("Enter") && this.attributes.bonusPoints === 0) {
             if (this.mode === "create") {
+                this.attributes.currentFatigue = this.attributes.maxFatigue
                 GameSession.playerattributes = this.attributes.save()
                 GameSession.playermaxhealth = this.health.maxHealth
                 GameSession.playerhealth = this.health.maxHealth

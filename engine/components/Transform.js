@@ -19,6 +19,9 @@ class Transform extends Component {
         this.parent = parentTransform
         // give the new parent
         this.parent?.children.add(this)
+        // Register this object with the scene when the parent is already in it.
+        const scene = this.parent?.gameObject?.scene
+        if (scene && !this.gameObject.scene) scene.register(this.gameObject)
     }
 
     get enabled() {

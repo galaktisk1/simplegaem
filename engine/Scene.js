@@ -24,23 +24,23 @@ class Scene {
         gameObject.transform.position = position
         gameObject.transform.rotation = rotation
         gameObject.transform.scale = scale
-        
-        // register to instantiate children along with parent game object
-        const register = (go) => {
-            // check if the game object is already in the list
-            if (this.gameObjects.includes(go)) return
 
-            // push to it like before
-            this.gameObjects.push(go)
-
-            // recursively get children of the transform and register them as well
-            for (const child of go.transform.children)
-                register(child.gameObject)
-        }
-
-        register(gameObject)
+        this.register(gameObject)
 
         return gameObject
+    }
+
+    /** @param {GameObject} go */
+    register(go) {
+        if (!this.gameObjects.includes(go)) {
+            this.gameObjects.push(go)
+        }
+        // @ts-ignore
+        go.scene = this
+
+        for (const child of go.transform.children) {
+            this.register(child.gameObject)
+        }
     }
 
     start() {
@@ -56,7 +56,7 @@ class Scene {
             // call start on each game object before fixedUpdate
             gameObject.start()
             if (Time.timeScale > 0)
-                gameObject.broadcastMessage("fixedUpdate", [])
+                gameObject.sendMessage("fixedUpdate", [])
         }
 
         //Collisions
@@ -116,7 +116,7 @@ class Scene {
             matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
             if (Engine.cameraWidthInWorldSpace) {
                 const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
-                matrix.scaleSelf(1/scalar, 1/scalar)
+                matrix.scaleSelf(1 / scalar, 1 / scalar)
             }
             matrix.multiplySelf(Camera.main.transform.getWorldMatrix().inverse())
 
@@ -133,14 +133,14 @@ class Scene {
         }
         if (hovered !== this.lastHovered) {
             if (this.lastHovered) {
-                this.lastHovered.broadcastMessage("onMouseExit", [])
+                this.lastHovered.sendMessage("onMouseExit", [])
             }
             if (hovered) {
-                hovered.broadcastMessage("onMouseEnter", [])
+                hovered.sendMessage("onMouseEnter", [])
             }
         }
         if (hovered) {
-            hovered.broadcastMessage("onMouseOver", [])
+            hovered.sendMessage("onMouseOver", [])
         }
         this.lastHovered = hovered
 
@@ -167,13 +167,13 @@ class Scene {
                     const mtv = Collisions.polygonPolygonPoints(a.points, b.points, a.center, b.center)
                     if (mtv) {
                         if (!oneC.isTrigger && !twoC.isTrigger) {
-                            one.broadcastMessage("onCollisionStay", [two, mtv])
-                            two.broadcastMessage("onCollisionStay", [one, mtv.negate()])
+                            one.sendMessage("onCollisionStay", [two, mtv])
+                            two.sendMessage("onCollisionStay", [one, mtv.negate()])
                             physicalCollisions.push({ one, two, oneRb, twoRb, mtv })
                         }
                         else {
-                            one.broadcastMessage("onTriggerStay", [two, mtv])
-                            two.broadcastMessage("onTriggerStay", [one, mtv.negate()])
+                            one.sendMessage("onTriggerStay", [two, mtv])
+                            two.sendMessage("onTriggerStay", [one, mtv.negate()])
                         }
                     }
                 }
@@ -205,6 +205,8 @@ class Scene {
 
         for (const gameObject of this.gameObjects) {
             if (gameObject.markForDestroy) {
+                gameObject.transform.parent?.children.delete(gameObject.transform)
+                gameObject.scene = null
                 for (const component of gameObject.components) {
                     component.markForDestroy = true
                 }
@@ -228,7 +230,7 @@ class Scene {
         //aspect ratio
         Engine.letterBoxingWidth = 0
         Engine.letterBoxingHeight = 0
-        if(Engine.aspectRatio) {
+        if (Engine.aspectRatio) {
             const currentAspectRatio = Engine.canvas.width / Engine.canvas.height
             if (Engine.aspectRatio > currentAspectRatio) {
                 const maxHeight = Engine.canvas.width / Engine.aspectRatio
@@ -243,9 +245,9 @@ class Scene {
         // start camera code
         ctx.save()
         ctx.translate(Engine.canvas.width / 2, Engine.canvas.height / 2)
-        if(Engine.cameraWidthInWorldSpace) {
+        if (Engine.cameraWidthInWorldSpace) {
             const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
-            ctx.scale(1/scalar, 1/scalar)
+            ctx.scale(1 / scalar, 1 / scalar)
         }
         //ctx.translate(-Camera.main.transform.position.x, -Camera.main.transform.position.y)
         ctx.setTransform(ctx.getTransform().multiply(Camera.main.transform.getWorldMatrix().inverse()))
@@ -265,7 +267,7 @@ class Scene {
         const bottom = Engine.canvas.height - Engine.letterBoxingHeight / 2
         const left = Engine.letterBoxingWidth / 2
         const right = Engine.canvas.width - Engine.letterBoxingWidth / 2
-        
+
         let width = Engine.canvas.width
         let height = Engine.canvas.height
         // top

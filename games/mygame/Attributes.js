@@ -17,6 +17,8 @@ class Attributes extends Component {
     level = 1
     levelsXp = [] // array to store experience required for each level
 
+    currentFatigue = 0
+
     static NAMES = ["strength", "intelligence", "willpower", "agility", "speed", "endurance", "personality", "luck"]
 
     awake() {
@@ -43,6 +45,8 @@ class Attributes extends Component {
         this.personality = base.PER + 1 + GameSession.randomE.nextInt(20)
         this.luck = base.LUC + 1 + GameSession.randomE.nextInt(20)
 
+        this.currentFatigue = this.maxFatigue
+
         for (let die = 0; die < 4; die++) {
             this.bonusPoints += 1 + GameSession.randomE.nextInt(6)
         }
@@ -58,7 +62,8 @@ class Attributes extends Component {
         const data = {
             level: this.level,
             currentExperience: this.currentExperience,
-            bonusPoints: this.bonusPoints
+            bonusPoints: this.bonusPoints,
+            currentFatigue: this.currentFatigue
         }
         for (const name of Attributes.NAMES) {
             data[name] = this[name]
@@ -94,7 +99,7 @@ class Attributes extends Component {
             }
         }
         if (this.level > startLevel) {
-            this.gameObject.broadcastMessage("onLevelUp", [])
+            this.gameObject.sendMessage("onLevelUp", [])
         }
     }
 
@@ -160,5 +165,22 @@ class Attributes extends Component {
 
     get baseSpeed() {
         return Math.floor(Attributes.scale100To256(this.speed) * 20 / 256) + 20
+    }
+
+    get maxFatigue() {
+        return this.strength + this.endurance
+    }
+
+    restHour() { // OpenTESArena Player::applyRestHealing
+        const healMod = this.bonusToHealth
+        const health = this.gameObject.getComponent(Health)
+        if (health) {
+            health.currentHealth += Math.max(1, Math.floor(health.maxHealth * (healMod * 5 + 60) / 1000))
+        }
+        this.currentFatigue = Math.min(this.maxFatigue, this.currentFatigue + this.maxFatigue * (healMod * 5 + 70) / 1000)
+    }
+    get isFullyRested() {
+        const health = this.gameObject.getComponent(Health)
+        return health.currentHealth == health.maxHealth && Math.abs(this.currentFatigue - this.maxFatigue) <= 1
     }
 }

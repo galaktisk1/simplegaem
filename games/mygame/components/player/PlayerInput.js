@@ -28,4 +28,8 @@ class PlayerInput extends Component {
     get interactPressed() {
         return Input.getKeyDown("Space");
     }
+    
+    get restPressed() {
+        return Input.getKeyDown("KeyR");
+    }
 }

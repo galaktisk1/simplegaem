@@ -11,12 +11,14 @@
 // im thinking of how i could use this later for more complex movement
 
 
-class PlayerUpdateComponent extends Component {
+class PlayerController extends Component {
     baseMoveSpeed = 4 * 60
-    /** @type {{ update(): unknown, enter(): void, exit(): void } | null} */
+    /** @type {PlayerAction | null} */
     action = null
     actionTimer = 0
     actionCap = 5
+
+    fatigueLossPerMinute = 0.067 // OpenTESArena tickPlayerStamina
 
     start() {
         // declare components and references ill need later
@@ -34,28 +36,38 @@ class PlayerUpdateComponent extends Component {
         // health and inv global set up
         this.inventory.inventory = GameSession.playerinventory
 
-        // game objects attached to the player
-        const lantern = instantiate(new LanternGameObject(), Vector2.left.scaled(62))
-        // lantern.transform.setParent(this.player.transform)
-
-        // const light = instantiate(new LightingGameObject(), Vector2.zero)
-        // light.transform.setParent(this.player.transform)
+        instantiate(new LanternGameObject(), Vector2.left.scaled(62))
 
         const facingIndicator = instantiate(new FacingIndicatorGameObject(), Vector2.up.scaled(90))
         facingIndicator.transform.setParent(this.player.transform)
 
         this.actions = {
-            move: new MoveAction(this)
+            move: new MoveAction(this),
+            attack: new AttackAction(this),
+            cast: new CastAction(this),
+            rest: new RestAction(this),
         }
         this.setAction("move")
     }
 
     update() {
         if (Time.timeScale === 0) return
+        const aimpoint = this.input.aimPoint
+        // rotate player to face mouse
+        if (aimpoint) {
+            this.player.transform.lookAt(aimpoint)
+        }
         this.actionTimer += Time.deltaTime
         for (let i = 0; i < this.actionCap && this.action; i++) {
             if (this.action.update() !== true) break
         }
+
+        if (this.action?.drainsFatigue) {
+            const fatigueDrain = GameClock.minutesPassed * this.fatigueLossPerMinute
+            this.attributes.currentFatigue = Math.max(0, this.attributes.currentFatigue - fatigueDrain)
+        }
+        
+        
         // below is for the action state machine i will be building,
         // use E to enter inspect mode
         // use F to enter attack mode
@@ -79,45 +91,31 @@ class PlayerUpdateComponent extends Component {
 
         }
 
-        const aimpoint = this.input.aimPoint
-        // rotate player to face mouse
-        if (aimpoint) {
-            this.player.transform.lookAt(aimpoint)
-            // left click actions
-            if (this.input.attackPressed && (!this.swing || this.swing.markForDestroy)) {
-                this.swing = instantiate(new HitboxGameObject(), Vector2.zero)
-                this.swing.getComponent(HitboxController).init(this.player, this.weapon)
-                this.swing.transform.setParent(this.player.transform)
-            }
 
-            // casting will become its own action state:
-            // press C, the game pauses and a magic menu opens,
-            // select a spell, then aim it while the game is still paused,
-            // click to fire, and the game resumes
-            // right click actions
-            if (this.input.castPressed) {
-                const fireball = instantiate(new FireballGameObject(), this.player.transform.position.clone())
-                fireball.launch(this.player.transform.up)
-            }
-        }
 
     }
 
     // sets the current action for the player, exiting the previous one if necessary
     // this is an action state machine like Super Mario 64 has for mario's separate actions (walking, jumping, attacking, etc.)
-    setAction(name) {
+    setAction(name, arg) {
         // exit the current action if there is one
         if (this.action) {
             this.action.exit()
         }
         this.actionTimer = 0
         // set the new action based on the name
+        // @ts-ignore
         this.action = this.actions[name]
         // if the action exists, call its enter method
         if (this.action) {
-            this.action.enter()
+            this.action.enter(arg)
         }
         return true
+    }
+
+    move(multiplier = 1) {
+        const speed = this.baseMoveSpeed * this.attributes.baseSpeed / 30
+        this.movement.velocity = this.input.move.scaled(speed * multiplier)
     }
 
 

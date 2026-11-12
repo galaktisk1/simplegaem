@@ -8,6 +8,8 @@ class GameObject {
 
     layer = "default"
 
+    scene = null
+
     get transform() {
         return this.components[0]
     }
@@ -51,9 +53,21 @@ class GameObject {
         return this.components.find(c => c instanceof type)
     }
 
+    //Unity-like sendMessage method
+    sendMessage(message, args = []) {
+        for (const component of this.components) {
+            component[message]?.(...args)
+        }
+    }
+
+    //Unity-like broadcastMessage method
     broadcastMessage(message, args = []) {
         for (const component of this.components) {
             component[message]?.(...args)
+        }
+        // it talks to its children as well
+        for (const child of this.transform.children) {
+            child.gameObject.broadcastMessage(message, args)
         }
     }
 

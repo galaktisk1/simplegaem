@@ -35,7 +35,7 @@ class Health extends Component {
         const go = this.gameObject
         if (go.markForDestroy) return
         this._currentHealth -= amount
-        go.broadcastMessage("onDamaged", [amount, attacker, target])
+        go.sendMessage("onDamaged", [amount, attacker, target])
         if (this._currentHealth <= 0) {
             this._currentHealth = 0
             if (go.getComponent(Attributes)) {

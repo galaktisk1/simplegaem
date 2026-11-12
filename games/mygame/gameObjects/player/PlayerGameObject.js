@@ -4,7 +4,7 @@ class PlayerGameObject extends GameObject {
         this.addComponent(new PlayerPersistence())
         this.addComponent(new PlayerInput())
         this.addComponent(new DebugCheats())
-        this.addComponent(new PlayerUpdateComponent())
+        this.addComponent(new PlayerController())
         this.addComponent(new MovementComponent())
         this.addComponent(new Collider(), {
             points: [
