@@ -1,6 +1,7 @@
 class Component {
     gameObject
     didStart = false
+    didAwake = false
     markForDestroy = false
     _enabled = true
     coroutines = []

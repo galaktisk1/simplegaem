@@ -32,11 +32,22 @@ class Scene {
 
     /** @param {GameObject} go */
     register(go) {
+        
         if (!this.gameObjects.includes(go)) {
             this.gameObjects.push(go)
+            // @ts-ignore
+            go.scene = this
+            // run awake now and onEnable
+            for (const component of [...go.components]) {
+                if (!component.didAwake) {
+                    component.awake?.()
+                    component.didAwake = true
+                    if (component.enabled) {
+                        component.onEnable?.()
+                    }
+                }
+            }
         }
-        // @ts-ignore
-        go.scene = this
 
         for (const child of go.transform.children) {
             this.register(child.gameObject)
