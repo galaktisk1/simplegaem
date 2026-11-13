@@ -73,14 +73,24 @@ class Scene {
         //Collisions
         const collidable = GameObject.findGameObjectsByType(Collider)
 
+        
+
         // Broad-phase collsions
         const bodies = collidable.map(go => {
+            
+            // grab the collider
             const collider = go.getComponent(Collider)
+            
+            // get the world matrix
             const m = go.transform.getWorldMatrix()
+            
+            // the collider corners in world space
             const points = collider.points.map(p => {
                 const q = m.transformPoint(p)
                 return new Vector2(q.x, q.y)
             })
+            
+            // object's bounding box in world space
             let minX = Infinity
             let minY = Infinity
             let maxX = -Infinity
@@ -91,29 +101,57 @@ class Scene {
                 maxX = Math.max(maxX, point.x)
                 maxY = Math.max(maxY, point.y)
             }
+            // calculate the center of the bounding box
+            // which helps with deciding where the MTV points
             const center = new Vector2((minX + maxX) / 2, (minY + maxY) / 2)
-            // get the rb component here so it doesnt keep happening repeatedly in the collision loop
+            
+            // all the relevant information about this body needed for collision detection and response
+            // get the rigidbody component here instead of twice later
             return { go, collider, rb: go.getComponent(Rigidbody), points, minX, minY, maxX, maxY, center }
         })
 
-        // now store occluders for raycasting and anyone to use
+        // occluders scene level list
         this.occluders = []
+
         for (const body of bodies) {
+            // only solid things that dont move block sight,
+            // triggers are not considered occluders
             if (body.rb || body.collider.isTrigger) continue
+            
             const pts = body.points
+            // a shape must have at least 2 points to form an occluder
             if (pts.length < 2) continue
+            
+            // a check for 4-sided shapes to see if they are long and thin
             if (pts.length === 4) {
+                
+                // the length of the two neighboring sides,
+                // which are length and width of the shape
                 const first = Vector2.distance(pts[0], pts[1])
                 const second = Vector2.distance(pts[1], pts[2])
+                
+                // it counts as long and thin if one side is at least 4 times longer than the other
                 if (Math.min(first, second) * 4 < Math.max(first, second)) {
+
+                    // point halfway along the long sides of the shape
                     const mid = (p, q) => new Vector2((p.x + q.x) / 2, (p.y + q.y) / 2)
+                    
+                    // the middle of each short side,
+                    // a line between them runs through the center of the shape
+                    // first < second decide which is the short side
                     const a = first < second ? mid(pts[0], pts[1]) : mid(pts[1], pts[2])
                     const b = first < second ? mid(pts[2], pts[3]) : mid(pts[3], pts[0])
+                    
+                    // one segment for this wall skip all edges loop afterwards
                     this.occluders.push({ a, b })
                     continue
                 }
             }
+
+            // for all other shapes, add each edge as an occluder
             for (let i = 0; i < pts.length; i++) {
+                // pts[(i + 1) % pts.length] is the next point, 
+                // % wraps around to the first point after the last one
                 this.occluders.push({ a: pts[i], b: pts[(i + 1) % pts.length] })
             }
         }
