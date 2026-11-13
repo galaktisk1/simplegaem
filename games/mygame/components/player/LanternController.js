@@ -1,9 +1,8 @@
 // keeps the lantern floating just off the player, easing toward that spot
 class LanternController extends Component {
-    // where the lantern wants to be, in the player's own space (left of the player)
     minDistance = 105
     maxDistance = 140
-    
+
     minWait = 5
     maxWait = 10
 

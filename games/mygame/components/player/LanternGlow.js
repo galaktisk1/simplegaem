@@ -1,7 +1,7 @@
 // a warm glow around the lantern: a radial gradient added onto what's beneath it
 class LanternGlow extends Component {
     radius = 160
-    
+
     color = "150, 210, 255"
 
     draw(ctx) {
