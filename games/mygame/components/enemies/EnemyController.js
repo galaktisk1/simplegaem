@@ -65,12 +65,16 @@ class EnemyController extends Component {
         const velocity = this.movement.velocity
         velocity.x = 0
         velocity.y = 0
+
         const enemypos = this.enemy.transform.position
         if (!this.player || this.player.markForDestroy) return
+
         const playerpos = this.player.transform.position
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude
+
         if (!this.isAlerted) return
+
         if (distanceToPlayer > this.attackDistance && Time.deltaTime > 0) {
             this.movement.moveTowards(playerpos, this.speed)
         }
@@ -78,6 +82,7 @@ class EnemyController extends Component {
 
     update() {
         if (Time.timeScale === 0) return
+
         const enemypos = this.enemy.transform.position
         if (!this.player || this.player.markForDestroy) return
         const playerpos = this.player.transform.position
@@ -85,28 +90,38 @@ class EnemyController extends Component {
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude
 
-        const occluders = SceneManager.currentScene.occluders ?? []
-        const direction = directionToPlayer.normalized
-        if (distanceToPlayer < this.sightDistance) 
-            this.blocked = Raycast.cast(enemypos, direction, occluders, distanceToPlayer) !== null
+        if (distanceToPlayer < this.sightDistance)
+            this.blocked = Raycast.isBlocked(enemypos, playerpos)
 
         const canSee = distanceToPlayer <= this.sightDistance && !this.blocked
         if (canSee) this.isAlerted = true
+
         if (!this.isAlerted) {
             this.enemy.transform.rotation = 0
             return
         }
+
         // if the player is too far, the enemy loses alertness
         if (distanceToPlayer > this.sightDistance * 2) {
             this.isAlerted = false
             return
         }
+
         this.enemy.transform.lookAt(playerpos)
 
         if (distanceToPlayer <= this.attackDistance && !this.blocked && !this.isAttacking) {
             this.isAttacking = true
             this.startCoroutine(this.attack(this.player))
         }
+    }
+
+    static anyEnemiesNearby(position, radius) {
+        for (const enemy of GameObject.findGameObjectsWithTag("Enemy")) {
+            if (enemy.markForDestroy) continue
+            // if the distance between the enemy and the position passed into here is less than the radius, return true
+            if (Vector2.distance(enemy.transform.position, position) <= radius) return true
+        }
+        return false
     }
 
     onDestroy() {

@@ -6,8 +6,16 @@ class MoveAction extends PlayerAction {
         if (this.controller.input.castPressed) {
             return this.controller.setAction("cast")
         }
+
         if (this.controller.input.restPressed) {
-            return this.controller.setAction("rest", 8)
+            const playerPosition = this.controller.player.transform.position
+            const enemiesNearby = EnemyController.anyEnemiesNearby(playerPosition, this.controller.safeRestDistance)
+
+            if (enemiesNearby) {
+                this.controller.msgmanager.showMessage("You can't rest, enemies are nearby")
+            } else {
+                return this.controller.setAction("rest", 8)
+            }
         }
         this.controller.move()
         return false

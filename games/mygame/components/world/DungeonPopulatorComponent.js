@@ -4,6 +4,9 @@ class DungeonPopulatorComponent extends Component {
     }
 
     populateDungeon(placed) {
+        // store placed for later reference
+        this.placed = placed
+        
         // calculate deepest
         const deepest = placed
             .filter(p => !p.room.isConnector)

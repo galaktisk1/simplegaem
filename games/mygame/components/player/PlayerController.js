@@ -16,7 +16,9 @@ class PlayerController extends Component {
     /** @type {PlayerAction | null} */
     action = null
     actionTimer = 0
-    actionCap = 5
+    actionSwapCap = 5
+
+    safeRestDistance = 700 // example value, adjust as needed
 
     fatigueLossPerMinute = 0.067 // OpenTESArena tickPlayerStamina
 
@@ -58,7 +60,7 @@ class PlayerController extends Component {
             this.player.transform.lookAt(aimpoint)
         }
         this.actionTimer += Time.deltaTime
-        for (let i = 0; i < this.actionCap && this.action; i++) {
+        for (let i = 0; i < this.actionSwapCap && this.action; i++) {
             if (this.action.update() !== true) break
         }
 
@@ -66,8 +68,8 @@ class PlayerController extends Component {
             const fatigueDrain = GameClock.minutesPassed * this.fatigueLossPerMinute
             this.attributes.currentFatigue = Math.max(0, this.attributes.currentFatigue - fatigueDrain)
         }
-        
-        
+
+
         // below is for the action state machine i will be building,
         // use E to enter inspect mode
         // use F to enter attack mode
