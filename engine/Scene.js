@@ -193,6 +193,13 @@ class Scene {
                     const a = bodies[i]
                     const b = bodies[j]
 
+                    // continue if they are not in my collision layers
+                    if (Engine.collisionLayers.length > 0 && !Engine.collisionLayers.some(
+                        pair => (pair[0] === a.go.layer && pair[1] === b.go.layer)
+                            ||  (pair[0] === b.go.layer && pair[1] === a.go.layer)
+                    ))
+                        continue
+
                     // cheap checks
                     if (!a.rb && !b.rb) continue
                     if (a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY) continue
@@ -267,7 +274,7 @@ class Scene {
         ctx.fillStyle = Camera.main.backgroundColor
         ctx.fillRect(0, 0, Engine.canvas.width, Engine.canvas.height)
 
-        
+
 
         // start camera code
         ctx.save()
@@ -282,7 +289,7 @@ class Scene {
         ctx.restore()
         // stop camera code
 
-        
+
         // letterboxing drawing
         ctx.fillStyle = "black"
 
@@ -302,7 +309,7 @@ class Scene {
         // left
         ctx.fillRect(0, 0, left, height)
 
-        
+
         // ui layer
         // ctx.translate(0, Engine.letterBoxingHeight / 2)
         for (const gameObject of this.gameObjects.filter(go => go.layer == "UI")) {

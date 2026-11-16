@@ -13,11 +13,14 @@ class Raycast {
         // parallel lines never meet
         if (Math.abs(denom) < Raycast.EPS) return null
 
+        const ao = a.minus(origin)
         // how far along the ray the crossing point is
-        const t = Vector2.cross(a.minus(origin), e) / denom
+        // (A - origin) cross e / denom
+        const t = Vector2.cross(ao, e) / denom
 
         // how far along the segment the crossing point is
-        const u = Vector2.cross(a.minus(origin), direction) / denom
+        // (A - origin) cross direction / denom
+        const u = Vector2.cross(ao, direction) / denom
 
         // t >= 0 is in front of the ray, 
         // u between 0 and 1 is what determines 

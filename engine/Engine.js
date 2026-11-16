@@ -2,10 +2,12 @@ class Engine {
     static canvas
     static ctx
     static layers = ["default", "UI"]
+    static collisionLayers = []
     static aspectRatio
     static cameraWidthInWorldSpace
     static letterBoxingWidth = 0
     static letterBoxingHeight = 0
+    static lastTimeStep
 
     static start(nextScene, settings) {
         Engine.canvas = document.querySelector("#canv")
@@ -18,21 +20,38 @@ class Engine {
         addEventListener("mouseup", Input.mouseup)
         addEventListener("mousemove", Input.mousemove)
         // remember F12 or ctrl shift I to open devtools
-        addEventListener("contextmenu", e=>e.preventDefault())
+        addEventListener("contextmenu", e => e.preventDefault())
 
         SceneManager.nextScene = nextScene
+
         if (settings) {
             Engine.layers = settings.layers
             Engine.aspectRatio = settings.aspectRatio
             Engine.cameraWidthInWorldSpace = settings.cameraWidthInWorldSpace
+            if (settings.collisionLayers) {
+                Engine.collisionLayers = settings.collisionLayers
+            }
+
         }
 
         requestAnimationFrame(Engine.gameLoop)
     }
 
-    static gameLoop() {
+    static gameLoop(timestamp) {
+        if (Engine.lastTimeStep === undefined) Engine.lastTimeStep = timestamp
+        else {
+            const diffInMilliseconds = timestamp - Engine.lastTimeStep
+            const diffInSeconds = diffInMilliseconds / 1000
+            // take out the 1/60 if game would be released
+            Time.unscaledDeltaTime = Math.min(diffInSeconds, 1 / 60)
+
+            Engine.lastTimeStep = timestamp
+        }
+
         Engine.updateViewport()
+
         SceneManager.update()
+
         Engine.update()
         Engine.draw()
 

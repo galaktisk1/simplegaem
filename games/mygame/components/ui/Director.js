@@ -5,7 +5,7 @@ class Director extends Component {
     // this could hold spawning enemies within the dungeon
     // essentially, this acts as a global manager for game-wide behaviors
     
-    encounterChancePerMinute = 1 // exploring
+    encounterChancePerMinute = 100 // exploring
     encounterChancePerHour = 25 // resting
     spawnMargin = 50
     maxEncounterDistance = 1300
@@ -51,7 +51,16 @@ class Director extends Component {
                     this.spawnEncounter()
                 }
             }
-
+        }
+        else {
+            // for encounters outside of resting
+            const rolls = GameClock.minutesPassed
+            const chance = this.encounterChancePerMinute
+            for (let i = 0; i < rolls; i++) {
+                if (GameSession.randomE.nextInt(100) < chance) {
+                    this.spawnEncounter()
+                }
+            }
         }
     }
 

@@ -12,4 +12,7 @@ class Time {
     static get deltaTime() {
         return Time.unscaledDeltaTime * Time.timeScale
     }
+    static set deltaTime(value) {
+        Time.unscaledDeltaTime = value / Time.timeScale
+    }
 }
