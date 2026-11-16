@@ -15,7 +15,6 @@ class DungeonPopulatorComponent extends Component {
         this.placeExit(placed, deepest)
         let gated = this.placeGate(placed, deepest)
         this.placeKey(placed, deepest, gated)
-        this.placeEnemies(placed, deepest)
 
     }
 
@@ -66,25 +65,6 @@ class DungeonPopulatorComponent extends Component {
         const keyPos = keyRoom.room.cellToWorld(keyRoom.origin, keyCell.position.x, keyCell.position.y)
 
         SceneManager.currentScene.instantiate(new KeyGameObject(), keyPos.minus(new Vector2(20, 20)))
-    }
-
-    placeEnemies(placed, deepest) {
-        // now spawn enemies in the rooms
-        // , this will be a recurring spawn idea 
-        // as soon as dungeons sprawl some more
-        const allowed = Object.values(EnemyDefinitions).filter(def => def.level <= GameSession.floor + 2)
-        for (const p of placed) {
-            if (p.depth === 0 || p.room.isConnector) continue
-            const cells = p.room.getSpawnCells()
-            const count = Math.min(cells.length, 1 + Math.floor(cells.length / 4))
-            for (let i = 0; i < count; i++) {
-                const cell = cells.splice(this.random.nextInt(cells.length), 1)[0]
-                const def = this.random.nextWeighted(allowed)
-                const position = p.room.cellToWorld(p.origin, cell.position.x, cell.position.y)
-                SceneManager.currentScene.instantiate(new EnemyGameObject(), position)
-                    .getComponent(EnemyController).init(def)
-            }
-        }
     }
 
 

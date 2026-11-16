@@ -72,20 +72,6 @@ class Room {
         return edges
     }
 
-    // for enemies, get all floor cells where they can spawn
-    getSpawnCells() {
-        const neighbors = [
-            { dx: 1, dy: 0 },
-            { dx: -1, dy: 0 },
-            { dx: 0, dy: 1 },
-            { dx: 0, dy: -1 }
-        ]
-        return this.getFloorCells().filter(cell => {
-            const { x, y } = cell.position
-            return !neighbors.some(n => this.layout[y + n.dy]?.[x + n.dx] === "D")
-        })
-    }
-
     static get tileSize() { return Assets.floor.scale.x * 2 }
 
     get isConnector() {

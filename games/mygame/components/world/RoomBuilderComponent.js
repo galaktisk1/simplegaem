@@ -8,6 +8,7 @@ class RoomBuilderComponent extends Component {
         // D for doorway
         // l is an interior wall and floor
         // doorway is nothing for now
+        // A will be alcove which will be an alcove area trigger the size of a floor tile
 
         // count the number of Ds in layout
         let openDoorCount = 0
