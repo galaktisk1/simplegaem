@@ -8,6 +8,10 @@ class Camera extends Component {
     get viewMatrix() {
         let matrix = new DOMMatrix()
         matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
+        if (Engine.cameraWidthInWorldSpace) {
+            const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
+            matrix.scaleSelf(1 / scalar, 1 / scalar)
+        }
         matrix.multiplySelf(Camera.main.transform.getWorldMatrix().inverse())
         return matrix
     }

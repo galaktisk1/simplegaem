@@ -9,7 +9,12 @@ class RectTransform extends Transform {
         if (this.parent instanceof RectTransform) {
             return this.parent.rect;
         }
-        return { x: 0, y: 0, width: Engine.canvas.width, height: Engine.canvas.height };
+        return {
+            x: Engine.letterBoxingWidth / 2,
+            y: Engine.letterBoxingHeight / 2,
+            width: Engine.canvas.width - Engine.letterBoxingWidth,
+            height: Engine.canvas.height - Engine.letterBoxingHeight
+        };
     }
 
     get rect() {
@@ -24,21 +29,32 @@ class RectTransform extends Transform {
     }
 
     calculateLayout() {
+        // p is the parent rect, the box im laying out within
         const p = this.parentRect;
 
+        // map the anchor points to actual positions within the parent rect
         const minX = p.x + this.anchorMin.x * p.width;
         const maxX = p.x + this.anchorMax.x * p.width;
         const minY = p.y + this.anchorMin.y * p.height;
         const maxY = p.y + this.anchorMax.y * p.height;
 
-        const width = (maxX - minX) + this.sizeDelta.x;
-        const height = (maxY - minY) + this.sizeDelta.y;
+        // calculate the span of the anchors within the parent rect
+        const spanX = maxX - minX;
+        const spanY = maxY - minY;
 
-        const refX = minX + (maxX - minX) * this.pivot.x;
-        const refY = minY + (maxY - minY) * this.pivot.y;
+        // calculate the final width and height including the size delta
+        const width = spanX + this.sizeDelta.x;
+        const height = spanY + this.sizeDelta.y;
 
+        // calculate the reference point within the span of the anchors
+        const refX = minX + spanX / 2;
+        const refY = minY + spanY / 2;
+
+        // apply the anchored position offset to the reference point
         const pivotX = refX + this.anchoredPosition.x;
         const pivotY = refY + this.anchoredPosition.y;
+
+        // return the calculated layout including pivot and size
         return { pivotX, pivotY, width, height };
     }
 

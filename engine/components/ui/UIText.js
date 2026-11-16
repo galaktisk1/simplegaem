@@ -18,8 +18,10 @@ class UIText extends Component {
             x = rect.x
         } else if (this.horizontal === "center") {
             x = rect.x + rect.width / 2
-        } else {
+        } else if (this.horizontal === "right") {
             x = rect.x + rect.width
+        } else {
+            console.warn(`Unknown horizontal alignment: ${this.horizontal}`)
         }
 
         let y = null
@@ -27,9 +29,12 @@ class UIText extends Component {
             y = rect.y
         } else if (this.vertical === "middle") {
             y = rect.y + rect.height / 2
-        } else {
+        } else if (this.vertical === "bottom") {
             y = rect.y + rect.height
+        } else {
+            console.warn(`Unknown vertical alignment: ${this.vertical}`)
         }
+
         
         // same as TextLabel vvv
         ctx.fillStyle = this.color.toString()

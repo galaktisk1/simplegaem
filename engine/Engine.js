@@ -31,6 +31,7 @@ class Engine {
     }
 
     static gameLoop() {
+        Engine.updateViewport()
         SceneManager.update()
         Engine.update()
         Engine.draw()
@@ -47,12 +48,32 @@ class Engine {
     }
 
     static draw() {
+        SceneManager.currentScene.draw(Engine.ctx)
+    }
+
+    // The same aspect ratio logic from class
+    // but moved to be an Engine level method 
+    // instead of being within the Scene class
+    static updateViewport() {
+        // update the canvas size to match the window size
         if (Engine.canvas.width !== window.innerWidth || Engine.canvas.height !== window.innerHeight) {
             Engine.canvas.width = window.innerWidth
             Engine.canvas.height = window.innerHeight
         }
 
-        SceneManager.currentScene.draw(Engine.ctx)
+        // aspect ratio handling for letterboxing
+        Engine.letterBoxingWidth = 0
+        Engine.letterBoxingHeight = 0
+        if (Engine.aspectRatio) {
+            const currentAspectRatio = Engine.canvas.width / Engine.canvas.height
+            if (Engine.aspectRatio > currentAspectRatio) {
+                const maxHeight = Engine.canvas.width / Engine.aspectRatio
+                Engine.letterBoxingHeight = Engine.canvas.height - maxHeight
+            }
+            else if (Engine.aspectRatio < currentAspectRatio) {
+                const maxWidth = Engine.canvas.height * Engine.aspectRatio
+                Engine.letterBoxingWidth = Engine.canvas.width - maxWidth
+            }
+        }
     }
-
 }

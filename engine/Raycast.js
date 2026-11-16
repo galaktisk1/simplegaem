@@ -11,7 +11,7 @@ class Raycast {
         const denom = Vector2.cross(direction, e)
 
         // parallel lines never meet
-        if (denom === 0) return null
+        if (Math.abs(denom) < Raycast.EPS) return null
 
         // how far along the ray the crossing point is
         const t = Vector2.cross(a.minus(origin), e) / denom
@@ -66,12 +66,13 @@ class Raycast {
 
         // the occluders list in the current scene, or an empty array if none
         const defaultSegments = SceneManager.currentScene.occluders ?? []
+        const segs = segments ?? defaultSegments
 
         // cast a ray from the origin to the target 
         // and check if it hits any segment within the distance
         return Raycast.cast(from,
             toTarget.normalized,
-            segments = segments ?? defaultSegments,
+            segs,
             distance) !== null
     }
 
@@ -146,10 +147,9 @@ class Raycast {
             const point = origin.plus(dir.scaled(t))
             // return the angle and intersection point
             return { angle, point }
-            
-            // Sort by angle so the points form an ordered
-            // visibility outline.
-        }).sort((a, b) => a.angle - b.angle).map(ray => ray.point)
+        })
+            .sort((a, b) => a.angle - b.angle)
+            .map(ray => ray.point)
     }
 
     static cleanSegments(segments) {
@@ -304,7 +304,7 @@ class Raycast {
         return output
     }
 
-    // cause math isnt very nice, rounds away matrix rounding errors, so corners that should be shared are exactly equal
+    // cause math isn't very nice, rounds away matrix rounding errors, so corners that should be shared are exactly equal
     // keeps 3 decimal places of accuracy
     static snap(p) {
         return new Vector2(Math.round(p.x * 1000) / 1000, Math.round(p.y * 1000) / 1000)

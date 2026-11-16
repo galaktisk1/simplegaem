@@ -32,7 +32,7 @@ class Scene {
 
     /** @param {GameObject} go */
     register(go) {
-        
+
         if (!this.gameObjects.includes(go)) {
             this.gameObjects.push(go)
             // @ts-ignore
@@ -73,23 +73,21 @@ class Scene {
         //Collisions
         const collidable = GameObject.findGameObjectsByType(Collider)
 
-        
-
         // Broad-phase collsions
         const bodies = collidable.map(go => {
-            
+
             // grab the collider
             const collider = go.getComponent(Collider)
-            
+
             // get the world matrix
             const m = go.transform.getWorldMatrix()
-            
+
             // the collider corners in world space
             const points = collider.points.map(p => {
                 const q = m.transformPoint(p)
                 return new Vector2(q.x, q.y)
             })
-            
+
             // object's bounding box in world space
             let minX = Infinity
             let minY = Infinity
@@ -104,7 +102,7 @@ class Scene {
             // calculate the center of the bounding box
             // which helps with deciding where the MTV points
             const center = new Vector2((minX + maxX) / 2, (minY + maxY) / 2)
-            
+
             // all the relevant information about this body needed for collision detection and response
             // get the rigidbody component here instead of twice later
             return { go, collider, rb: go.getComponent(Rigidbody), points, minX, minY, maxX, maxY, center }
@@ -117,31 +115,31 @@ class Scene {
             // only solid things that dont move block sight,
             // triggers are not considered occluders
             if (body.rb || body.collider.isTrigger) continue
-            
+
             const pts = body.points
             // a shape must have at least 2 points to form an occluder
             if (pts.length < 2) continue
-            
+
             // a check for 4-sided shapes to see if they are long and thin
             if (pts.length === 4) {
-                
+
                 // the length of the two neighboring sides,
                 // which are length and width of the shape
                 const first = Vector2.distance(pts[0], pts[1])
                 const second = Vector2.distance(pts[1], pts[2])
-                
+
                 // it counts as long and thin if one side is at least 4 times longer than the other
                 if (Math.min(first, second) * 4 < Math.max(first, second)) {
 
                     // point halfway along the long sides of the shape
                     const mid = (p, q) => new Vector2((p.x + q.x) / 2, (p.y + q.y) / 2)
-                    
+
                     // the middle of each short side,
                     // a line between them runs through the center of the shape
                     // first < second decide which is the short side
                     const a = first < second ? mid(pts[0], pts[1]) : mid(pts[1], pts[2])
                     const b = first < second ? mid(pts[2], pts[3]) : mid(pts[3], pts[0])
-                    
+
                     // one segment for this wall skip all edges loop afterwards
                     this.occluders.push({ a, b })
                     continue
@@ -150,8 +148,7 @@ class Scene {
 
             // for all other shapes, add each edge as an occluder
             for (let i = 0; i < pts.length; i++) {
-                // pts[(i + 1) % pts.length] is the next point, 
-                // % wraps around to the first point after the last one
+                // this is just like the world space points in collisions
                 this.occluders.push({ a: pts[i], b: pts[(i + 1) % pts.length] })
             }
         }
@@ -161,13 +158,7 @@ class Scene {
         let hovered = undefined
         this.mouseWorldPosition = undefined
         if (Input.mousePosition) {
-            let matrix = new DOMMatrix()
-            matrix.translateSelf(Engine.canvas.width / 2, Engine.canvas.height / 2)
-            if (Engine.cameraWidthInWorldSpace) {
-                const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
-                matrix.scaleSelf(1 / scalar, 1 / scalar)
-            }
-            matrix.multiplySelf(Camera.main.transform.getWorldMatrix().inverse())
+            const matrix = Camera.main.viewMatrix
 
             let worldPositionDOMPoint = matrix.inverse().transformPoint(Input.mousePosition)
             let worldPosition = new Vector2(worldPositionDOMPoint.x, worldPositionDOMPoint.y)
@@ -276,30 +267,12 @@ class Scene {
         ctx.fillStyle = Camera.main.backgroundColor
         ctx.fillRect(0, 0, Engine.canvas.width, Engine.canvas.height)
 
-        //aspect ratio
-        Engine.letterBoxingWidth = 0
-        Engine.letterBoxingHeight = 0
-        if (Engine.aspectRatio) {
-            const currentAspectRatio = Engine.canvas.width / Engine.canvas.height
-            if (Engine.aspectRatio > currentAspectRatio) {
-                const maxHeight = Engine.canvas.width / Engine.aspectRatio
-                Engine.letterBoxingHeight = Engine.canvas.height - maxHeight
-            }
-            else if (Engine.aspectRatio < currentAspectRatio) {
-                const maxWidth = Engine.canvas.height * Engine.aspectRatio
-                Engine.letterBoxingWidth = Engine.canvas.width - maxWidth
-            }
-        }
+        
 
         // start camera code
         ctx.save()
-        ctx.translate(Engine.canvas.width / 2, Engine.canvas.height / 2)
-        if (Engine.cameraWidthInWorldSpace) {
-            const scalar = Engine.cameraWidthInWorldSpace / (Engine.canvas.width - Engine.letterBoxingWidth)
-            ctx.scale(1 / scalar, 1 / scalar)
-        }
         //ctx.translate(-Camera.main.transform.position.x, -Camera.main.transform.position.y)
-        ctx.setTransform(ctx.getTransform().multiply(Camera.main.transform.getWorldMatrix().inverse()))
+        ctx.setTransform(Camera.main.viewMatrix)
 
         for (const layer of Engine.layers.filter(layer => layer !== "UI")) {
             for (const gameObject of this.gameObjects.filter(go => go.layer === layer)) {
@@ -309,7 +282,8 @@ class Scene {
         ctx.restore()
         // stop camera code
 
-        //letterboxing
+        
+        // letterboxing drawing
         ctx.fillStyle = "black"
 
         const top = Engine.letterBoxingHeight / 2
@@ -328,6 +302,7 @@ class Scene {
         // left
         ctx.fillRect(0, 0, left, height)
 
+        
         // ui layer
         // ctx.translate(0, Engine.letterBoxingHeight / 2)
         for (const gameObject of this.gameObjects.filter(go => go.layer == "UI")) {
