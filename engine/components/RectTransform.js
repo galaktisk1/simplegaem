@@ -5,6 +5,36 @@ class RectTransform extends Transform {
     anchoredPosition = new Vector2(0, 0)
     sizeDelta = new Vector2(100, 100)
 
+    get offsetMin() {
+        return this.anchoredPosition.minus(Vector2.scale(this.sizeDelta, this.pivot))
+    }
+
+    /** @param {Vector2} value */
+    set offsetMin(value) {
+        const current = this.anchoredPosition.minus(Vector2.scale(this.sizeDelta, this.pivot))
+        const change = value.minus(current)
+        const positionChange = change.scaled(new Vector2(1 - this.pivot.x, 1 - this.pivot.y))
+
+        this.sizeDelta = this.sizeDelta.minus(change)
+        this.anchoredPosition.x += positionChange.x
+        this.anchoredPosition.y += positionChange.y
+    }
+
+    get offsetMax() {
+        return this.anchoredPosition.plus(Vector2.scale(this.sizeDelta, new Vector2(1 - this.pivot.x, 1 - this.pivot.y)))
+    }
+
+    /** @param {Vector2} value */
+    set offsetMax(value) {
+        const current = this.anchoredPosition.plus(Vector2.scale(this.sizeDelta, new Vector2(1 - this.pivot.x, 1 - this.pivot.y)))
+        const change = value.minus(current)
+        const positionChange = change.scaled(this.pivot)
+
+        this.sizeDelta = this.sizeDelta.plus(change)
+        this.anchoredPosition.x += positionChange.x
+        this.anchoredPosition.y += positionChange.y
+    }
+
     get parentRect() {
         if (this.parent instanceof RectTransform) {
             return this.parent.rect;
@@ -47,8 +77,8 @@ class RectTransform extends Transform {
         const height = spanY + this.sizeDelta.y;
 
         // calculate the reference point within the span of the anchors
-        const refX = minX + spanX / 2;
-        const refY = minY + spanY / 2;
+        const refX = minX + spanX * this.pivot.x;
+        const refY = minY + spanY * this.pivot.y;
 
         // apply the anchored position offset to the reference point
         const pivotX = refX + this.anchoredPosition.x;

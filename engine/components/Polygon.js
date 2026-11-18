@@ -1,12 +1,14 @@
 class Polygon extends Component {
 
     points = []
+    alpha = 1
     fillStyle = "magenta"
 
     draw(ctx) {
         const transform = this.transform
         ctx.save()
         const position = transform.position
+        ctx.globalAlpha = this.alpha
 
         // ctx.translate(position.x, position.y)
         // ctx.rotate(transform.rotation)

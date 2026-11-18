@@ -27,7 +27,7 @@ class GameObject {
         // instead of an instance (typeof component = "object"), 
         // create an instance of it
         if (typeof component === "function") component = new component()
-        
+
         // if the component is a Transform and one already exists, 
         // replace it instead of adding a new one
         // for RectTransform
@@ -37,7 +37,7 @@ class GameObject {
             this.components[0] = component
             return component
         }
-        
+
         // if a script requires other components, make sure they are added first
         for (const type of component.constructor.requires ?? []) {
             if (!this.getComponent(type)) {
@@ -48,7 +48,7 @@ class GameObject {
         component.gameObject = this
         Object.assign(component, parameters)
         this.components.push(component)
-        
+
         // run the awake method if it exists AND its attached to a scene
         if (this.scene && !component.didAwake) {
             component.awake?.()
@@ -57,7 +57,7 @@ class GameObject {
                 component.onEnable?.()
             }
         }
-        
+
         return component
     }
 
@@ -105,6 +105,44 @@ class GameObject {
 
     draw(ctx) {
         ctx.save()
+        // this is class rect transform code
+        if (this.transform instanceof RectTransformC) {
+            if (this.transform.useLetterBoxing) {
+                const letterBoxingWidth = Engine.letterBoxingWidth
+                const letterBoxingHeight = Engine.letterBoxingHeight
+                const canvasWidth = Engine.canvas.width
+                const canvasHeight = Engine.canvas.height
+                ctx.translate(letterBoxingWidth / 2, letterBoxingHeight / 2)
+                ctx.scale((canvasWidth - letterBoxingWidth) / canvasWidth, (canvasHeight - letterBoxingHeight) / canvasHeight)
+            }
+            else {
+                const height = Engine.canvas.height
+                const width = Engine.canvas.width
+
+
+                const upperLeft = new Vector2(
+                    width *
+                    this.transform.anchorMin.x +
+                    this.transform.offsetUpperLeft.x,
+                    height *
+                    this.transform.anchorMin.y +
+                    this.transform.offsetUpperLeft.y
+                )
+                const lowerRight = new Vector2(
+                    width *
+                    this.transform.anchorMax.x +
+                    this.transform.offsetLowerRight.x,
+                    height * this.transform.anchorMax.y + this.transform.offsetLowerRight.y
+                )
+                this.transform.position = new Vector2(
+                    (upperLeft.x + lowerRight.x) / 2,
+                    (upperLeft.y + lowerRight.y) / 2)
+                this.transform.scale = new Vector2(
+                    (lowerRight.x - upperLeft.x) / 2,
+                    (lowerRight.y - upperLeft.y) / 2
+                )
+            }
+        }
         ctx.setTransform(ctx.getTransform().multiply(this.transform.getWorldMatrix()))
         for (const component of this.components) {
             if (!component.enabled) continue
