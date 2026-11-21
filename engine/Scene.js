@@ -286,6 +286,7 @@ class Scene {
                 gameObject.draw(ctx)
             }
         }
+        Debug.drawAll(ctx)
         ctx.restore()
         // stop camera code
 

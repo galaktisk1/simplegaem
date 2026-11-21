@@ -147,7 +147,10 @@ class Raycast {
             const t = Raycast.cast(origin, dir, nearbySegments, radius) ?? radius
 
             // calculate the intersection point by moving along the direction vector by distance t
+            // O + dir * t
             const point = origin.plus(dir.scaled(t))
+
+            Debug.drawLine(origin, point, "rgba(0,255,0,0.25)")
             // return the angle and intersection point
             return { angle, point }
         })

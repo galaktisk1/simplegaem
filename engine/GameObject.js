@@ -27,7 +27,7 @@ class GameObject {
         // instead of an instance (typeof component = "object"), 
         // create an instance of it
         if (typeof component === "function") component = new component()
-        
+
         // if the component is a Transform and one already exists, 
         // replace it instead of adding a new one
         // for RectTransform
@@ -37,7 +37,7 @@ class GameObject {
             this.components[0] = component
             return component
         }
-        
+
         // if a script requires other components, make sure they are added first
         for (const type of component.constructor.requires ?? []) {
             if (!this.getComponent(type)) {
@@ -48,7 +48,7 @@ class GameObject {
         component.gameObject = this
         Object.assign(component, parameters)
         this.components.push(component)
-        
+
         // run the awake method if it exists AND its attached to a scene
         if (this.scene && !component.didAwake) {
             component.awake?.()
@@ -57,7 +57,7 @@ class GameObject {
                 component.onEnable?.()
             }
         }
-        
+
         return component
     }
 

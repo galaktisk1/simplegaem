@@ -33,6 +33,13 @@ class EnemyController extends Component {
         })
     }
 
+    awake() {
+        this.enemy = this.gameObject
+        this.movement = this.gameObject.getComponent(MovementComponent)
+        this.health = this.gameObject.getComponent(Health)
+        this.attributes = this.gameObject.getComponent(Attributes)
+    }
+
     start() {
         // children wait for start, scenes can instantiate enemies in their constructor before they are the current scene
         for (const childDefinition of this.definition.children ?? []) {
@@ -46,18 +53,13 @@ class EnemyController extends Component {
             instantiate(child, childDefinition.position.clone())
         }
 
-        this.enemy = this.gameObject
-        this.movement = this.gameObject.getComponent(MovementComponent)
-        this.health = this.gameObject.getComponent(Health)
-        this.attributes = this.gameObject.getComponent(Attributes)
         this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.popupmanager = GameObject.find("PopUpManager").getComponent(PopUpManager)
         this.player = GameObject.find("Player")
         // roll the health value and set it
-        const health = this.gameObject.getComponent(Health)
         const healthRange = this.definition.healthMax - this.definition.healthMin + 1
         const rolledHealth = GameSession.randomE.nextInt(healthRange) + this.definition.healthMin
-        health.maxHealth = rolledHealth
+        this.health.maxHealth = rolledHealth
         this.attributes.currentExperience = this.definition.experiencePerHealth * rolledHealth + this.definition.experienceBase
 
     }
@@ -82,10 +84,10 @@ class EnemyController extends Component {
 
     update() {
         if (Time.timeScale === 0) return
-
         const enemypos = this.enemy.transform.position
         if (!this.player || this.player.markForDestroy) return
         const playerpos = this.player.transform.position
+        Debug.drawLine(enemypos, playerpos, this.blocked ? "red" : "lime")
 
         const directionToPlayer = playerpos.minus(enemypos)
         const distanceToPlayer = directionToPlayer.magnitude

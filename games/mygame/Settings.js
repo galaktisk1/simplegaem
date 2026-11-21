@@ -12,6 +12,7 @@ class Settings {
         ["world", "characters"],
         // items can collide with characters
         ["items", "characters"],
+        ["spells", "characters"],
         // characters can collide with nothing specific (or themselves)
         // ["characters"]
     ]
