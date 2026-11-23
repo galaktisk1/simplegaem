@@ -1,34 +1,33 @@
 class RestAction extends PlayerAction {
     drainsFatigue = false
     encountersHourly = true
-    enter(hours) {
-        this.hours = hours
-        GameClock.speed = 600 // this is the camping time scale in arena
-        this.controller.move(0)
+
+    enter() {
+        this.hoursElapsed = 0
+        GameClock.speed = 600
+        this.hourMsg = this.controller.msgmanager.showMessage("You rest...", 99999)
     }
+
     update() {
-        // wake up if you press R again
         if (this.controller.actionTimer > 0 && this.controller.input.restPressed) {
             return this.controller.setAction("move")
         }
-        // wake up if fully rested
         if (this.controller.attributes.isFullyRested) {
             return this.controller.setAction("move")
         }
-        // wake up if an enemy is nearby
         const playerPosition = this.controller.player.transform.position
-        const enemiesNearby = EnemyController.anyEnemiesNearby(playerPosition, this.controller.safeRestDistance)
-        if (enemiesNearby) {
+        if (EnemyController.anyEnemiesNearby(playerPosition, this.controller.safeRestDistance)) {
             this.controller.msgmanager.showMessage("You are awakened by an enemy")
             return this.controller.setAction("move")
         }
 
-
-        const attributes = this.controller.attributes
-        for (let hour = 0; hour < GameClock.hoursPassed; hour++) {
-            attributes.restHour()
-            this.hours--
-            if (this.hours <= 0) {
+        for (let i = 0; i < GameClock.hoursPassed; i++) {
+            this.controller.attributes.restHour()
+            this.hoursElapsed++
+            const n = this.hoursElapsed
+            this.hourMsg.gameObject.getComponent(TextLabel).text =
+                `${n} hour${n === 1 ? "" : "s"} passed`
+            if (this.controller.attributes.isFullyRested) {
                 return this.controller.setAction("move")
             }
         }
@@ -37,6 +36,11 @@ class RestAction extends PlayerAction {
     }
 
     exit() {
-        GameClock.speed = 1 // reset time scale when exiting rest
+        this.hourMsg?.gameObject.destroy()
+        this.hourMsg = null
+        GameClock.speed = 1
+        if (this.controller.attributes.isFullyRested) {
+            this.controller.msgmanager.showMessage("Fully healed!!")
+        }
     }
 }

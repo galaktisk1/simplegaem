@@ -14,7 +14,7 @@ class MoveAction extends PlayerAction {
             if (enemiesNearby) {
                 this.controller.msgmanager.showMessage("You can't rest, enemies are nearby")
             } else {
-                return this.controller.setAction("rest", 8)
+                return this.controller.setAction("rest")
             }
         }
         this.controller.move()
