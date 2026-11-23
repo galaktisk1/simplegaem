@@ -60,19 +60,34 @@ class CastAction extends PlayerAction {
     // open the spell menu
     openMenu(known) {
         this.panel = SceneManager.currentScene.instantiate(new MenuPanelGameObject())
-        let rect = this.panel.getComponent(RectTransform)
-        rect.setSizeWithCurrentAnchors(RectTransform.axis.vertical, 28 + known.spells.length * 36)
+        let panelRect = this.panel.getComponent(RectTransform)
+        const pad = 8
+        const rowHeight = 36
+        let y = pad
 
         this.buttons = []
-        known.spells.forEach((spell, i) => {
+        for (const spell of known.spells) {
             const cost = Spell.castCost(spell, this.controller.attributes.level)
             const btn = SceneManager.currentScene.instantiate(new MenuRowButtonGameObject())
             btn.transform.setParent(this.panel.transform)
+            
+            const btnRect = btn.getComponent(RectTransform)
+            btnRect.setSizeWithCurrentAnchors(RectTransform.axis.horizontal, panelRect.rect.width - 20)
+            btnRect.anchoredPosition = new Vector2(0, y)
+
             btn.getComponent(UIText).text = `${spell.name} (${cost})`
-            btn.getComponent(RectTransform).anchoredPosition = new Vector2(0, -8 - i * 36)
-            btn.getComponent(UIButton).addListener(() => this.pickSpell(spell))
-            this.buttons.push(btn)
-        })
+            const canCast = this.controller.attributes.currentSpellPoints >= cost
+            const button = btn.getComponent(UIButton)
+            button.interactable = canCast
+            if (canCast) button.addListener(() => this.pickSpell(spell))
+            
+            this.buttons.push(button)
+            y = btnRect.localBottom + pad
+        }
+        panelRect.setSizeWithCurrentAnchors(
+            RectTransform.axis.vertical,
+            y + pad
+        )
     }
 
     closeMenu() {

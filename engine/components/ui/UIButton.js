@@ -20,11 +20,7 @@ class UIButton extends Component {
         if (!Input.mousePosition) {
             return false
         }
-
-        const mousePosition = this.transform.inverseTransformPoint(Input.mousePosition)
-        const rect = this.transform.rect
-        return mousePosition.x >= rect.x && mousePosition.x <= rect.x + rect.width &&
-            mousePosition.y >= rect.y && mousePosition.y <= rect.y + rect.height
+        return this.transform.containsScreenPoint(Input.mousePosition)
     }
 
     start() {

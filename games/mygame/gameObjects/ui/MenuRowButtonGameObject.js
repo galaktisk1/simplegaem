@@ -4,7 +4,7 @@ class MenuRowButtonGameObject extends GameObject {
         
         // add a rect transform , anchored to the top center of the parent
         let rect = this.addComponent(new RectTransform())
-        rect.setPivotAndAnchors(Vector2.bottomCenter)
+        rect.setPivotAndAnchors(Vector2.topCenter)
         rect.sizeDelta = new Vector2(200, 32)
         
         // add a transparent image for the button background

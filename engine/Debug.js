@@ -23,7 +23,9 @@ class Debug {
         Debug.commands.push({ type: 'polygon', points, color, timeLeft: duration })
     }
 
-    static logError(txt) 
+    static logError(txt) {
+        
+    }
 
     static drawAll(ctx) {
         if (!Debug.enabled) return

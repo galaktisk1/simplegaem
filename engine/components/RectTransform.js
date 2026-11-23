@@ -44,23 +44,23 @@ class RectTransform extends Transform {
         if (this.parent instanceof RectTransform) {
             return this.parent.rect;
         }
-        return {
-            x: Engine.letterBoxingWidth / 2,
-            y: Engine.letterBoxingHeight / 2,
-            width: Engine.canvas.width - Engine.letterBoxingWidth,
-            height: Engine.canvas.height - Engine.letterBoxingHeight
-        };
+        return new Rect(
+            Engine.letterBoxingWidth / 2,
+            Engine.letterBoxingHeight / 2,
+            Engine.canvas.width - Engine.letterBoxingWidth,
+            Engine.canvas.height - Engine.letterBoxingHeight
+        );
     }
 
     get rect() {
         const layout = this.calculateLayout();
 
-        return {
-            x: -this.pivot.x * layout.width,
-            y: -this.pivot.y * layout.height,
-            width: layout.width,
-            height: layout.height
-        };
+        return new Rect(
+            -this.pivot.x * layout.width,
+            -this.pivot.y * layout.height,
+            layout.width,
+            layout.height
+        )
     }
 
     calculateLayout() {
@@ -101,6 +101,16 @@ class RectTransform extends Transform {
         matrix.rotateSelf(this.rotation * 180 / Math.PI)
         matrix.scaleSelf(this.scale.x, this.scale.y)
         return matrix
+    }
+
+    getWorldRect() {
+        const corners = this.getWorldCorners([])
+        const minX = Math.min(...corners.map(corner => corner.x))
+        const minY = Math.min(...corners.map(corner => corner.y))
+        const maxX = Math.max(...corners.map(corner => corner.x))
+        const maxY = Math.max(...corners.map(corner => corner.y))
+
+        return new Rect(minX, minY, maxX - minX, maxY - minY)
     }
 
     setAnchors(position) {
@@ -155,12 +165,12 @@ class RectTransform extends Transform {
         const parent = this.parentRect
         const { pivotX, pivotY, width, height } = this.calculateLayout()
 
-        return {
-            x: pivotX - width * this.pivot.x - parent.x,
-            y: pivotY - height * this.pivot.y - parent.y,
+        return new Rect(
+            pivotX - width * this.pivot.x - parent.x,
+            pivotY - height * this.pivot.y - parent.y,
             width,
             height
-        }
+        )
     }
 
     /** @param {Vector2[]} fourCorners */
@@ -189,21 +199,25 @@ class RectTransform extends Transform {
         return corners
     }
 
+    containsScreenPoint(point) {
+        if (!point) return false
+        const local = this.inverseTransformPoint(point)
+        return this.rect.contains(local)
+    }
+
     get localTop() {
-        return this.getRectInParentSpace().y
+        return this.getRectInParentSpace().yMin
     }
 
     get localBottom() {
-        const rect = this.getRectInParentSpace()
-        return rect.y + rect.height
+        return this.getRectInParentSpace().yMax
     }
 
     get localLeft() {
-        return this.getRectInParentSpace().x;
+        return this.getRectInParentSpace().xMin
     }
 
     get localRight() {
-        const rect = this.getRectInParentSpace();
-        return rect.x + rect.width;
+        return this.getRectInParentSpace().xMax
     }
 }

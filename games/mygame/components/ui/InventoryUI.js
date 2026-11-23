@@ -6,7 +6,15 @@ class InventoryUI extends Component {
 
     }
     update() {
-        if (Input.getKeyDown("KeyI")) { this.open = !this.open }
+        if (Input.getKeyDown("KeyI")) {
+            const characterSheet = new StatsScreenGameObject()
+            const CS = SceneManager.currentScene.instantiate(characterSheet)
+            
+            const a = this.player.getComponent(Attributes)
+            const h = this.player.getComponent(Health)
+            const m = "sheet"
+            CS.getComponent(CharacterCreatorUI).init(a, h, m)
+        }
         // EQUIP: while open, a click on a weapon's row equips it on the player,
         // the row is (mouse y - 60) / 24 since each line starts at y 60, 24 apart
     }

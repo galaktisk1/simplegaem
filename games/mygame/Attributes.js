@@ -152,18 +152,43 @@ class Attributes extends Component {
         if (this.strength <= 43) return 0
         return Math.trunc((this.strength - 48) / 5)
     }
+
     get bonusToHealth() {
         if (this.endurance <= 50) return 0
-        const value = Attributes.scale100To256(this.endurance)
-        return Attributes.scale256To100(Math.trunc((value - 128 + 12) / 25))
+        const end256 = Attributes.scale100To256(this.endurance)
+        return Attributes.scale256To100(Math.trunc((end256 - 128 + 12) / 25))
+    }
+
+    get healMod() {
+        return this.bonusToHealth
     }
 
     get attackBonus() {
-        return Attributes.scale100To256(this.agility) - 128
+        const agi256 = Attributes.scale100To256(this.agility)
+        return agi256 - 128
     }
 
     get luckBonus() {
-        return Math.trunc((Attributes.scale100To256(this.luck) - 116) / 25) * 2
+        const luc256 = Attributes.scale100To256(this.luck)
+        return Math.trunc((luc256 - 116) / 25) * 2
+    }
+
+    get magicDefense() {
+        if (this.willpower <= 38) return -2
+        if (this.willpower <= 41) return -1
+        if (this.willpower <= 46) return 0
+        return Math.trunc((this.willpower - 46) / 9)
+    }
+
+    get charisma() {
+        // OTA: same progression as bonusToHit, using personality
+        if (this.personality <= 45) return -1
+        if (this.personality <= 46) return 0
+        return Math.trunc((this.personality - 50) / 5)
+    }
+
+    get maxKilos() {
+        return this.strength * 2
     }
 
     get baseSpeed() {
@@ -185,11 +210,11 @@ class Attributes extends Component {
         if (health) {
             health.currentHealth += Math.max(1, Math.floor(health.maxHealth * (healMod * 5 + 60) / 1000))
         }
-        
+
         this.currentFatigue = Math.min(
             this.maxFatigue,
             this.currentFatigue + this.maxFatigue * (healMod * 5 + 70) / 1000)
-        
+
         this.currentSpellPoints = Math.min(
             this.maxSpellPoints,
             this.currentSpellPoints + Math.floor(this.maxSpellPoints / 8))
