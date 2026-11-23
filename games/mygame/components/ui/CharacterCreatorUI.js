@@ -120,6 +120,7 @@ class CharacterCreatorUI extends Component {
         if (Input.getKeyDown("Enter") && this.attributes.bonusPoints === 0) {
             if (this.mode === "create") {
                 this.attributes.currentFatigue = this.attributes.maxFatigue
+                this.attributes.currentSpellPoints = this.attributes.maxSpellPoints
                 GameSession.playerattributes = this.attributes.save()
                 GameSession.playermaxhealth = this.health.maxHealth
                 GameSession.playerhealth = this.health.maxHealth

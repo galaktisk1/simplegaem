@@ -1,7 +1,7 @@
 class Attributes extends Component {
     currentExperience = 0
     bonusPoints = 0
-    /** @type {{ experienceStart: number, healthDie: number, baseAttributes: { STR: number, INT: number, WIL: number, AGI: number, SPD: number, END: number, PER: number, LUC: number } } | null} */
+    /** @type {{ experienceStart: number, healthDie: number, spellPoints: number, spellPointsMultiplier: number, baseAttributes: { STR: number, INT: number, WIL: number, AGI: number, SPD: number, END: number, PER: number, LUC: number } } | null} */
     characterClass = null
     // all attributes are initialized to 50 by default
     // OpenTESArena src/Stats/PrimaryAttribute.h
@@ -18,6 +18,7 @@ class Attributes extends Component {
     levelsXp = [] // array to store experience required for each level
 
     currentFatigue = 0
+    currentSpellPoints = 0
 
     static NAMES = ["strength", "intelligence", "willpower", "agility", "speed", "endurance", "personality", "luck"]
 
@@ -46,6 +47,7 @@ class Attributes extends Component {
         this.luck = base.LUC + 1 + GameSession.randomE.nextInt(20)
 
         this.currentFatigue = this.maxFatigue
+        this.currentSpellPoints = this.maxSpellPoints
 
         for (let die = 0; die < 4; die++) {
             this.bonusPoints += 1 + GameSession.randomE.nextInt(6)
@@ -63,7 +65,8 @@ class Attributes extends Component {
             level: this.level,
             currentExperience: this.currentExperience,
             bonusPoints: this.bonusPoints,
-            currentFatigue: this.currentFatigue
+            currentFatigue: this.currentFatigue,
+            currentSpellPoints: this.currentSpellPoints
         }
         for (const name of Attributes.NAMES) {
             data[name] = this[name]
@@ -171,16 +174,30 @@ class Attributes extends Component {
         return this.strength + this.endurance
     }
 
+    get maxSpellPoints() {
+        const mult = this.characterClass?.spellPointsMultiplier ?? 0
+        return Math.floor(this.intelligence * mult)
+    }
+
     restHour() { // OpenTESArena Player::applyRestHealing
         const healMod = this.bonusToHealth
         const health = this.gameObject.getComponent(Health)
         if (health) {
             health.currentHealth += Math.max(1, Math.floor(health.maxHealth * (healMod * 5 + 60) / 1000))
         }
-        this.currentFatigue = Math.min(this.maxFatigue, this.currentFatigue + this.maxFatigue * (healMod * 5 + 70) / 1000)
+        
+        this.currentFatigue = Math.min(
+            this.maxFatigue,
+            this.currentFatigue + this.maxFatigue * (healMod * 5 + 70) / 1000)
+        
+        this.currentSpellPoints = Math.min(
+            this.maxSpellPoints,
+            this.currentSpellPoints + Math.floor(this.maxSpellPoints / 8))
     }
     get isFullyRested() {
         const health = this.gameObject.getComponent(Health)
-        return health.currentHealth == health.maxHealth && Math.abs(this.currentFatigue - this.maxFatigue) <= 1
+        return health.currentHealth == health.maxHealth
+            && Math.abs(this.currentFatigue - this.maxFatigue) <= 1
+            && Math.abs(this.currentSpellPoints - this.maxSpellPoints) <= 1
     }
 }

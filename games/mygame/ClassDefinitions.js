@@ -63,7 +63,7 @@ class ClassDefinitions {
         critChancePerLevel: 0.00, // 0% per level
         allowedWeapons: ["dagger", "staff"],
         startingWeapon: "dagger",
-        spellPoints: 2, // 2 * INT modifier
+        spellPointsMultiplier: 2 
     }
 
 }

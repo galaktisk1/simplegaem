@@ -45,7 +45,7 @@ class HUDController extends Component {
         this.health = this.player.getComponent(Health)
         this.attributes = this.player.getComponent(Attributes)
         this.healthBar = this.buildBar(Color.red, new Vector2(20, -20), new Vector2(20, 120), "vertical", () => this.health.currentHealth, () => this.health.maxHealth)
-        // this.manaBar
+        this.manaBar = this.buildBar(Color.blue, new Vector2(50, -20), new Vector2(20, 120), "vertical", () => this.attributes.currentSpellPoints, () => this.attributes.maxSpellPoints)
         this.fatigueBar = this.buildBar(Color.green, new Vector2(80, -20), new Vector2(20, 120), "vertical", () => this.attributes.currentFatigue, () => this.attributes.maxFatigue)
         this.xpBar = this.buildBar(Color.yellow, new Vector2(20, -148), new Vector2(80, 6), "horizontal", () => this.attributes.experienceIntoLevel, () => this.attributes.experienceForLevel)
     }

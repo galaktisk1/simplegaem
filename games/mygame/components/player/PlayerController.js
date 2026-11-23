@@ -53,7 +53,11 @@ class PlayerController extends Component {
     }
 
     update() {
-        if (Time.timeScale === 0) return
+        if (Time.timeScale === 0) {
+            // only tick update for the cast action when time is paused
+            if (this.action == this.actions.cast) this.action.update()
+            return
+        }
         const aimpoint = this.input.aimPoint
         // rotate player to face mouse
         if (aimpoint) {
