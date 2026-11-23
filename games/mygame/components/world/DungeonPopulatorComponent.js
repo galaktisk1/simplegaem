@@ -1,5 +1,5 @@
 class DungeonPopulatorComponent extends Component {
-    start() {
+    awake() {
         this.random = GameSession.randomD
     }
 

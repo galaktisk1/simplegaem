@@ -1,6 +1,6 @@
 class DungeonBuilderComponent extends Component {
     static opposite = { left: "right", right: "left", up: "down", down: "up" }
-    start() {
+    awake() {
         this.tileSize = Room.tileSize
         this.roomBuilder = this.gameObject.getComponent(RoomBuilderComponent)
         this.random = GameSession.randomD

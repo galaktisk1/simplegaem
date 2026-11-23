@@ -1,6 +1,6 @@
 class DebugCheats extends Component {
     // where debug inputs will live
-    start() {
+    awake() {
         this.player = this.gameObject
         this.health = this.player.getComponent(Health)
     }

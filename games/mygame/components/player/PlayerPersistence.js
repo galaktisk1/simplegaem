@@ -1,8 +1,11 @@
 class PlayerPersistence extends Component {
-    start() {
+    awake() {
         this.player = this.gameObject
         this.health = this.player.getComponent(Health)
         this.attributes = this.player.getComponent(Attributes)
+    }
+
+    start() {
         if (GameSession.playerattributes) {
             this.attributes.load(GameSession.playerattributes)
             this.health.maxHealth = GameSession.playermaxhealth
@@ -11,6 +14,7 @@ class PlayerPersistence extends Component {
             this.attributes.rollCharacter()
         }
     }
+    
     update() {
         this.save()
     }

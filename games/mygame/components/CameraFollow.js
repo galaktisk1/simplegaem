@@ -1,6 +1,9 @@
 class CameraFollow extends Component {
     // this will be a component on the camera itself
 
+    cameraVelocity = Vector2.zero
+    smoothTime = 0.2
+
     init(target) {
         this.target = target
     }
@@ -8,8 +11,6 @@ class CameraFollow extends Component {
     start() {
         Camera.main.transform.position = this.target.transform.position.clone()
         Camera.main.transform.scale = Vector2.one
-        this.cameraVelocity = Vector2.zero
-        this.smoothTime = 0.2
     }
     update() {
         if (!this.target || this.target.markForDestroy) return

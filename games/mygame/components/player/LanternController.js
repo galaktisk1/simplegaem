@@ -10,11 +10,13 @@ class LanternController extends Component {
 
     bobHeight = 15
     bobSpeed = 3
+    awake() {
+        this.velocity = Vector2.zero
+        this.offset = new Vector2(-this.minDistance, 0)
+    }
 
     start() {
         this.player = GameObject.find("Player")
-        this.velocity = Vector2.zero
-        this.offset = new Vector2(-this.minDistance, 0)
         this.startCoroutine(this.wander())
     }
 

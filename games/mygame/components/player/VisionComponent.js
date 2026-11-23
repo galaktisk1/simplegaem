@@ -7,11 +7,11 @@ class VisionComponent extends Component {
     // rays stop on the middle line of a wall, so we light half a wall past the edge of what's seen
     wallThickness = 20
     darkness = "rgba(0, 0, 0, 0.95)"
-
+    awake() {
+        this.mask = document.createElement("canvas")
+    }
     start() {
         this.player = GameObject.find("Player")
-        // the mask: a canvas that is never put on the page, only drawn onto the game
-        this.mask = document.createElement("canvas")
     }
 
     draw(ctx) {

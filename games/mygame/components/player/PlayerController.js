@@ -21,17 +21,19 @@ class PlayerController extends Component {
     safeRestDistance = 700 // example value, adjust as needed
 
     fatigueLossPerMinute = 0.067 // OpenTESArena tickPlayerStamina
-
-    start() {
+    awake() {
         // declare components and references ill need later
         this.player = this.gameObject
         this.movement = this.gameObject.getComponent(MovementComponent)
-        this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.health = this.gameObject.getComponent(Health)
         this.attributes = this.gameObject.getComponent(Attributes)
         this.inventory = this.gameObject.getComponent(Inventory)
         this.weapon = { name: "fists", damageMin: 1, damageMax: 2 }
         this.input = this.gameObject.getComponent(PlayerInput)
+    }
+
+    start() {
+        this.msgmanager = GameObject.find("MessageManager").getComponent(MessageManager)
         this.cameraFollow = Camera.main.gameObject.addComponent(CameraFollow)
         this.cameraFollow.init(this.player)
 

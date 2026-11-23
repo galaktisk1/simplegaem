@@ -1,10 +1,12 @@
 class KnownSpells extends Component {
     spells = []
 
+    awake() {
+        this.attributes = this.gameObject.getComponent(Attributes)
+    }
+
     start() {
-        const attributes = this.gameObject.getComponent(Attributes)
-        
-        if (!attributes || attributes.maxSpellPoints <= 0) return
+        if (!this.attributes || this.attributes.maxSpellPoints <= 0) return
 
         this.spells = [
             Spellbook.heal,

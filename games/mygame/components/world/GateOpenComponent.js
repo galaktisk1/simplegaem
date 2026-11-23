@@ -3,7 +3,7 @@ class GateOpenComponent extends Component {
     isOpening = false
     speed = 1
     targetRotation = 0
-    start() {
+    awake() {
         this.collider = this.gameObject.getComponent(Collider)
         this.collider.isTrigger = false
     }
