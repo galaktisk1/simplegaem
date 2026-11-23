@@ -3,7 +3,7 @@ class CharacterCreatorGameObject extends GameObject {
         super("CharacterCreator", [], "UI")
 
         this.addComponent(new Health())
-        this.addComponent(new Attributes(), { characterClass: ClassDefinitions.warrior })
+        this.addComponent(new Attributes(), { characterClass: ClassDefinitions.mage })
         
     }
 }

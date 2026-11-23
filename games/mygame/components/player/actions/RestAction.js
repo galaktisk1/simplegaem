@@ -26,6 +26,7 @@ class RestAction extends PlayerAction {
             this.hoursElapsed++
             const n = this.hoursElapsed
             this.hourMsg.gameObject.getComponent(TextLabel).text =
+                // 1 hour passed, 3 hour*s* passed, etc.
                 `${n} hour${n === 1 ? "" : "s"} passed`
             if (this.controller.attributes.isFullyRested) {
                 return this.controller.setAction("move")

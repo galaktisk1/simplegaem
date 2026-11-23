@@ -22,7 +22,7 @@ class PlayerInput extends Component {
     }
 
     get castPressed() {
-        return Input.getMouseButtonDown(2);
+        return Input.getKeyDown("KeyC");
     }
 
     get interactPressed() {

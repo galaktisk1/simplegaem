@@ -20,6 +20,7 @@ class PlayerGameObject extends GameObject {
         })
         this.addComponent(new Health())
         this.addComponent(new Inventory())
-        this.addComponent(new Attributes(), { characterClass: ClassDefinitions.warrior })
+        this.addComponent(new Attributes(), { characterClass: ClassDefinitions.mage })
+        this.addComponent(new KnownSpells())
     }
 }
