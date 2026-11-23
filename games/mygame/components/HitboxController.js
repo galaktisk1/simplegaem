@@ -2,8 +2,8 @@ class HitboxController extends Component {
     swingTime = 0.25
     // enemies already hit this swing, so each is only hit once
     hit = new Set()
-    attacker = null
-    weapon = null
+    attacker 
+    weapon 
 
     init(attacker, weapon) {
         this.attacker = attacker
@@ -13,7 +13,6 @@ class HitboxController extends Component {
     start() {
         this.popUpManager = GameObject.find("PopUpManager").getComponent(PopUpManager)
         this.startCoroutine(this.destroyAfterSwing())
-
     }
 
     *destroyAfterSwing() {

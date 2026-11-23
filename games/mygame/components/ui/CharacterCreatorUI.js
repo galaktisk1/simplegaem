@@ -64,12 +64,8 @@ class CharacterCreatorUI extends Component {
         Object.assign(uiText, { text, ...textSettings })
 
         const rect = textGO.getComponent(RectTransform)
-        Object.assign(rect, {
-            anchorMax: anchor.clone(),
-            anchorMin: anchor.clone(),
-            pivot: anchor.clone(),
-            anchoredPosition: position
-        })
+        rect.setPivotAndAnchors(anchor)
+        rect.anchoredPosition = position
         return textGO
     }
 
@@ -85,12 +81,8 @@ class CharacterCreatorUI extends Component {
         uiText.text = label
 
         const rect = buttonGO.getComponent(RectTransform)
-        Object.assign(rect, {
-            anchorMax: anchor.clone(),
-            anchorMin: anchor.clone(),
-            pivot: anchor.clone(),
-            anchoredPosition: position
-        })
+        rect.setPivotAndAnchors(anchor)
+        rect.anchoredPosition = position
         return buttonGO
     }
 

@@ -4,13 +4,10 @@ class HUDController extends Component {
         const background = new GameObject("Bar Background");
         background.layer = "UI";
 
-        background.addComponent(new RectTransform(), {
-            anchorMin: Vector2.bottomLeft,
-            anchorMax: Vector2.bottomLeft,
-            pivot: Vector2.bottomLeft,
-            sizeDelta: size,
-            anchoredPosition: position
-        });
+        let rect = background.addComponent(new RectTransform())
+        rect.setPivotAndAnchors(Vector2.bottomLeft)
+        rect.sizeDelta = size
+        rect.anchoredPosition = position
 
         background.addComponent(new UIImage(), {
             color: Color.from32(30, 30, 30)

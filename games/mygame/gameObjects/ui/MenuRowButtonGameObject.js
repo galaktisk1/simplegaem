@@ -3,12 +3,9 @@ class MenuRowButtonGameObject extends GameObject {
         super("MenuRowButton", ["button"], "UI")
         
         // add a rect transform , anchored to the top center of the parent
-        this.addComponent(new RectTransform(), {
-            anchorMin: Vector2.bottomCenter,
-            anchorMax: Vector2.bottomCenter,
-            pivot: Vector2.bottomCenter,
-            sizeDelta: new Vector2(200, 32),
-        })
+        let rect = this.addComponent(new RectTransform())
+        rect.setPivotAndAnchors(Vector2.bottomCenter)
+        rect.sizeDelta = new Vector2(200, 32)
         
         // add a transparent image for the button background
         this.addComponent(new UIImage(), { color: Color.from32(0, 0, 0, 0) })

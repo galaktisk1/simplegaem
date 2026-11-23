@@ -1,13 +1,10 @@
 class MenuPanelGameObject extends GameObject {
     constructor() {
         super("MenuPanel", ["Panel"], "UI")
-        this.addComponent(new RectTransform(), {
-            anchorMin: Vector2.bottomRight,
-            anchorMax: Vector2.bottomRight,
-            pivot: Vector2.bottomRight,
-            anchoredPosition: new Vector2(-20, -20),
-            sizeDelta: new Vector2(220, 160),
-        })
+        let rect = this.addComponent(new RectTransform())
+        rect.pivot = Vector2.bottomRight
+        rect.setInsetAndSizeFromParentEdge(RectTransform.edge.right, 20, 220)
+        rect.setInsetAndSizeFromParentEdge(RectTransform.edge.bottom, 20, 160)
         this.addComponent(new UIImage(), { color: Color.from32(20, 20, 20, 220) })
     }
 }

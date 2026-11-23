@@ -60,8 +60,8 @@ class CastAction extends PlayerAction {
     // open the spell menu
     openMenu(known) {
         this.panel = SceneManager.currentScene.instantiate(new MenuPanelGameObject())
-        this.panel.getComponent(RectTransform).sizeDelta =
-            new Vector2(220, 28 + known.spells.length * 36)
+        let rect = this.panel.getComponent(RectTransform)
+        rect.setSizeWithCurrentAnchors(RectTransform.axis.vertical, 28 + known.spells.length * 36)
 
         this.buttons = []
         known.spells.forEach((spell, i) => {

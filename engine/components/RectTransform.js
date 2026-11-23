@@ -5,34 +5,39 @@ class RectTransform extends Transform {
     anchoredPosition = new Vector2(0, 0)
     sizeDelta = new Vector2(100, 100)
 
+    // static enums for edges and axes
+    static edge = Object.freeze({
+        left: 0,
+        right: 1,
+        top: 2,
+        bottom: 3
+    })
+
+    static axis = Object.freeze({
+        horizontal: 0,
+        vertical: 1
+    })
+
     get offsetMin() {
         return this.anchoredPosition.minus(Vector2.scale(this.sizeDelta, this.pivot))
     }
 
     /** @param {Vector2} value */
-    set offsetMin(value) {
-        const current = this.anchoredPosition.minus(Vector2.scale(this.sizeDelta, this.pivot))
-        const change = value.minus(current)
-        const positionChange = change.scaled(new Vector2(1 - this.pivot.x, 1 - this.pivot.y))
-
-        this.sizeDelta = this.sizeDelta.minus(change)
-        this.anchoredPosition.x += positionChange.x
-        this.anchoredPosition.y += positionChange.y
+    set offsetMin(value) { // top left corner
+        const offset = value.minus(this.anchoredPosition.minus(Vector2.scale(this.sizeDelta, this.pivot)))
+        this.sizeDelta = this.sizeDelta.minus(offset)
+        this.anchoredPosition = this.anchoredPosition.plus(Vector2.scale(offset, Vector2.one.minus(this.pivot)))
     }
 
     get offsetMax() {
-        return this.anchoredPosition.plus(Vector2.scale(this.sizeDelta, new Vector2(1 - this.pivot.x, 1 - this.pivot.y)))
+        return this.anchoredPosition.plus(Vector2.scale(this.sizeDelta, Vector2.one.minus(this.pivot)))
     }
 
     /** @param {Vector2} value */
-    set offsetMax(value) {
-        const current = this.anchoredPosition.plus(Vector2.scale(this.sizeDelta, new Vector2(1 - this.pivot.x, 1 - this.pivot.y)))
-        const change = value.minus(current)
-        const positionChange = change.scaled(this.pivot)
-
+    set offsetMax(value) { // bottom right corner
+        const change = value.minus(this.anchoredPosition.plus(Vector2.scale(this.sizeDelta, Vector2.one.minus(this.pivot))))
         this.sizeDelta = this.sizeDelta.plus(change)
-        this.anchoredPosition.x += positionChange.x
-        this.anchoredPosition.y += positionChange.y
+        this.anchoredPosition = this.anchoredPosition.plus(Vector2.scale(change, this.pivot))
     }
 
     get parentRect() {
@@ -96,5 +101,109 @@ class RectTransform extends Transform {
         matrix.rotateSelf(this.rotation * 180 / Math.PI)
         matrix.scaleSelf(this.scale.x, this.scale.y)
         return matrix
+    }
+
+    setAnchors(position) {
+        this.anchorMin = position.clone();
+        this.anchorMax = position.clone();
+    }
+
+    setPivotAndAnchors(position) {
+        this.pivot = position.clone();
+        this.setAnchors(position);
+    }
+
+    setInsetAndSizeFromParentEdge(edge, inset, size) {
+        const edges = RectTransform.edge
+        const axis = (edge === edges.top || edge === edges.bottom) ? 1 : 0;
+        const end = edge === edges.right || edge === edges.bottom
+        const anchorValue = end ? 1 : 0
+
+        // set anchormin and anchor max to be anchored to the new edge
+        let anchor = this.anchorMin;
+        anchor[axis] = anchorValue;
+        this.anchorMin = anchor;
+        anchor = this.anchorMax;
+        anchor[axis] = anchorValue;
+        this.anchorMax = anchor;
+
+        // set the size. anchors are together, size and sizedelta are the same here
+        let sizeD = this.sizeDelta;
+        sizeD[axis] = size;
+        this.sizeDelta = sizeD;
+
+        // set the inset
+        let positionCopy = this.anchoredPosition
+        positionCopy[axis] = end
+            ? -inset - size * (1 - this.pivot[axis])
+            : inset + size * this.pivot[axis]
+        this.anchoredPosition = positionCopy
+    }
+
+    /** @param {RectTransform.axis} axis @param {number} size */
+    setSizeWithCurrentAnchors(axis, size) {
+        const parent = this.parentRect
+        const parentSize = axis === RectTransform.axis.horizontal
+            ? parent.width
+            : parent.height
+
+        const anchorSpan = parentSize * (this.anchorMax[axis] - this.anchorMin[axis])
+        this.sizeDelta[axis] = size - anchorSpan
+    }
+
+    getRectInParentSpace() {
+        const parent = this.parentRect
+        const { pivotX, pivotY, width, height } = this.calculateLayout()
+
+        return {
+            x: pivotX - width * this.pivot.x - parent.x,
+            y: pivotY - height * this.pivot.y - parent.y,
+            width,
+            height
+        }
+    }
+
+    /** @param {Vector2[]} fourCorners */
+    getLocalCorners(fourCorners = []) {
+        const { x, y, width, height } = this.rect
+        const right = x + width
+        const bottom = y + height
+
+        fourCorners[0] = new Vector2(x, y)
+        fourCorners[1] = new Vector2(x, bottom)
+        fourCorners[2] = new Vector2(right, bottom)
+        fourCorners[3] = new Vector2(right, y)
+        return fourCorners
+    }
+
+    /** @param {Vector2[]} fourCorners */
+    getWorldCorners(fourCorners) {
+        const corners = this.getLocalCorners(fourCorners)
+        const matrix = this.getWorldMatrix()
+
+        for (let i = 0; i < 4; i++) {
+            const point = matrix.transformPoint(corners[i])
+            corners[i] = new Vector2(point.x, point.y)
+        }
+
+        return corners
+    }
+
+    get localTop() {
+        return this.getRectInParentSpace().y
+    }
+
+    get localBottom() {
+        const rect = this.getRectInParentSpace()
+        return rect.y + rect.height
+    }
+
+    get localLeft() {
+        return this.getRectInParentSpace().x;
+    }
+
+    get localRight() {
+        const rect = this.getRectInParentSpace();
+        return rect.x + rect.width;
     }
 }

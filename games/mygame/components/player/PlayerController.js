@@ -98,9 +98,35 @@ class PlayerController extends Component {
             // its just for like interacting with merchants, keys, itembags, so on
 
         }
+    }
+    fists = [new Vector2(-44, -84), new Vector2(20, -84)]
 
+    draw(ctx) {
+        // weapon persistence drawing on the player
+        if (this.weapon.type?.name == "dagger"
+            || this.weapon.type?.name == "shortsword"
+            || this.weapon.type?.name == "wakizashi") {
+            //shorter sword drawing logic here
+        }
 
+        if (this.weapon.type?.name == "broadsword"
+            || this.weapon.type?.name == "saber"
+            || this.weapon.type?.name == "katana"
+            || this.weapon.type?.name == "longsword") {
+            //longer sword drawing logic here
+        }
 
+        if (this.weapon.type?.name == "mace") {
+            // sword with bulb at the end drawing logic here
+        }
+
+        if (this.weapon?.name == "fists") {
+            ctx.fillStyle = "#d6a57a"
+            for (const fist of this.fists) {
+                ctx.fillRect(fist.x, fist.y, 24, 32)
+            }
+            return
+        }
     }
 
     // sets the current action for the player, exiting the previous one if necessary
@@ -152,7 +178,7 @@ class PlayerController extends Component {
     }
 
     // very bad coroutine cause itll do nothing due to being wiped on gameobject destroy
-    *restartGame() {
+    * restartGame() {
         yield new WaitForSeconds(1)
         this.health.currentHealth = GameSession.playermaxhealth ?? 100
     }
