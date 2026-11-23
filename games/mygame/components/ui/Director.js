@@ -5,7 +5,7 @@ class Director extends Component {
     // this could hold spawning enemies within the dungeon
     // essentially, this acts as a global manager for game-wide behaviors
     
-    encounterChancePerMinute = 100 // exploring
+    encounterChancePerMinute = 5 // exploring
     encounterChancePerHour = 25 // resting
     spawnMargin = 50
     maxEncounterDistance = 1300
@@ -90,10 +90,32 @@ class Director extends Component {
         const enemy = SceneManager.currentScene.instantiate(new EnemyGameObject(), spot)
         const controller = enemy.getComponent(EnemyController)
         // debug initialize rat for now
-        console.log("It's rat time")
-        controller.init(EnemyDefinitions.rat)
+        
+        const def = this.pickEncounterDef()
+        console.log(`Spawning ${def.name} encounter at`, spot)
+        controller.init(def)
+        controller.isAlerted = true
+        this.playerController.msgmanager.showMessage(`You encounter a ${def.name}!`)
         
         controller.isAlerted = true
+    }
+    
+    pickEncounterDef() {
+        const playerLevel = this.player.getComponent(Attributes)?.level ?? 1
+        const floor = GameSession.floor ?? 0
+        
+        const target = Math.max(1, playerLevel + Math.floor(floor / 2))
+
+        const pool = {}
+        for (const [id, def] of Object.entries(EnemyDefinitions)) {
+            // allow a little below/above target so early floors aren’t only rats forever
+            if (def.level >= target - 1 && def.level <= target + 2) {
+                pool[id] = def
+            }
+        }
+        // fallback, if the pool got NOTHING, use all enemy definitions
+        const table = Object.keys(pool).length ? pool : EnemyDefinitions
+        return GameSession.randomE.nextWeighted(table)
     }
 
     *restartGame() {
